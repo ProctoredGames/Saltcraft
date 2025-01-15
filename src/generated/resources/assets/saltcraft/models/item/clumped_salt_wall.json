@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/wall_inventory",
+  "textures": {
+    "wall": "saltcraft:block/clumped_salt_block"
+  }
+}

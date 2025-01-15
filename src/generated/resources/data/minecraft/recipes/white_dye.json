@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "saltcraft:white_flamingo_feather"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "item": "minecraft:white_dye"
+  }
+}

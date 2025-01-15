@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "saltcraft:block/rock_salt_block",
+    "east": "saltcraft:block/rock_salt_block",
+    "north": "saltcraft:block/rock_salt_block",
+    "particle": "saltcraft:block/rock_salt_fossil_block",
+    "south": "saltcraft:block/rock_salt_block",
+    "up": "saltcraft:block/rock_salt_fossil_block",
+    "west": "saltcraft:block/rock_salt_block"
+  }
+}

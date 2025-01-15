@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/wall_inventory",
+  "textures": {
+    "wall": "saltcraft:block/cracked_rock_pink_salt_bricks"
+  }
+}

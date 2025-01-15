@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_wall_side",
+  "textures": {
+    "wall": "saltcraft:block/clumped_pink_salt_block"
+  }
+}

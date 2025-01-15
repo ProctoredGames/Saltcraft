@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "saltcraft:block/rock_pink_salt_bricks",
+    "side": "saltcraft:block/rock_pink_salt_bricks",
+    "top": "saltcraft:block/rock_pink_salt_bricks"
+  }
+}

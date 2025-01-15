@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "cracked=true,lit=true": {
+      "model": "saltcraft:block/summoning_plinth_cracked_lit"
+    },
+    "cracked=true,lit=false": {
+      "model": "saltcraft:block/summoning_plinth_cracked_unlit"
+    },
+    "cracked=false,lit=false": {
+      "model": "saltcraft:block/summoning_plinth"
+    }
+  }
+}

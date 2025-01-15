@@ -1,0 +1,23 @@
+{
+  "values": [
+    "saltcraft:salt_block",
+    "saltcraft:clumped_salt_block",
+    "saltcraft:rock_salt_block",
+    "saltcraft:rock_salt_bricks",
+    "saltcraft:cracked_rock_salt_bricks",
+    "saltcraft:clumped_salt_stairs",
+    "saltcraft:rock_salt_stairs",
+    "saltcraft:rock_salt_brick_stairs",
+    "saltcraft:cracked_rock_salt_brick_stairs",
+    "saltcraft:clumped_salt_slab",
+    "saltcraft:rock_salt_slab",
+    "saltcraft:rock_salt_brick_slab",
+    "saltcraft:cracked_rock_salt_brick_slab",
+    "saltcraft:clumped_salt_wall",
+    "saltcraft:rock_salt_wall",
+    "saltcraft:rock_salt_brick_wall",
+    "saltcraft:cracked_rock_salt_brick_wall",
+    "saltcraft:chiseled_rock_salt_bricks",
+    "saltcraft:rock_salt_fossil_block"
+  ]
+}

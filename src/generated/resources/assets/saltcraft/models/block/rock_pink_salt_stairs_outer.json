@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "saltcraft:block/rock_pink_salt_block",
+    "side": "saltcraft:block/rock_pink_salt_block",
+    "top": "saltcraft:block/rock_pink_salt_block"
+  }
+}

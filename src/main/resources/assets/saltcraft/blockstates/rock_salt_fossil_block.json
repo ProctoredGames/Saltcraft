@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "saltcraft:block/rock_salt_fossil_block_east"
+    },
+    "facing=north": {
+      "model": "saltcraft:block/rock_salt_fossil_block_north"
+    },
+    "facing=south": {
+      "model": "saltcraft:block/rock_salt_fossil_block_south"
+    },
+    "facing=west": {
+      "model": "saltcraft:block/rock_salt_fossil_block_west"
+    },
+    "facing=up": {
+      "model": "saltcraft:block/rock_salt_fossil_block"
+    },
+    "facing=down": {
+      "model": "saltcraft:block/rock_salt_fossil_block_bottom"
+    }
+  }
+}

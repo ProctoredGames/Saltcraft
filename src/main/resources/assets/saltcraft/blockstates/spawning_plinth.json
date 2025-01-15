@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=true": {
+      "model": "saltcraft:block/spawning_plinth_lit"
+    },
+    "lit=false": {
+      "model": "saltcraft:block/spawning_plinth"
+    }
+  }
+}

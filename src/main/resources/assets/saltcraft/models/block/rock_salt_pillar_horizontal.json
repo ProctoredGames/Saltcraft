@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column_horizontal",
+  "textures": {
+    "end": "saltcraft:block/rock_salt_pillar_top",
+    "side": "saltcraft:block/rock_salt_pillar"
+  }
+}

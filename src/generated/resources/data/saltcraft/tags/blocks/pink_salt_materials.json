@@ -1,0 +1,22 @@
+{
+  "values": [
+    "saltcraft:pink_salt_block",
+    "saltcraft:clumped_pink_salt_block",
+    "saltcraft:rock_pink_salt_block",
+    "saltcraft:rock_pink_salt_bricks",
+    "saltcraft:cracked_rock_pink_salt_bricks",
+    "saltcraft:clumped_pink_salt_stairs",
+    "saltcraft:rock_pink_salt_stairs",
+    "saltcraft:rock_pink_salt_brick_stairs",
+    "saltcraft:cracked_rock_pink_salt_brick_stairs",
+    "saltcraft:clumped_pink_salt_slab",
+    "saltcraft:rock_pink_salt_slab",
+    "saltcraft:rock_pink_salt_brick_slab",
+    "saltcraft:cracked_rock_pink_salt_brick_slab",
+    "saltcraft:clumped_pink_salt_wall",
+    "saltcraft:rock_pink_salt_wall",
+    "saltcraft:rock_pink_salt_brick_wall",
+    "saltcraft:cracked_rock_pink_salt_brick_wall",
+    "saltcraft:chiseled_rock_pink_salt_bricks"
+  ]
+}

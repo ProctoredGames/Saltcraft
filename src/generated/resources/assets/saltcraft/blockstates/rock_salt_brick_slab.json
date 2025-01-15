@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "saltcraft:block/rock_salt_brick_slab"
+    },
+    "type=double": {
+      "model": "saltcraft:block/rock_salt_bricks"
+    },
+    "type=top": {
+      "model": "saltcraft:block/rock_salt_brick_slab_top"
+    }
+  }
+}

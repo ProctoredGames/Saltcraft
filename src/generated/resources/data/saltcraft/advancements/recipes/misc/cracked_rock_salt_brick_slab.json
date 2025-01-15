@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cracked_rock_salt_bricks": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "saltcraft:cracked_rock_salt_bricks"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "saltcraft:cracked_rock_salt_brick_slab"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_cracked_rock_salt_bricks",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "saltcraft:cracked_rock_salt_brick_slab"
+    ]
+  },
+  "sends_telemetry_event": false
+}

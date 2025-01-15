@@ -1,0 +1,12 @@
+{
+  "values": [
+    "saltcraft:clumped_salt_wall",
+    "saltcraft:clumped_pink_salt_wall",
+    "saltcraft:rock_salt_wall",
+    "saltcraft:rock_salt_brick_wall",
+    "saltcraft:cracked_rock_salt_brick_wall",
+    "saltcraft:rock_pink_salt_wall",
+    "saltcraft:rock_pink_salt_brick_wall",
+    "saltcraft:cracked_rock_pink_salt_brick_wall"
+  ]
+}

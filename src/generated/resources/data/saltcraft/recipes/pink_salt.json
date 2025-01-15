@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "saltcraft:pink_salt_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "saltcraft:pink_salt"
+  }
+}

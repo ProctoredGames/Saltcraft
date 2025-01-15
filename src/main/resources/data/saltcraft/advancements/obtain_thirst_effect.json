@@ -1,0 +1,32 @@
+{
+  "parent": "saltcraft:obtain_salt_water_bottle",
+  "criteria": {
+    "thirst_effect": {
+      "conditions": {
+        "effects": {
+          "saltcraft:thirst": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.obtain_thirst_effect.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "saltcraft:z_thirst_icon_item"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.obtain_thirst_effect.title"
+    }
+  },
+  "requirements": [
+    ["thirst_effect"]
+  ],
+  "sends_telemetry_event": true
+}

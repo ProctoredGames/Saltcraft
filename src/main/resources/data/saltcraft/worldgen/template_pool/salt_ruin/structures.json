@@ -1,0 +1,83 @@
+{
+  "elements": [
+    {
+      "element": {
+        "element_type": "minecraft:empty_pool_element"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "saltcraft:salt_ruin/structures/pillar",
+        "processors": "saltcraft:salt_ruin_generic_degradation",
+        "projection": "rigid"
+      },
+      "weight": 6
+    },
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "saltcraft:salt_ruin/structures/spacer",
+        "processors": "saltcraft:salt_ruin_generic_degradation",
+        "projection": "rigid"
+      },
+      "weight": 5
+    },
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "saltcraft:salt_ruin/structures/spire",
+        "processors": "saltcraft:salt_ruin_generic_degradation",
+        "projection": "rigid"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "saltcraft:salt_ruin/structures/spire_small",
+        "processors": "saltcraft:salt_ruin_generic_degradation",
+        "projection": "rigid"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "saltcraft:salt_ruin/structures/spire_tall",
+        "processors": "saltcraft:salt_ruin_generic_degradation",
+        "projection": "rigid"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "saltcraft:salt_ruin/structures/podium",
+        "processors": "saltcraft:salt_ruin_generic_degradation",
+        "projection": "rigid"
+      },
+      "weight": 5
+    },
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "saltcraft:salt_ruin/structures/shrine",
+        "processors": "saltcraft:salt_ruin_generic_degradation",
+        "projection": "rigid"
+      },
+      "weight": 3
+    },
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "saltcraft:salt_ruin/structures/wall",
+        "processors": "saltcraft:salt_ruin_generic_degradation",
+        "projection": "rigid"
+      },
+      "weight": 5
+    }
+  ],
+  "fallback": "minecraft:empty"
+}

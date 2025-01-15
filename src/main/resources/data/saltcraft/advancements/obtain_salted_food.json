@@ -1,0 +1,43 @@
+{
+  "parent": "saltcraft:obtain_salt",
+  "criteria": {
+    "salted_potato": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "saltcraft:salted_potato",
+              "saltcraft:salted_poisonous_potato",
+              "saltcraft:salted_baked_potato",
+              "saltcraft:pink_salted_potato",
+              "saltcraft:pink_salted_poisonous_potato",
+              "saltcraft:pink_salted_baked_potato"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.obtain_salted_food.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "saltcraft:salted_potato"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.obtain_salted_food.title"
+    }
+  },
+  "requirements": [
+    [
+      "salted_potato"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

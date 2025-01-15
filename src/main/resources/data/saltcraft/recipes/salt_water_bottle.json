@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:potion",
+      "nbt": "{Potion:water_bottle}"
+    },
+    {
+      "item": "saltcraft:salt"
+    }
+  ],
+  "result": {
+    "item": "minecraft:potion",
+    "nbt": "{Potion:\"saltcraft:salt_water_bottle\"}"
+  }
+}

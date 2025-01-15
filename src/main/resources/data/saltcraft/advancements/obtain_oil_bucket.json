@@ -1,0 +1,38 @@
+{
+  "parent": "saltcraft:root",
+  "criteria": {
+    "oil_bucket": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "saltcraft:oil_bucket"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.obtain_oil_bucket.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "saltcraft:oil_bucket"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.obtain_oil_bucket.title"
+    }
+  },
+  "requirements": [
+    [
+      "oil_bucket"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
