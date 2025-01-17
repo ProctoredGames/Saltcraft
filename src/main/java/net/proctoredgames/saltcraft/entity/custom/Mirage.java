@@ -93,6 +93,7 @@ import net.proctoredgames.saltcraft.entity.ai.goal.CrystidAttackGoal;
 import net.proctoredgames.saltcraft.entity.ai.goal.MirageAttackGoal;
 import net.proctoredgames.saltcraft.entity.ai.goal.MirageNearestAttackableTargetGoal;
 import net.proctoredgames.saltcraft.thirst.PlayerThirstProvider;
+import net.proctoredgames.saltcraft.util.SandTeleport;
 import org.jetbrains.annotations.Nullable;
 
 public class Mirage extends Monster{
@@ -180,7 +181,7 @@ public class Mirage extends Monster{
             // Check if the player is looking at the entity
             if(distanceTo(nearestPlayer)<40){
                 if(!(this.isHunting())){
-                    if (!isEntityLookingAtMe(nearestPlayer, this)) {
+                    if (!SandTeleport.isEntityLookingAtMe(nearestPlayer, this)) {
                         this.setInvisible(true); // Invisibility when not looking
                         this.setInvulnerable(true);
                         setHunting(false);
@@ -201,15 +202,6 @@ public class Mirage extends Monster{
             this.setInvisible(false);
             this.setInvulnerable(false);
         }
-    }
-
-    boolean isEntityLookingAtMe(LivingEntity pEntity, LivingEntity pCastingEntity) {
-        Vec3 vec3 = pEntity.getViewVector(1.0F).normalize();
-        Vec3 vec31 = new Vec3(pCastingEntity.getX() - pEntity.getX(), pCastingEntity.getEyeY() - pEntity.getEyeY(), pCastingEntity.getZ() - pEntity.getZ());
-        double d0 = vec31.length();
-        vec31 = vec31.normalize();
-        double d1 = vec3.dot(vec31);
-        return d1 > 1.0 - 0.025 / d0 ? pEntity.hasLineOfSight(this) : false;
     }
 
     public void teleportTo(Entity pEntity, Entity pCastingEntity) {
@@ -250,20 +242,27 @@ public class Mirage extends Monster{
             spawnPos = spawnPos.above();
         }
 
-        spawnTeleportParticles(pEntity);
+
+        if (pEntity.level().isClientSide) {
+            spawnTeleportParticles(pEntity);
+        }
+        pEntity.setInvisible(true);
 
         // Teleport the player to the new position
         pEntity.teleportTo(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ());
-        spawnTeleportParticles(pEntity);
+        if (pEntity.level().isClientSide) {
+            spawnTeleportParticles(pEntity);
+        }
+        pEntity.setInvisible(false);
     }
 
     private void spawnTeleportParticles(Entity pEntity) {
         RandomSource random = RandomSource.create();
         Vec3 position = pEntity.position();
-        for(int i = 0; i<20; i++){
-            double x = position.x+random.nextDouble()-0.5;
+        for(int i = 0; i<pEntity.getBbWidth()*pEntity.getBbHeight()*10; i++){
+            double x = position.x+random.nextDouble()*pEntity.getBbWidth()-(pEntity.getBbWidth())/2;
             double y = position.y + pEntity.getBbHeight()*random.nextDouble();
-            double z = position.z+random.nextDouble()-0.5;
+            double z = position.z+random.nextDouble()*pEntity.getBbWidth()-(pEntity.getBbWidth())/2;
 
             pEntity.level().addParticle(new BlockParticleOption(ParticleTypes.FALLING_DUST, Blocks.SAND.defaultBlockState()), x, y, z, 0, 0, 0); // x, y, z, velocity (dx, dy, dz)
         }
