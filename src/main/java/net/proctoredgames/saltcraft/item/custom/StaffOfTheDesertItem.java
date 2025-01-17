@@ -50,11 +50,11 @@ public class StaffOfTheDesertItem extends Item {
             return InteractionResultHolder.pass(whatHandItem);
         }
 
-        double range = 20.0; // Adjust this value for your desired range
+        double range = 50.0; // Adjust this value for your desired range
 
         // Get all entities within the range of the player
         java.util.List<Entity> entitiesInRange = player.level().getEntitiesOfClass(Entity.class, player.getBoundingBox().inflate(range), entity -> {
-            return entity != null && entity.isAlive();
+            return entity != null && entity.isAlive() && entity != player;
         });
 
         // Loop through all entities within the range
@@ -62,9 +62,10 @@ public class StaffOfTheDesertItem extends Item {
             System.out.println(entity);
             if (isEntityValidTarget(entity, player)) {
                 spawnTeleportParticles(entity);
-                teleportToSelf(entity, player);
+                teleportTo(entity, player);
                 System.out.println("teleported" + entity);
                 spawnTeleportParticles(entity);
+                break;
             }
         }
         return InteractionResultHolder.sidedSuccess(whatHandItem, pLevel.isClientSide());
@@ -72,14 +73,14 @@ public class StaffOfTheDesertItem extends Item {
 
     boolean isEntityValidTarget(Entity pEntity, LivingEntity pCastingEntity) {
         Vec3 vec3 = pCastingEntity.getViewVector(1.0F).normalize();
-        Vec3 vec31 = new Vec3(pCastingEntity.getX() - pEntity.getX(), pCastingEntity.getEyeY() - pEntity.getEyeY(), pCastingEntity.getZ() - pEntity.getZ());
+        Vec3 vec31 = new Vec3(pEntity.getX()-pCastingEntity.getX(), pEntity.getEyeY()-pCastingEntity.getEyeY(), pEntity.getZ()-pCastingEntity.getZ());
         double d0 = vec31.length();
         vec31 = vec31.normalize();
         double d1 = vec3.dot(vec31);
-        return d1 > 1.0 - 0.025 / d0;
+        return d1 > 1.0 - 0.025 / d0 ? pCastingEntity.hasLineOfSight(pEntity) : false;
     }
 
-    public void teleportToSelf(Entity pEntity, Entity pCastingEntity) {
+    public void teleportTo(Entity pEntity, Entity pCastingEntity) {
         // Get the current position of the mob
         double selfX = pCastingEntity.getX();
         double selfY = pCastingEntity.getY();
@@ -99,7 +100,7 @@ public class StaffOfTheDesertItem extends Item {
         double dirZ = Math.cos(radYaw) * Math.cos(radPitch); // Z direction
 
         // Scale the direction to 5 blocks (this can be adjusted)
-        double moveDistance = 5;
+        double moveDistance = 3;
         double targetX = selfX + dirX * moveDistance;
         double targetY = selfY;
         double targetZ = selfZ + dirZ * moveDistance;

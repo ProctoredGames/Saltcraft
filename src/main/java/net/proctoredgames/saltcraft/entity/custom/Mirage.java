@@ -180,12 +180,12 @@ public class Mirage extends Monster{
             // Check if the player is looking at the entity
             if(distanceTo(nearestPlayer)<40){
                 if(!(this.isHunting())){
-                    if (!isEntityLookingAtMe(nearestPlayer)) {
+                    if (!isEntityLookingAtMe(nearestPlayer, this)) {
                         this.setInvisible(true); // Invisibility when not looking
                         this.setInvulnerable(true);
                         setHunting(false);
                     } else {
-                        teleportToSelf(nearestPlayer, this);
+                        teleportTo(nearestPlayer, this);
                         this.setInvisible(false);
                         this.setInvulnerable(false);
                         setHunting(true);
@@ -203,16 +203,16 @@ public class Mirage extends Monster{
         }
     }
 
-    boolean isEntityLookingAtMe(LivingEntity pEntity) {
+    boolean isEntityLookingAtMe(LivingEntity pEntity, LivingEntity pCastingEntity) {
         Vec3 vec3 = pEntity.getViewVector(1.0F).normalize();
-        Vec3 vec31 = new Vec3(this.getX() - pEntity.getX(), this.getEyeY() - pEntity.getEyeY(), this.getZ() - pEntity.getZ());
+        Vec3 vec31 = new Vec3(pCastingEntity.getX() - pEntity.getX(), pCastingEntity.getEyeY() - pEntity.getEyeY(), pCastingEntity.getZ() - pEntity.getZ());
         double d0 = vec31.length();
         vec31 = vec31.normalize();
         double d1 = vec3.dot(vec31);
         return d1 > 1.0 - 0.025 / d0 ? pEntity.hasLineOfSight(this) : false;
     }
 
-    public void teleportToSelf(Entity pEntity, Entity pCastingEntity) {
+    public void teleportTo(Entity pEntity, Entity pCastingEntity) {
         // Get the current position of the mob
         double selfX = pCastingEntity.getX();
         double selfY = pCastingEntity.getY();
