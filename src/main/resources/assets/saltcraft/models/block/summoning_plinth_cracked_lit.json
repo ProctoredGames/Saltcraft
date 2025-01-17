@@ -11,6 +11,7 @@
 	"textures": {
 		"particle": "saltcraft:block/summoning_plinth_cracked",
 		"0": "saltcraft:block/summoning_plinth_cracked",
+		"cracks": "saltcraft:block/summoning_plinth_cracked_cracks",
 		"fire": "saltcraft:block/summoning_plinth_fire"
 	},
 	"elements": [

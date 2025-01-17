@@ -138,7 +138,7 @@ public class ModBlocks {
             () -> new LiquidBlock(ModFluids.SOURCE_OIL, BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable()));
 
     public static final RegistryObject<Block> SUMMONING_PLINTH = registerBlock("summoning_plinth",
-            () -> new SummoningPlinthBlock(5, BlockBehaviour.Properties.copy(Blocks.REINFORCED_DEEPSLATE).lightLevel(litBlockEmission(10)).noOcclusion().noLootTable()));
+            () -> new SummoningPlinthBlock(5, BlockBehaviour.Properties.copy(Blocks.REINFORCED_DEEPSLATE).lightLevel(litBlockEmission(7)).noOcclusion().noLootTable()));
     public static final RegistryObject<Block> SPAWNING_PLINTH = registerBlock("spawning_plinth",
             () -> new SpawningPlinthBlock(BlockBehaviour.Properties.copy(Blocks.REINFORCED_DEEPSLATE).lightLevel(litBlockEmission(5)).noOcclusion().noLootTable()));
 

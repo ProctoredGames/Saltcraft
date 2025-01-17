@@ -7,6 +7,7 @@
       "scale":[ 1, 1, 1 ]
     }
   },
+  "render_type": "minecraft:cutout",
   "textures": {
     "0": "saltcraft:block/spawning_plinth_lit",
     "stones": "saltcraft:block/spawning_plinth_lit_stones",

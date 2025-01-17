@@ -370,6 +370,16 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy(getHasName(Items.IRON_NUGGET), has(Items.IRON_NUGGET))
                 .save(pWriter);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STAFF_OF_THE_DESERT.get())
+                .pattern("  #")
+                .pattern(" S ")
+                .pattern("S  ")
+                .define('S', ModItems.ANCIENT_STAFF_FRAGMENT.get())
+                .define('#', ModItems.EYE_OF_THE_DESERT.get())
+                .unlockedBy(getHasName(ModItems.ANCIENT_STAFF_FRAGMENT.get()), has(ModItems.ANCIENT_STAFF_FRAGMENT.get()))
+                .unlockedBy(getHasName(ModItems.EYE_OF_THE_DESERT.get()), has(ModItems.EYE_OF_THE_DESERT.get()))
+                .save(pWriter);
+
     }
 
     protected static void oreSmelting(Consumer<FinishedRecipe> pFinishedRecipeConsumer, List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult, float pExperience, int pCookingTIme, String pGroup) {

@@ -21,6 +21,7 @@ import net.proctoredgames.saltcraft.entity.custom.Mirage;
 import net.proctoredgames.saltcraft.networking.ModMessages;
 import net.proctoredgames.saltcraft.networking.packet.ThirstDataSyncS2CPacket;
 import net.proctoredgames.saltcraft.thirst.PlayerThirstProvider;
+import net.proctoredgames.saltcraft.util.SandTeleport;
 import net.proctoredgames.saltcraft.worldgen.ModBiomeModifiers;
 import net.proctoredgames.saltcraft.worldgen.biome.ModBiomes;
 
@@ -60,33 +61,28 @@ public class ThirstEffect extends MobEffect {
                 }
                 if (thirst.getThirst() <= 5 && entityWhatBiome.is(Biomes.DESERT) && pLivingEntity.level().isDay()) {
                     RandomSource random = RandomSource.create();
-                    double spawnAngle = random.nextDouble() * 2 * Math.PI; // Random angle
-                    int maxAttempts = 12; // Limit attempts to avoid infinite loop
-                    int attempts = 0;
+                    double spawnAngle = 0;
 
                     // Calculate initial spawn position offset
                     int offsetX = (int) (Math.sin(spawnAngle) * 70);
                     int offsetZ = (int) (Math.cos(spawnAngle) * 70);
-                    BlockPos spawnPos = pLivingEntity.blockPosition().offset(offsetX, 0, offsetZ);
+                    BlockPos spawnPos = pLivingEntity.blockPosition().offset(offsetX, pLivingEntity.level().getMaxBuildHeight(), offsetZ);
 
                     // Ensure the position is in the desert biome
-                    while (!(pLivingEntity.level().getBiome(spawnPos).is(Biomes.DESERT)) && attempts < maxAttempts) {
-                        spawnAngle += Math.PI * 0.3;
+                    while (spawnAngle < 2*Math.PI) {
+                        if(pLivingEntity.level().getBiome(spawnPos).is(Biomes.DESERT)){
+                            break;
+                        }
                         offsetX = (int) (Math.sin(spawnAngle) * 70);
                         offsetZ = (int) (Math.cos(spawnAngle) * 70);
-                        spawnPos = pLivingEntity.blockPosition().offset(offsetX, 0, offsetZ);
-                        attempts++;
+                        spawnPos = pLivingEntity.blockPosition().offset(offsetX, pLivingEntity.level().getMaxBuildHeight(), offsetZ);
+                        spawnAngle += Math.PI * 0.3;
+
                     }
 
                     // If valid desert biome found
                     if (pLivingEntity.level().getBiome(spawnPos).is(Biomes.DESERT)) {
-                        // Adjust spawn position to ground level
-                        while (pLivingEntity.level().getBlockState(spawnPos.below()).isAir() && spawnPos.getY() > pLivingEntity.level().getMinBuildHeight() + 2) {
-                            spawnPos = spawnPos.below();
-                        }
-                        while (!pLivingEntity.level().getBlockState(spawnPos).isAir() && spawnPos.getY() < pLivingEntity.level().getMaxBuildHeight()) {
-                            spawnPos = spawnPos.above();
-                        }
+                        spawnPos = SandTeleport.determineGroundAdjustedPosition(spawnPos, pLivingEntity.level());
 
                         // Check for existing Mirages within a 200-block radius
                         int radius = 200;

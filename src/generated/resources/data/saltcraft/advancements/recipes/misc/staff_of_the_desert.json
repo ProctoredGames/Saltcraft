@@ -1,0 +1,48 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ancient_staff_fragment": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "saltcraft:ancient_staff_fragment"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_eye_of_the_desert": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "saltcraft:eye_of_the_desert"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "saltcraft:staff_of_the_desert"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_ancient_staff_fragment",
+      "has_eye_of_the_desert",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "saltcraft:staff_of_the_desert"
+    ]
+  },
+  "sends_telemetry_event": false
+}
