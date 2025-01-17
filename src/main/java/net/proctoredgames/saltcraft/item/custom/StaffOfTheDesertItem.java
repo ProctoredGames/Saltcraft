@@ -58,7 +58,7 @@ public class StaffOfTheDesertItem extends Item {
         // Loop through all entities within the range
         for (Entity entity : entitiesInRange) {
             System.out.println(entity);
-            if (SandTeleport.isEntityValidTarget(entity, player)) {
+            if (SandTeleport.isEntityValidTarget(player, entity)) {
                 SandTeleport.teleportTo(entity, player);
                 break;
             }

@@ -6,78 +6,67 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
 public class SandTeleport {
 
-    public static boolean isEntityLookingAtMe(LivingEntity pEntity, LivingEntity pCastingEntity) {
-        Vec3 vec3 = pEntity.getViewVector(1.0F).normalize();
-        Vec3 vec31 = new Vec3(pCastingEntity.getX() - pEntity.getX(), pCastingEntity.getEyeY() - pEntity.getEyeY(), pCastingEntity.getZ() - pEntity.getZ());
+    //with the Mirage for example the player triggers the waiting mirage to attack by looking at it
+    //for the Staff Of The Desert the player triggers the waiting mob to be able to be teleported by looking at it
+    public static boolean isEntityValidTarget(Player pTriggeringEntity, Entity pWaitingEntity) {
+        Vec3 vec3 = pTriggeringEntity.getViewVector(1.0F).normalize();
+        Vec3 vec31 = new Vec3(pWaitingEntity.getX() - pTriggeringEntity.getX(), pWaitingEntity.getEyeY() - pTriggeringEntity.getEyeY(), pWaitingEntity.getZ() - pTriggeringEntity.getZ());
         double d0 = vec31.length();
         vec31 = vec31.normalize();
         double d1 = vec3.dot(vec31);
-        return d1 > 1.0 - 0.025 / d0 ? pEntity.hasLineOfSight(this) : false;
-    }
-
-    public static boolean isEntityValidTarget(Entity pEntity, LivingEntity pCastingEntity) {
-        Vec3 vec3 = pCastingEntity.getViewVector(1.0F).normalize();
-        Vec3 vec31 = new Vec3(pEntity.getX()-pCastingEntity.getX(), pEntity.getEyeY()-pCastingEntity.getEyeY(), pEntity.getZ()-pCastingEntity.getZ());
-        double d0 = vec31.length();
-        vec31 = vec31.normalize();
-        double d1 = vec3.dot(vec31);
-        return d1 > 1.0 - 0.025 / d0 ? pCastingEntity.hasLineOfSight(pEntity) : false;
+        return d1 > 1.0 - 0.025 / d0 ? pTriggeringEntity.hasLineOfSight(pWaitingEntity) : false;
     }
 
     public static void teleportTo(Entity pEntity, Entity pCastingEntity) {
-        // Get the current position of the mob
         double selfX = pCastingEntity.getX();
         double selfY = pCastingEntity.getY();
         double selfZ = pCastingEntity.getZ();
 
-        // Get the mob's yaw (horizontal rotation) and pitch (vertical rotation)
-        float yaw = pCastingEntity.getYRot(); // This is the mob's horizontal rotation
-        float pitch = pCastingEntity.getXRot(); // This is the mob's vertical rotation
+        float yaw = pCastingEntity.getYRot();
+        float pitch = pCastingEntity.getXRot();
 
-        // Calculate the direction vector based on the mob's yaw and pitch
-        double radYaw = Math.toRadians(yaw); // Convert yaw to radians
-        double radPitch = Math.toRadians(pitch); // Convert pitch to radians
+        double radYaw = Math.toRadians(yaw);
+        double radPitch = Math.toRadians(pitch);
 
-        // Use trigonometry to calculate the direction
-        double dirX = -Math.sin(radYaw) * Math.cos(radPitch); // X direction
-        double dirY = -Math.sin(radPitch); // Y direction (vertical)
-        double dirZ = Math.cos(radYaw) * Math.cos(radPitch); // Z direction
+        double dirX = -Math.sin(radYaw) * Math.cos(radPitch);
+        double dirY = -Math.sin(radPitch);
+        double dirZ = Math.cos(radYaw) * Math.cos(radPitch);
 
-        // Scale the direction to 5 blocks (this can be adjusted)
         double moveDistance = 5;
-        double targetX = selfX + dirX * moveDistance;
-        double targetY = selfY;
-        double targetZ = selfZ + dirZ * moveDistance;
 
-        // Start with the target position (adjust Y to ground level)
-        BlockPos spawnPos = new BlockPos((int) targetX, (int) targetY, (int) targetZ);
-
-        // Move the position down until we find a solid block (or hit the minimum build height)
-        while (pEntity.level().getBlockState(spawnPos.below()).isAir() && spawnPos.below().getY() > pEntity.level().getMinBuildHeight()) {
-            spawnPos = spawnPos.below();
-        }
-
-        // Move the position up until we find an air block or reach the maximum build height
-        while (!pEntity.level().getBlockState(spawnPos).isAir() && spawnPos.getY() < pEntity.level().getMaxBuildHeight()) {
-            spawnPos = spawnPos.above();
-        }
+        BlockPos spawnPos = determineGroundAdjustedPosition(new BlockPos((int)Math.round(selfX + dirX * moveDistance),
+                (int)Math.round(selfY), (int)Math.round(selfZ + dirZ * moveDistance)), pEntity.level());
 
         if (pEntity.level().isClientSide) {
             spawnTeleportParticles(pEntity);
         }
         pEntity.setInvisible(true);
 
-        // Teleport the player to the new position
         pEntity.teleportTo(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ());
         if (pEntity.level().isClientSide) {
             spawnTeleportParticles(pEntity);
         }
         pEntity.setInvisible(false);
+    }
+
+    public static BlockPos determineGroundAdjustedPosition(BlockPos pSpawnPos, Level pLevel){
+
+        while (pLevel.getBlockState(pSpawnPos.below()).isAir() && pSpawnPos.below().getY() > pLevel.getMinBuildHeight()) {
+            pSpawnPos = pSpawnPos.below();
+        }
+
+        while (!pLevel.getBlockState(pSpawnPos).isAir() && pSpawnPos.getY() < pLevel.getMaxBuildHeight()) {
+            pSpawnPos = pSpawnPos.above();
+        }
+        return pSpawnPos;
     }
 
     private static void spawnTeleportParticles(Entity pEntity) {
