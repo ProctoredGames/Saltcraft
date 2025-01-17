@@ -180,12 +180,12 @@ public class Mirage extends Monster{
             // Check if the player is looking at the entity
             if(distanceTo(nearestPlayer)<40){
                 if(!(this.isHunting())){
-                    if (!isPlayerLookingAt(nearestPlayer)) {
+                    if (!isEntityLookingAtMe(nearestPlayer)) {
                         this.setInvisible(true); // Invisibility when not looking
                         this.setInvulnerable(true);
                         setHunting(false);
                     } else {
-                        teleportPlayer(nearestPlayer);
+                        teleportToSelf(nearestPlayer, this);
                         this.setInvisible(false);
                         this.setInvulnerable(false);
                         setHunting(true);
@@ -203,15 +203,24 @@ public class Mirage extends Monster{
         }
     }
 
-    public void teleportPlayer(Player nearestPlayer) {
+    boolean isEntityLookingAtMe(LivingEntity pEntity) {
+        Vec3 vec3 = pEntity.getViewVector(1.0F).normalize();
+        Vec3 vec31 = new Vec3(this.getX() - pEntity.getX(), this.getEyeY() - pEntity.getEyeY(), this.getZ() - pEntity.getZ());
+        double d0 = vec31.length();
+        vec31 = vec31.normalize();
+        double d1 = vec3.dot(vec31);
+        return d1 > 1.0 - 0.025 / d0 ? pEntity.hasLineOfSight(this) : false;
+    }
+
+    public void teleportToSelf(Entity pEntity, Entity pCastingEntity) {
         // Get the current position of the mob
-        double mobX = this.getX();
-        double mobY = this.getY();
-        double mobZ = this.getZ();
+        double selfX = pCastingEntity.getX();
+        double selfY = pCastingEntity.getY();
+        double selfZ = pCastingEntity.getZ();
 
         // Get the mob's yaw (horizontal rotation) and pitch (vertical rotation)
-        float yaw = this.getYRot(); // This is the mob's horizontal rotation
-        float pitch = this.getXRot(); // This is the mob's vertical rotation
+        float yaw = pCastingEntity.getYRot(); // This is the mob's horizontal rotation
+        float pitch = pCastingEntity.getXRot(); // This is the mob's vertical rotation
 
         // Calculate the direction vector based on the mob's yaw and pitch
         double radYaw = Math.toRadians(yaw); // Convert yaw to radians
@@ -224,34 +233,41 @@ public class Mirage extends Monster{
 
         // Scale the direction to 5 blocks (this can be adjusted)
         double moveDistance = 5;
-        double targetX = mobX + dirX * moveDistance;
-        double targetY = mobY;
-        double targetZ = mobZ + dirZ * moveDistance;
+        double targetX = selfX + dirX * moveDistance;
+        double targetY = selfY;
+        double targetZ = selfZ + dirZ * moveDistance;
 
         // Start with the target position (adjust Y to ground level)
         BlockPos spawnPos = new BlockPos((int) targetX, (int) targetY, (int) targetZ);
 
         // Move the position down until we find a solid block (or hit the minimum build height)
-        while (nearestPlayer.level().getBlockState(spawnPos.below()).isAir() && spawnPos.below().getY() > nearestPlayer.level().getMinBuildHeight()) {
+        while (pEntity.level().getBlockState(spawnPos.below()).isAir() && spawnPos.below().getY() > pEntity.level().getMinBuildHeight()) {
             spawnPos = spawnPos.below();
         }
 
         // Move the position up until we find an air block or reach the maximum build height
-        while (!nearestPlayer.level().getBlockState(spawnPos).isAir() && spawnPos.getY() < nearestPlayer.level().getMaxBuildHeight()) {
+        while (!pEntity.level().getBlockState(spawnPos).isAir() && spawnPos.getY() < pEntity.level().getMaxBuildHeight()) {
             spawnPos = spawnPos.above();
         }
 
+        spawnTeleportParticles(pEntity);
+
         // Teleport the player to the new position
-        nearestPlayer.teleportTo(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ());
+        pEntity.teleportTo(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ());
+        spawnTeleportParticles(pEntity);
     }
 
-    boolean isPlayerLookingAt(Player pPlayer) {
-        Vec3 vec3 = pPlayer.getViewVector(1.0F).normalize();
-        Vec3 vec31 = new Vec3(this.getX() - pPlayer.getX(), this.getEyeY() - pPlayer.getEyeY(), this.getZ() - pPlayer.getZ());
-        double d0 = vec31.length();
-        vec31 = vec31.normalize();
-        double d1 = vec3.dot(vec31);
-        return d1 > 1.0 - 0.025 / d0 ? pPlayer.hasLineOfSight(this) : false;
+    private void spawnTeleportParticles(Entity pEntity) {
+        RandomSource random = RandomSource.create();
+        Vec3 position = pEntity.position();
+        for(int i = 0; i<20; i++){
+            double x = position.x+random.nextDouble()-0.5;
+            double y = position.y + pEntity.getBbHeight()*random.nextDouble();
+            double z = position.z+random.nextDouble()-0.5;
+
+            pEntity.level().addParticle(new BlockParticleOption(ParticleTypes.FALLING_DUST, Blocks.SAND.defaultBlockState()), x, y, z, 0, 0, 0); // x, y, z, velocity (dx, dy, dz)
+        }
+
     }
 
     private void spawnAmbientParticles() {
