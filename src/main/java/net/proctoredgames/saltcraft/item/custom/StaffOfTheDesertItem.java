@@ -71,13 +71,13 @@ public class StaffOfTheDesertItem extends Item implements Vanishable {
     }
 
     public int getUseDuration(ItemStack pStack) {
-        return 100000;
+        return 60;
     }
 
     public void releaseUsing(ItemStack pStack, Level pLevel, LivingEntity pEntityLiving, int pTimeLeft) {
-        System.out.println("releaseUsing triggered"); // Debugging
         if (pEntityLiving instanceof Player $$4 && targetEntity != null) {
-            if (pTimeLeft<= 10) {
+            int $$5 = this.getUseDuration(pStack) - pTimeLeft;
+            if ($$5 >=15) {
                 if(targetEntity instanceof LivingEntity){
                     ((LivingEntity) targetEntity).removeEffect(MobEffects.GLOWING);
                 }
