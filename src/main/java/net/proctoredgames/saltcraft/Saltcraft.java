@@ -2,9 +2,6 @@ package net.proctoredgames.saltcraft;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
-import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -29,6 +26,7 @@ import net.proctoredgames.saltcraft.item.ModCreativeModeTabs;
 import net.proctoredgames.saltcraft.item.ModItems;
 import net.proctoredgames.saltcraft.networking.ModMessages;
 import net.proctoredgames.saltcraft.potion.ModPotions;
+import net.proctoredgames.saltcraft.util.ModItemProperties;
 import net.proctoredgames.saltcraft.worldgen.biome.ModTerrablender;
 import net.proctoredgames.saltcraft.worldgen.biome.surface.ModSurfaceRules;
 //import net.proctoredgames.saltcraft.worldgen.feature.ModFeatures;
@@ -104,6 +102,7 @@ public class Saltcraft
             EntityRenderers.register(ModEntities.SALT_MAGE.get(), SaltMageRenderer::new);
             EntityRenderers.register(ModEntities.FLAMINGO.get(), FlamingoRenderer::new);
             EntityRenderers.register(ModEntities.MIRAGE.get(), MirageRenderer::new);
+            ModItemProperties.addCustomItemProperties();
         }
     }
 }

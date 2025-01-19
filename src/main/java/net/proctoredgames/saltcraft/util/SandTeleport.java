@@ -16,14 +16,9 @@ public class SandTeleport {
 
     //with the Mirage for example the player triggers the waiting mirage to attack by looking at it
     //for the Staff Of The Desert the player triggers the waiting mob to be able to be teleported by looking at it
-    public static boolean isEntityValidTarget(Player pTriggeringEntity, Entity pWaitingEntity, boolean isEyeTracked) {
+    public static boolean isEntityValidTarget(Player pTriggeringEntity, Entity pWaitingEntity) {
         Vec3 vec3 = pTriggeringEntity.getViewVector(1.0F).normalize();
-        Vec3 vec31;
-        if(isEyeTracked){
-            vec31 = new Vec3(pWaitingEntity.getX() - pTriggeringEntity.getX(), pWaitingEntity.getEyeY() - pTriggeringEntity.getEyeY(), pWaitingEntity.getZ() - pTriggeringEntity.getZ());
-        } else{
-            vec31 = new Vec3(pWaitingEntity.getX() - pTriggeringEntity.getX(), pWaitingEntity.getY()+pWaitingEntity.getBbHeight()/2 - pTriggeringEntity.getY(), pWaitingEntity.getZ() - pTriggeringEntity.getZ());
-        }
+        Vec3  vec31 = new Vec3(pWaitingEntity.getX() - pTriggeringEntity.getX(), pWaitingEntity.getEyeY() - pTriggeringEntity.getEyeY(), pWaitingEntity.getZ() - pTriggeringEntity.getZ());
         double d0 = vec31.length();
         vec31 = vec31.normalize();
         double d1 = vec3.dot(vec31);

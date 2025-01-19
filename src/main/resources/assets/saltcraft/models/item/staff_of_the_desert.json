@@ -2,5 +2,34 @@
   "parent": "item/handheld",
   "textures": {
     "layer0": "saltcraft:item/staff_of_the_desert"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "minecraft:pulling": 1
+      },
+      "model": "saltcraft:item/staff_of_the_desert_charged_0"
+    },
+    {
+      "predicate": {
+        "minecraft:pulling": 1,
+        "minecraft:pull": 0.25
+      },
+      "model": "saltcraft:item/staff_of_the_desert_charged_1"
+    },
+    {
+      "predicate": {
+        "minecraft:pulling": 1,
+        "minecraft:pull": 0.5
+      },
+      "model": "saltcraft:item/staff_of_the_desert_charged_2"
+    },
+    {
+      "predicate": {
+        "minecraft:pulling": 1,
+        "minecraft:pull": 0.75
+      },
+      "model": "saltcraft:item/staff_of_the_desert_charged_3"
+    }
+  ]
 }

@@ -32,8 +32,10 @@ import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.Vanishable;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -47,7 +49,7 @@ import org.joml.RayAabIntersection;
 import java.awt.*;
 
 
-public class StaffOfTheDesertItem extends Item {
+public class StaffOfTheDesertItem extends Item implements Vanishable {
 
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
@@ -69,14 +71,13 @@ public class StaffOfTheDesertItem extends Item {
     }
 
     public int getUseDuration(ItemStack pStack) {
-        return 72000;
+        return 100000;
     }
 
     public void releaseUsing(ItemStack pStack, Level pLevel, LivingEntity pEntityLiving, int pTimeLeft) {
         System.out.println("releaseUsing triggered"); // Debugging
         if (pEntityLiving instanceof Player $$4 && targetEntity != null) {
-            int $$5 = this.getUseDuration(pStack) - pTimeLeft;
-            if ($$5 >= 10) {
+            if (pTimeLeft<= 10) {
                 if(targetEntity instanceof LivingEntity){
                     ((LivingEntity) targetEntity).removeEffect(MobEffects.GLOWING);
                 }
@@ -86,7 +87,7 @@ public class StaffOfTheDesertItem extends Item {
         }
     }
 
-    public boolean runThroughHighlightMob(Player pPlayer){
+    public Entity runThroughFindMob(Player pPlayer){
 
         double range = 50.0; // Adjust this value for your desired range
 
@@ -97,29 +98,30 @@ public class StaffOfTheDesertItem extends Item {
 
         // Loop through all entities within the range
         for (Entity entity : entitiesInRange) {
-            if (SandTeleport.isEntityValidTarget(pPlayer, entity, false)) {
-                if(entity instanceof LivingEntity){
-                    ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.GLOWING, 1, 0));
-                }
-                targetEntity = entity;
-                return true;
+            if (SandTeleport.isEntityValidTarget(pPlayer, entity)) {
+                return entity;
             }
         }
-        return false;
+        return null;
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pHand) {
         ItemStack $$3 = pPlayer.getItemInHand(pHand);
-        runThroughHighlightMob(pPlayer);
-        pPlayer.startUsingItem(pHand);
+        targetEntity = runThroughFindMob(pPlayer);
+        if(targetEntity != null){
+            pPlayer.startUsingItem(pHand);
+        }
         return InteractionResultHolder.sidedSuccess($$3, pLevel.isClientSide());
     }
 
     @Override
     public void onUseTick(Level pLevel, LivingEntity pLivingEntity, ItemStack pStack, int pRemainingUseDuration) {
+        if(targetEntity instanceof LivingEntity){
+            ((LivingEntity) targetEntity).addEffect(new MobEffectInstance(MobEffects.GLOWING, 5, 0, false, false));
+        }
         if(pLivingEntity instanceof Player){
-            if(!runThroughHighlightMob((Player) pLivingEntity)){
+            if(runThroughFindMob((Player) pLivingEntity) == null){
                 targetEntity = null;
                 pLivingEntity.stopUsingItem();
             };

@@ -181,7 +181,7 @@ public class Mirage extends Monster{
             // Check if the player is looking at the entity
             if(distanceTo(nearestPlayer)<40){
                 if(!(this.isHunting())){
-                    if (!SandTeleport.isEntityValidTarget(nearestPlayer, this, true)) {
+                    if (!SandTeleport.isEntityValidTarget(nearestPlayer, this)) {
                         this.setInvisible(true); // Invisibility when not looking
                         this.setInvulnerable(true);
                         setHunting(false);

@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "saltcraft:item/staff_of_the_desert_charged_2"
+  }
+}
