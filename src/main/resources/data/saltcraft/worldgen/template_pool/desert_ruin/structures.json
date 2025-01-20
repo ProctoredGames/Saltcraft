@@ -1,0 +1,56 @@
+{
+  "elements": [
+    {
+      "element": {
+        "element_type": "minecraft:empty_pool_element"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "saltcraft:desert_ruin/structures/desert_pillar_1",
+        "processors": "saltcraft:desert_ruin_generic_degradation",
+        "projection": "rigid"
+      },
+      "weight": 6
+    },
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "saltcraft:desert_ruin/structures/desert_pillar_2",
+        "processors": "saltcraft:desert_ruin_generic_degradation",
+        "projection": "rigid"
+      },
+      "weight": 5
+    },
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "saltcraft:desert_ruin/structures/desert_pillar_3",
+        "processors": "saltcraft:desert_ruin_generic_degradation",
+        "projection": "rigid"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "saltcraft:desert_ruin/structures/desert_pillar_4",
+        "processors": "saltcraft:desert_ruin_generic_degradation",
+        "projection": "rigid"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "saltcraft:desert_ruin/structures/desert_ruin_spacer",
+        "processors": "saltcraft:desert_ruin_generic_degradation",
+        "projection": "rigid"
+      },
+      "weight": 4
+    }
+  ],
+  "fallback": "minecraft:empty"
+}
