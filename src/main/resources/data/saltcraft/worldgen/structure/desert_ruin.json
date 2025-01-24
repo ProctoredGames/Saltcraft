@@ -3,13 +3,12 @@
   "biomes": "#saltcraft:has_structure/desert_ruin",
   "max_distance_from_center": 80,
   "project_start_to_heightmap": "WORLD_SURFACE_WG",
-  "size": 6,
+  "size": 2,
   "spawn_overrides": {},
   "start_height": {
-    "absolute": 0
+    "absolute": -2
   },
-  "start_pool": "saltcraft:desert_ruin/ruin_center",
+  "start_pool": "saltcraft:desert_ruin/desert_ruin_table",
   "step": "surface_structures",
-  "terrain_adaptation": "beard_thin",
   "use_expansion_hack": false
 }

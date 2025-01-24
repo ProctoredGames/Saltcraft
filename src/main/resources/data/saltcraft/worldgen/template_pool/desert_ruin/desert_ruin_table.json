@@ -3,7 +3,7 @@
     {
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "saltcraft:desert_ruin/ruin_center/desert_ruin_table",
+        "location": "saltcraft:desert_ruin/desert_ruin_table/desert_ruin_table",
         "processors": "saltcraft:desert_ruin_generic_degradation",
         "projection": "rigid"
       },
