@@ -30,7 +30,6 @@ import net.proctoredgames.saltcraft.util.ModItemProperties;
 import net.proctoredgames.saltcraft.worldgen.biome.surface.ModSurfaceRules;
 import net.proctoredgames.saltcraft.worldgen.feature.ModFeatures;
 import org.slf4j.Logger;
-import terrablender.api.SurfaceRuleManager;
 
 
 // The value here should match an entry in the META-INF/mods.toml file
