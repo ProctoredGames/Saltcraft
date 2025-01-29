@@ -129,8 +129,9 @@ public class Mirage extends Monster{
     protected void addBehaviourGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(4, new MirageAttackGoal(this, 1.5, false, 2.5));
-        this.targetSelector.addGoal(3, new MirageNearestAttackableTargetGoal(this, Player.class, true));
+        this.goalSelector.addGoal(1, new MirageAttackGoal(this, 1.5, false, 2.5));
+        this.targetSelector.addGoal(2, new MirageNearestAttackableTargetGoal(this, Player.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, SaltMage.class, false));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
