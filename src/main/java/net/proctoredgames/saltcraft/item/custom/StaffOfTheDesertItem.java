@@ -133,9 +133,6 @@ public class StaffOfTheDesertItem extends Item implements Vanishable {
     }
 
     public boolean hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
-        pStack.hurtAndBreak(1, pAttacker, (p_43414_) -> {
-            p_43414_.broadcastBreakEvent(EquipmentSlot.MAINHAND);
-        });
         if (pStack.hurt(1, pAttacker.getRandom(), pAttacker instanceof ServerPlayer ? (ServerPlayer) pAttacker : null)) {
             replaceWithUncharged(pAttacker, pStack);
         }

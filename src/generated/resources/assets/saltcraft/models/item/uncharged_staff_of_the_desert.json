@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "saltcraft:item/uncharged_staff_of_the_desert"
+  }
+}
