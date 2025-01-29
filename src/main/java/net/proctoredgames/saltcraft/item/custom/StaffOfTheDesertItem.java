@@ -43,6 +43,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.proctoredgames.saltcraft.entity.custom.Mirage;
+import net.proctoredgames.saltcraft.item.ModItems;
 import net.proctoredgames.saltcraft.util.SandTeleport;
 import org.joml.RayAabIntersection;
 
@@ -84,6 +85,9 @@ public class StaffOfTheDesertItem extends Item implements Vanishable {
                 SandTeleport.teleportTo(targetEntity, pEntityLiving);
                 targetEntity = null;
             }
+        }
+        if (pStack.hurt(1, pEntityLiving.getRandom(), pEntityLiving instanceof ServerPlayer ? (ServerPlayer) pEntityLiving : null)) {
+            replaceWithUncharged(pEntityLiving, pStack);
         }
     }
 
@@ -132,17 +136,18 @@ public class StaffOfTheDesertItem extends Item implements Vanishable {
         pStack.hurtAndBreak(1, pAttacker, (p_43414_) -> {
             p_43414_.broadcastBreakEvent(EquipmentSlot.MAINHAND);
         });
+        if (pStack.hurt(1, pAttacker.getRandom(), pAttacker instanceof ServerPlayer ? (ServerPlayer) pAttacker : null)) {
+            replaceWithUncharged(pAttacker, pStack);
+        }
         return true;
     }
 
-    public boolean mineBlock(ItemStack pStack, Level pLevel, BlockState pState, BlockPos pPos, LivingEntity pEntityLiving) {
-        if ((double)pState.getDestroySpeed(pLevel, pPos) != 0.0) {
-            pStack.hurtAndBreak(2, pEntityLiving, (p_43385_) -> {
-                p_43385_.broadcastBreakEvent(EquipmentSlot.MAINHAND);
-            });
+    private void replaceWithUncharged(LivingEntity entity, ItemStack stack) {
+        if (entity instanceof Player player) {
+            ItemStack newItem = new ItemStack(ModItems.UNCHARGED_STAFF_OF_THE_DESERT.get());
+            newItem.setTag(stack.getTag()); // Preserve NBT data if needed
+            player.setItemInHand(InteractionHand.MAIN_HAND, newItem);
         }
-
-        return true;
     }
 
     public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pEquipmentSlot) {

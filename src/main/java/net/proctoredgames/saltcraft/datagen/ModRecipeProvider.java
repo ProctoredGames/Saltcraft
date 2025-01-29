@@ -371,12 +371,25 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .save(pWriter);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STAFF_OF_THE_DESERT.get())
-                .pattern("  #")
+                .pattern(" # ")
                 .pattern(" S ")
-                .pattern("S  ")
+                .pattern(" S ")
                 .define('S', ModItems.ANCIENT_STAFF_FRAGMENT.get())
                 .define('#', ModItems.EYE_OF_THE_DESERT.get())
                 .unlockedBy(getHasName(ModItems.ANCIENT_STAFF_FRAGMENT.get()), has(ModItems.ANCIENT_STAFF_FRAGMENT.get()))
+                .unlockedBy(getHasName(ModItems.EYE_OF_THE_DESERT.get()), has(ModItems.EYE_OF_THE_DESERT.get()))
+                .save(pWriter);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.UNCHARGED_STAFF_OF_THE_DESERT.get())
+                .pattern("   ")
+                .pattern(" S ")
+                .pattern(" S ")
+                .define('S', ModItems.ANCIENT_STAFF_FRAGMENT.get())
+                .unlockedBy(getHasName(ModItems.ANCIENT_STAFF_FRAGMENT.get()), has(ModItems.ANCIENT_STAFF_FRAGMENT.get()))
+                .save(pWriter);
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.STAFF_OF_THE_DESERT.get(),1)
+                .requires(ModItems.UNCHARGED_STAFF_OF_THE_DESERT.get())
+                .requires(ModItems.EYE_OF_THE_DESERT.get())
+                .unlockedBy(getHasName(ModItems.UNCHARGED_STAFF_OF_THE_DESERT.get()), has(ModItems.UNCHARGED_STAFF_OF_THE_DESERT.get()))
                 .unlockedBy(getHasName(ModItems.EYE_OF_THE_DESERT.get()), has(ModItems.EYE_OF_THE_DESERT.get()))
                 .save(pWriter);
 

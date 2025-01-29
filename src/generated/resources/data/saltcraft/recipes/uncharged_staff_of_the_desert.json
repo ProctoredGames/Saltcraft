@@ -2,20 +2,17 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "saltcraft:eye_of_the_desert"
-    },
     "S": {
       "item": "saltcraft:ancient_staff_fragment"
     }
   },
   "pattern": [
-    " # ",
+    "   ",
     " S ",
     " S "
   ],
   "result": {
-    "item": "saltcraft:staff_of_the_desert"
+    "item": "saltcraft:uncharged_staff_of_the_desert"
   },
   "show_notification": true
 }

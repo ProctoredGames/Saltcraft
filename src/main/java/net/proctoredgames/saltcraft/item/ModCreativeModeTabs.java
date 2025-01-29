@@ -85,6 +85,7 @@ public class ModCreativeModeTabs {
 
                         pOutput.accept(ModItems.EYE_OF_THE_DESERT.get());
                         pOutput.accept(ModItems.ANCIENT_STAFF_FRAGMENT.get());
+                        pOutput.accept(ModItems.UNCHARGED_STAFF_OF_THE_DESERT.get());
                         pOutput.accept(ModItems.STAFF_OF_THE_DESERT.get());
 
                         pOutput.accept(ModItems.FLAMINGO_FEATHER.get());

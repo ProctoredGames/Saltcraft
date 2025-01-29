@@ -45,6 +45,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 
         simpleItem(ModItems.EYE_OF_THE_DESERT);
         simpleItem(ModItems.ANCIENT_STAFF_FRAGMENT);
+        simpleItem(ModItems.UNCHARGED_STAFF_OF_THE_DESERT);
 
         simpleItem(ModItems.ROCK_SALT_FOSSIL);
 

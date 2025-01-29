@@ -221,6 +221,11 @@ public class Jellyfish extends AbstractFish implements VariantHolder<Jellyfish.V
         return SoundEvents.TADPOLE_FLOP;
     }
 
+    @Override
+    public boolean shouldRenderAtSqrDistance(double pDistance) {
+        return pDistance < 512;
+    }
+
     private void usePlayerItem(Player pPlayer, ItemStack pStack) {
         if (!pPlayer.getAbilities().instabuild) {
             pStack.shrink(1);

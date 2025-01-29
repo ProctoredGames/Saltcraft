@@ -86,7 +86,9 @@ public class ModItems {
             () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
 
     public static final RegistryObject<Item> STAFF_OF_THE_DESERT = ITEMS.register("staff_of_the_desert",
-            () -> new StaffOfTheDesertItem(new Item.Properties().rarity(Rarity.EPIC).fireResistant()));
+            () -> new StaffOfTheDesertItem(new Item.Properties().rarity(Rarity.EPIC).fireResistant().durability(10)));
+    public static final RegistryObject<Item> UNCHARGED_STAFF_OF_THE_DESERT = ITEMS.register("uncharged_staff_of_the_desert",
+            () -> new Item(new Item.Properties().rarity(Rarity.RARE).fireResistant()));
 
     public static final RegistryObject<Item> THIRST_ICON_ITEM = ITEMS.register("z_thirst_icon_item",
             () -> new Item(new Item.Properties()));
