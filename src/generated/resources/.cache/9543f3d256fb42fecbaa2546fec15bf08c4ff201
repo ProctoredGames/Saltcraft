@@ -1,4 +1,4 @@
-// 1.20.1	2025-01-14T00:11:07.6777758	Item Models: saltcraft
+// 1.20.1	2025-01-28T20:27:43.7966786	Item Models: saltcraft
 abade38888047760db8782d2b0d6ccb62a472487 assets/saltcraft/models/item/ancient_staff_fragment.json
 ea6569b22e50f5635a0a4363a658d9036ffdeb30 assets/saltcraft/models/item/chiseled_rock_pink_salt_bricks.json
 b44e434ab0c52d376460eeb1087b0e2ae8ed38e0 assets/saltcraft/models/item/chiseled_rock_salt_bricks.json
@@ -52,4 +52,5 @@ fd217788d47f95a2e1d10fdd219e9433567470c8 assets/saltcraft/models/item/salted_pot
 5f0321bd951a07727b5daff1e08531347d7de750 assets/saltcraft/models/item/salt_water_bucket.json
 17d90dd93470311d2e5629eefb46200c56fe57a4 assets/saltcraft/models/item/spawning_plinth.json
 9b0f40baedcb0639177751300b8bde7b4c41af91 assets/saltcraft/models/item/summoning_plinth.json
+7d1d15e8eee358dc685def1daccc483a4890551f assets/saltcraft/models/item/uncharged_staff_of_the_desert.json
 f66ae9085aac0daeb76c905dc40676bee8ef13dc assets/saltcraft/models/item/white_flamingo_feather.json
