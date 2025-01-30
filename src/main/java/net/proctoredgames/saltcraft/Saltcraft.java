@@ -24,16 +24,14 @@ import net.proctoredgames.saltcraft.fluid.ModFluidTypes;
 import net.proctoredgames.saltcraft.fluid.ModFluids;
 import net.proctoredgames.saltcraft.item.ModCreativeModeTabs;
 import net.proctoredgames.saltcraft.item.ModItems;
+import net.proctoredgames.saltcraft.worldgen.biome.ModBiomes;
 import net.proctoredgames.saltcraft.networking.ModMessages;
 import net.proctoredgames.saltcraft.potion.ModPotions;
 import net.proctoredgames.saltcraft.util.ModItemProperties;
-import net.proctoredgames.saltcraft.worldgen.biome.ModTerrablender;
 import net.proctoredgames.saltcraft.worldgen.biome.surface.ModSurfaceRules;
 //import net.proctoredgames.saltcraft.worldgen.feature.ModFeatures;
 import net.proctoredgames.saltcraft.worldgen.feature.ModFeatures;
 import org.slf4j.Logger;
-import terrablender.api.SurfaceRuleManager;
-
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Saltcraft.MOD_ID)
@@ -64,7 +62,7 @@ public class Saltcraft
         ModEffects.register(modEventBus);
         ModPotions.register(modEventBus);
 
-        ModTerrablender.registerBiomes();
+        ModBiomes.register("salt_flat");
 
         modEventBus.addListener(this::commonSetup);
 
@@ -73,9 +71,7 @@ public class Saltcraft
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-        event.enqueueWork(() ->{
-            SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MOD_ID, ModSurfaceRules.makeRules());
-        });
+        // Register the biome provider
 
         ModMessages.register();
     }
