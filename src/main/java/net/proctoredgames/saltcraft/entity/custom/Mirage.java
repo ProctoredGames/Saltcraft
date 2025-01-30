@@ -312,7 +312,7 @@ public class Mirage extends Monster{
 
     @Override
     public boolean canBeSeenAsEnemy() {
-        return false;
+        return this.getLastHurtMob() instanceof SaltMage;
     }
 
     @Override
