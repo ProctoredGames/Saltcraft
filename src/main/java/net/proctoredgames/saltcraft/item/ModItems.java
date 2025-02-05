@@ -182,6 +182,11 @@ public class ModItems {
     public static final RegistryObject<Item> UNCHARGED_STAFF_OF_THE_DESERT = ITEMS.register("uncharged_staff_of_the_desert",
             () -> new Item(new Item.Properties().rarity(Rarity.RARE).fireResistant()));
 
+    public static final RegistryObject<Item> SALTED_CARROT_ON_A_STICK = ITEMS.register("salted_carrot_on_a_stick",
+            () -> new FoodOnAStickItem((new Item.Properties()).durability(25), EntityType.PIG, 7));
+    public static final RegistryObject<Item> PINK_SALTED_CARROT_ON_A_STICK = ITEMS.register("pink_salted_carrot_on_a_stick",
+            () -> new FoodOnAStickItem((new Item.Properties()).durability(25), EntityType.PIG, 7));
+
     public static final RegistryObject<Item> THIRST_ICON_ITEM = ITEMS.register("z_thirst_icon_item",
             () -> new Item(new Item.Properties()));
 

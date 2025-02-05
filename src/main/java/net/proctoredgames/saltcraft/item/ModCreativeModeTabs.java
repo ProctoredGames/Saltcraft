@@ -106,6 +106,9 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModItems.FLAMINGO_SPAWN_EGG.get());
                         pOutput.accept(ModItems.MIRAGE_SPAWN_EGG.get());
 
+                        pOutput.accept(ModItems.SALTED_CARROT_ON_A_STICK.get());
+                        pOutput.accept(ModItems.PINK_SALTED_CARROT_ON_A_STICK.get());
+
                         // Vegetables
                         pOutput.accept(ModItems.SALTED_BEETROOT.get());
                         pOutput.accept(ModItems.PINK_SALTED_BEETROOT.get());
