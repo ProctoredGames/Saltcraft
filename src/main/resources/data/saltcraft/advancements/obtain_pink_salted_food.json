@@ -1,14 +1,13 @@
 {
   "parent": "saltcraft:obtain_pink_salt",
   "criteria": {
-    "pink_salted_potato": {
+    "get_pink_salted_food": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
               "saltcraft:pink_salted_potato",
-              "saltcraft:pink_salted_poisonous_potato",
               "saltcraft:pink_salted_baked_potato"
             ]
           }
@@ -33,7 +32,7 @@
   },
   "requirements": [
     [
-      "pink_salted_potato"
+      "get_pink_salted_food"
     ]
   ],
   "sends_telemetry_event": true

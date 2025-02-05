@@ -1,6 +1,0 @@
-{
-  "type": "forge:add_features",
-  "biomes": "saltcraft:salt_flat",
-  "features": "saltcraft:salt_lake_placed",
-  "step": "lakes"
-}

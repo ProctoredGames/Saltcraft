@@ -33,6 +33,7 @@ public class ModItems {
     public static final RegistryObject<Item> WHITE_FLAMINGO_FEATHER = ITEMS.register("white_flamingo_feather",
             () -> new Item(new Item.Properties()));
 
+    // Vegetables
     public static final RegistryObject<Item> SALTED_POTATO = ITEMS.register("salted_potato",
             () -> new Item(new Item.Properties().food(ModFoods.SALTED_POTATO)));
     public static final RegistryObject<Item> SALTED_BAKED_POTATO = ITEMS.register("salted_baked_potato",
@@ -42,10 +43,96 @@ public class ModItems {
     public static final RegistryObject<Item> PINK_SALTED_BAKED_POTATO = ITEMS.register("pink_salted_baked_potato",
             () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_BAKED_POTATO)));
 
+    public static final RegistryObject<Item> SALTED_BEETROOT = ITEMS.register("salted_beetroot",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_BEETROOT)));
+    public static final RegistryObject<Item> PINK_SALTED_BEETROOT = ITEMS.register("pink_salted_beetroot",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_BEETROOT)));
+
+    public static final RegistryObject<Item> SALTED_CARROT = ITEMS.register("salted_carrot",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_CARROT)));
+    public static final RegistryObject<Item> PINK_SALTED_CARROT = ITEMS.register("pink_salted_carrot",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_CARROT)));
+
+    // Meats & Fish
+    public static final RegistryObject<Item> SALTED_BEEF = ITEMS.register("salted_beef",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_BEEF)));
+    public static final RegistryObject<Item> PINK_SALTED_BEEF = ITEMS.register("pink_salted_beef",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_BEEF)));
+
+    public static final RegistryObject<Item> SALTED_CHICKEN = ITEMS.register("salted_chicken",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_CHICKEN)));
+    public static final RegistryObject<Item> PINK_SALTED_CHICKEN = ITEMS.register("pink_salted_chicken",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_CHICKEN)));
+
+    public static final RegistryObject<Item> SALTED_COD = ITEMS.register("salted_cod",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_COD)));
+    public static final RegistryObject<Item> PINK_SALTED_COD = ITEMS.register("pink_salted_cod",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_COD)));
+
+    public static final RegistryObject<Item> SALTED_COOKED_BEEF = ITEMS.register("salted_cooked_beef",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_COOKED_BEEF)));
+    public static final RegistryObject<Item> PINK_SALTED_COOKED_BEEF = ITEMS.register("pink_salted_cooked_beef",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_COOKED_BEEF)));
+
+    public static final RegistryObject<Item> SALTED_COOKED_CHICKEN = ITEMS.register("salted_cooked_chicken",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_COOKED_CHICKEN)));
+    public static final RegistryObject<Item> PINK_SALTED_COOKED_CHICKEN = ITEMS.register("pink_salted_cooked_chicken",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_COOKED_CHICKEN)));
+
+    public static final RegistryObject<Item> SALTED_COOKED_COD = ITEMS.register("salted_cooked_cod",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_COOKED_COD)));
+    public static final RegistryObject<Item> PINK_SALTED_COOKED_COD = ITEMS.register("pink_salted_cooked_cod",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_COOKED_COD)));
+
+    public static final RegistryObject<Item> SALTED_COOKED_MUTTON = ITEMS.register("salted_cooked_mutton",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_COOKED_MUTTON)));
+    public static final RegistryObject<Item> PINK_SALTED_COOKED_MUTTON = ITEMS.register("pink_salted_cooked_mutton",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_COOKED_MUTTON)));
+
+    public static final RegistryObject<Item> SALTED_COOKED_PORKCHOP = ITEMS.register("salted_cooked_porkchop",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_COOKED_PORKCHOP)));
+    public static final RegistryObject<Item> PINK_SALTED_COOKED_PORKCHOP = ITEMS.register("pink_salted_cooked_porkchop",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_COOKED_PORKCHOP)));
+
+    public static final RegistryObject<Item> SALTED_COOKED_RABBIT = ITEMS.register("salted_cooked_rabbit",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_COOKED_RABBIT)));
+    public static final RegistryObject<Item> PINK_SALTED_COOKED_RABBIT = ITEMS.register("pink_salted_cooked_rabbit",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_COOKED_RABBIT)));
+
+    public static final RegistryObject<Item> SALTED_COOKED_SALMON = ITEMS.register("salted_cooked_salmon",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_COOKED_SALMON)));
+    public static final RegistryObject<Item> PINK_SALTED_COOKED_SALMON = ITEMS.register("pink_salted_cooked_salmon",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_COOKED_SALMON)));
+
+    public static final RegistryObject<Item> SALTED_MUTTON = ITEMS.register("salted_mutton",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_MUTTON)));
+    public static final RegistryObject<Item> PINK_SALTED_MUTTON = ITEMS.register("pink_salted_mutton",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_MUTTON)));
+
+    public static final RegistryObject<Item> SALTED_PORKCHOP = ITEMS.register("salted_porkchop",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_PORKCHOP)));
+    public static final RegistryObject<Item> PINK_SALTED_PORKCHOP = ITEMS.register("pink_salted_porkchop",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_PORKCHOP)));
+
+    public static final RegistryObject<Item> SALTED_PUFFERFISH = ITEMS.register("salted_pufferfish",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_PUFFERFISH)));
+    public static final RegistryObject<Item> PINK_SALTED_PUFFERFISH = ITEMS.register("pink_salted_pufferfish",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_PUFFERFISH)));
+
+    public static final RegistryObject<Item> SALTED_RABBIT = ITEMS.register("salted_rabbit",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_RABBIT)));
+    public static final RegistryObject<Item> PINK_SALTED_RABBIT = ITEMS.register("pink_salted_rabbit",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_RABBIT)));
+
+    public static final RegistryObject<Item> SALTED_SALMON = ITEMS.register("salted_salmon",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_SALMON)));
+    public static final RegistryObject<Item> PINK_SALTED_SALMON = ITEMS.register("pink_salted_salmon",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_SALMON)));
+
     public static final RegistryObject<Item> SALT_WATER_BUCKET = ITEMS.register("salt_water_bucket",
-            () -> new BucketItem(Fluids.WATER, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+            () -> new BucketItem(ModFluids.SOURCE_SALT_WATER, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
     public static final RegistryObject<Item> PINK_SALT_WATER_BUCKET = ITEMS.register("pink_salt_water_bucket",
-            () -> new BucketItem(Fluids.WATER, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+            () -> new BucketItem(ModFluids.SOURCE_PINK_SALT_WATER, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
     public static final RegistryObject<Item> JELLYFISH_BUCKET = ITEMS.register(
             "jellyfish_bucket",
             () -> new MobBucketItem(

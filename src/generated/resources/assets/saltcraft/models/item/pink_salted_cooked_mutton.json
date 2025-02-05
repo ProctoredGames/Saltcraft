@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "saltcraft:item/pink_salted_cooked_mutton"
+  }
+}

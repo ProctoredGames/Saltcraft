@@ -94,12 +94,6 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModItems.SALT_WATER_BUCKET.get());
                         pOutput.accept(ModItems.PINK_SALT_WATER_BUCKET.get());
 
-                        pOutput.accept(ModItems.SALTED_POTATO.get());
-                        pOutput.accept(ModItems.SALTED_BAKED_POTATO.get());
-
-                        pOutput.accept(ModItems.PINK_SALTED_POTATO.get());
-                        pOutput.accept(ModItems.PINK_SALTED_BAKED_POTATO.get());
-
                         pOutput.accept(ModItems.JELLYFISH_BUCKET.get());
                         pOutput.accept(ModItems.OIL_BUCKET.get());
 
@@ -111,6 +105,57 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModItems.JELLYFISH_SPAWN_EGG.get());
                         pOutput.accept(ModItems.FLAMINGO_SPAWN_EGG.get());
                         pOutput.accept(ModItems.MIRAGE_SPAWN_EGG.get());
+
+                        // Vegetables
+                        pOutput.accept(ModItems.SALTED_BEETROOT.get());
+                        pOutput.accept(ModItems.PINK_SALTED_BEETROOT.get());
+
+                        pOutput.accept(ModItems.SALTED_CARROT.get());
+                        pOutput.accept(ModItems.PINK_SALTED_CARROT.get());
+
+                        pOutput.accept(ModItems.SALTED_POTATO.get());
+                        pOutput.accept(ModItems.PINK_SALTED_POTATO.get());
+                        pOutput.accept(ModItems.SALTED_BAKED_POTATO.get());
+                        pOutput.accept(ModItems.PINK_SALTED_BAKED_POTATO.get());
+
+                        // Meats & Fish
+                        pOutput.accept(ModItems.SALTED_BEEF.get());
+                        pOutput.accept(ModItems.PINK_SALTED_BEEF.get());
+                        pOutput.accept(ModItems.SALTED_COOKED_BEEF.get());
+                        pOutput.accept(ModItems.PINK_SALTED_COOKED_BEEF.get());
+
+                        pOutput.accept(ModItems.SALTED_CHICKEN.get());
+                        pOutput.accept(ModItems.PINK_SALTED_CHICKEN.get());
+                        pOutput.accept(ModItems.SALTED_COOKED_CHICKEN.get());
+                        pOutput.accept(ModItems.PINK_SALTED_COOKED_CHICKEN.get());
+
+                        pOutput.accept(ModItems.SALTED_COD.get());
+                        pOutput.accept(ModItems.PINK_SALTED_COD.get());
+                        pOutput.accept(ModItems.SALTED_COOKED_COD.get());
+                        pOutput.accept(ModItems.PINK_SALTED_COOKED_COD.get());
+
+                        pOutput.accept(ModItems.SALTED_MUTTON.get());
+                        pOutput.accept(ModItems.PINK_SALTED_MUTTON.get());
+                        pOutput.accept(ModItems.SALTED_COOKED_MUTTON.get());
+                        pOutput.accept(ModItems.PINK_SALTED_COOKED_MUTTON.get());
+
+                        pOutput.accept(ModItems.SALTED_PORKCHOP.get());
+                        pOutput.accept(ModItems.PINK_SALTED_COOKED_PORKCHOP.get());
+                        pOutput.accept(ModItems.SALTED_COOKED_PORKCHOP.get());
+                        pOutput.accept(ModItems.PINK_SALTED_COOKED_PORKCHOP.get());
+
+                        pOutput.accept(ModItems.SALTED_PUFFERFISH.get());
+                        pOutput.accept(ModItems.PINK_SALTED_PUFFERFISH.get());
+
+                        pOutput.accept(ModItems.SALTED_RABBIT.get());
+                        pOutput.accept(ModItems.PINK_SALTED_RABBIT.get());
+                        pOutput.accept(ModItems.SALTED_COOKED_RABBIT.get());
+                        pOutput.accept(ModItems.PINK_SALTED_COOKED_RABBIT.get());
+
+                        pOutput.accept(ModItems.SALTED_SALMON.get());
+                        pOutput.accept(ModItems.PINK_SALTED_SALMON.get());
+                        pOutput.accept(ModItems.SALTED_COOKED_SALMON.get());
+                        pOutput.accept(ModItems.PINK_SALTED_COOKED_SALMON.get());
 
                     })
                     .build());

@@ -25,8 +25,49 @@ public class ModItemModelProvider extends ItemModelProvider {
         simpleItem(ModItems.SALT);
         simpleItem(ModItems.PINK_SALT);
 
+        // Potato variants (existing)
         simpleItem(ModItems.SALTED_POTATO);
         simpleItem(ModItems.SALTED_BAKED_POTATO);
+        simpleItem(ModItems.PINK_SALTED_POTATO);
+        simpleItem(ModItems.PINK_SALTED_BAKED_POTATO);
+
+        // New vegetable registrations
+        simpleItem(ModItems.SALTED_BEETROOT);
+        simpleItem(ModItems.PINK_SALTED_BEETROOT);
+        simpleItem(ModItems.SALTED_CARROT);
+        simpleItem(ModItems.PINK_SALTED_CARROT);
+
+        // Meat & Fish registrations
+        simpleItem(ModItems.SALTED_BEEF);
+        simpleItem(ModItems.PINK_SALTED_BEEF);
+        simpleItem(ModItems.SALTED_CHICKEN);
+        simpleItem(ModItems.PINK_SALTED_CHICKEN);
+        simpleItem(ModItems.SALTED_COD);
+        simpleItem(ModItems.PINK_SALTED_COD);
+        simpleItem(ModItems.SALTED_COOKED_BEEF);
+        simpleItem(ModItems.PINK_SALTED_COOKED_BEEF);
+        simpleItem(ModItems.SALTED_COOKED_CHICKEN);
+        simpleItem(ModItems.PINK_SALTED_COOKED_CHICKEN);
+        simpleItem(ModItems.SALTED_COOKED_COD);
+        simpleItem(ModItems.PINK_SALTED_COOKED_COD);
+        simpleItem(ModItems.SALTED_COOKED_MUTTON);
+        simpleItem(ModItems.PINK_SALTED_COOKED_MUTTON);
+        simpleItem(ModItems.SALTED_COOKED_PORKCHOP);
+        simpleItem(ModItems.PINK_SALTED_COOKED_PORKCHOP);
+        simpleItem(ModItems.SALTED_COOKED_RABBIT);
+        simpleItem(ModItems.PINK_SALTED_COOKED_RABBIT);
+        simpleItem(ModItems.SALTED_COOKED_SALMON);
+        simpleItem(ModItems.PINK_SALTED_COOKED_SALMON);
+        simpleItem(ModItems.SALTED_MUTTON);
+        simpleItem(ModItems.PINK_SALTED_MUTTON);
+        simpleItem(ModItems.SALTED_PORKCHOP);
+        simpleItem(ModItems.PINK_SALTED_PORKCHOP);
+        simpleItem(ModItems.SALTED_PUFFERFISH);
+        simpleItem(ModItems.PINK_SALTED_PUFFERFISH);
+        simpleItem(ModItems.SALTED_RABBIT);
+        simpleItem(ModItems.PINK_SALTED_RABBIT);
+        simpleItem(ModItems.SALTED_SALMON);
+        simpleItem(ModItems.PINK_SALTED_SALMON);
 
         simpleItem(ModItems.PINK_SALTED_POTATO);
         simpleItem(ModItems.PINK_SALTED_BAKED_POTATO);
