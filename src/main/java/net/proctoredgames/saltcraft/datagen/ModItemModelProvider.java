@@ -86,6 +86,9 @@ public class ModItemModelProvider extends ItemModelProvider {
         simpleItem(ModItems.OIL_CAN);
         simpleItem(ModItems.FILLED_OIL_CAN);
 
+        simpleItem(ModItems.SALTED_CARROT_ON_A_STICK);
+        simpleItem(ModItems.PINK_SALTED_CARROT_ON_A_STICK);
+
         simpleItem(ModItems.EYE_OF_THE_DESERT);
         simpleItem(ModItems.ANCIENT_STAFF_FRAGMENT);
         simpleItem(ModItems.UNCHARGED_STAFF_OF_THE_DESERT);
