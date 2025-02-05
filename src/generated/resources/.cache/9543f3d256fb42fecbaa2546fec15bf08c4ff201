@@ -1,4 +1,4 @@
-// 1.20.1	2025-02-04T20:05:34.4423623	Item Models: saltcraft
+// 1.20.1	2025-02-04T20:25:04.6766286	Item Models: saltcraft
 abade38888047760db8782d2b0d6ccb62a472487 assets/saltcraft/models/item/ancient_staff_fragment.json
 ea6569b22e50f5635a0a4363a658d9036ffdeb30 assets/saltcraft/models/item/chiseled_rock_pink_salt_bricks.json
 b44e434ab0c52d376460eeb1087b0e2ae8ed38e0 assets/saltcraft/models/item/chiseled_rock_salt_bricks.json
@@ -29,6 +29,7 @@ ea43cce4af51e6bda4e5db8418e30a317611bdad assets/saltcraft/models/item/pink_salt.
 23eabef0ebf2953c3313f4b30efcb93bcb535fcc assets/saltcraft/models/item/pink_salted_beef.json
 488a168f8eed042eac453d1bcc3735fa9c827dac assets/saltcraft/models/item/pink_salted_beetroot.json
 a9de294b51898d5f806ba704114c148747bd9c33 assets/saltcraft/models/item/pink_salted_carrot.json
+4bee006511dc55d00d41d4144770dcbeb22bda75 assets/saltcraft/models/item/pink_salted_carrot_on_a_stick.json
 a7535b7a12b573b48d148807fcba5322d72d6ff1 assets/saltcraft/models/item/pink_salted_chicken.json
 794f69faf640a7253aa7a5949e491d31ccf7fb59 assets/saltcraft/models/item/pink_salted_cod.json
 57228714b8e3f65b7492994327334f752bc52d34 assets/saltcraft/models/item/pink_salted_cooked_beef.json
@@ -67,6 +68,7 @@ f6c280788e8c6384e08836c533d44f5b17582188 assets/saltcraft/models/item/salted_bak
 7593480d06a74c55db366c58723981563f3cd4a5 assets/saltcraft/models/item/salted_beef.json
 5afd028f878d306996f5bda3959df81d8e15eeb7 assets/saltcraft/models/item/salted_beetroot.json
 9cb553e7013d7a30e1d0571043b143478a956ed0 assets/saltcraft/models/item/salted_carrot.json
+ace556aebbcc5495b042bdf3c66767d2ed89b605 assets/saltcraft/models/item/salted_carrot_on_a_stick.json
 f95efee30e9c2730004e57aca772344b1e90a776 assets/saltcraft/models/item/salted_chicken.json
 c98d113df9d56da69d9c5c5e9a10f86a631c76ea assets/saltcraft/models/item/salted_cod.json
 709df2594edd6b57fabd37c82682f74341d95477 assets/saltcraft/models/item/salted_cooked_beef.json
