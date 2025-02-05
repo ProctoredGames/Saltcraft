@@ -140,7 +140,7 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModItems.PINK_SALTED_COOKED_MUTTON.get());
 
                         pOutput.accept(ModItems.SALTED_PORKCHOP.get());
-                        pOutput.accept(ModItems.PINK_SALTED_COOKED_PORKCHOP.get());
+                        pOutput.accept(ModItems.PINK_SALTED_PORKCHOP.get());
                         pOutput.accept(ModItems.SALTED_COOKED_PORKCHOP.get());
                         pOutput.accept(ModItems.PINK_SALTED_COOKED_PORKCHOP.get());
 
@@ -156,6 +156,9 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModItems.PINK_SALTED_SALMON.get());
                         pOutput.accept(ModItems.SALTED_COOKED_SALMON.get());
                         pOutput.accept(ModItems.PINK_SALTED_COOKED_SALMON.get());
+
+                        pOutput.accept(ModItems.SALTED_TROPICAL_FISH.get());
+                        pOutput.accept(ModItems.PINK_SALTED_TROPICAL_FISH.get());
 
                     })
                     .build());

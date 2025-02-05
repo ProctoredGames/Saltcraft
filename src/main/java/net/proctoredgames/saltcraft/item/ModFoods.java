@@ -99,4 +99,8 @@ public class ModFoods {
     public static final FoodProperties SALTED_SALMON = new FoodProperties.Builder().nutrition(3).saturationMod(0.1F).build();
     public static final FoodProperties PINK_SALTED_SALMON = new FoodProperties.Builder().nutrition(5).saturationMod(0.1F)
             .effect(() -> new MobEffectInstance(MobEffects.REGENERATION, 600), 1.0f).build();
+
+    public static final FoodProperties SALTED_TROPICAL_FISH = new FoodProperties.Builder().nutrition(3).saturationMod(0.1F).build();
+    public static final FoodProperties PINK_SALTED_TROPICAL_FISH = new FoodProperties.Builder().nutrition(5).saturationMod(0.1F)
+            .effect(() -> new MobEffectInstance(MobEffects.REGENERATION, 600), 1.0f).build();
 }

@@ -129,6 +129,11 @@ public class ModItems {
     public static final RegistryObject<Item> PINK_SALTED_SALMON = ITEMS.register("pink_salted_salmon",
             () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_SALMON)));
 
+    public static final RegistryObject<Item> SALTED_TROPICAL_FISH = ITEMS.register("salted_tropical_fish",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_TROPICAL_FISH)));
+    public static final RegistryObject<Item> PINK_SALTED_TROPICAL_FISH = ITEMS.register("pink_salted_tropical_fish",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_TROPICAL_FISH)));
+
     public static final RegistryObject<Item> SALT_WATER_BUCKET = ITEMS.register("salt_water_bucket",
             () -> new BucketItem(ModFluids.SOURCE_SALT_WATER, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
     public static final RegistryObject<Item> PINK_SALT_WATER_BUCKET = ITEMS.register("pink_salt_water_bucket",
