@@ -134,6 +134,16 @@ public class ModItems {
     public static final RegistryObject<Item> PINK_SALTED_TROPICAL_FISH = ITEMS.register("pink_salted_tropical_fish",
             () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_TROPICAL_FISH)));
 
+    public static final RegistryObject<Item> SALTED_KELP = ITEMS.register("salted_kelp",
+            () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> PINK_SALTED_KELP = ITEMS.register("pink_salted_kelp",
+            () -> new Item(new Item.Properties()));
+
+    public static final RegistryObject<Item> SALTED_DRIED_KELP = ITEMS.register("salted_dried_kelp",
+            () -> new Item(new Item.Properties().food(ModFoods.SALTED_DRIED_KELP)));
+    public static final RegistryObject<Item> PINK_SALTED_DRIED_KELP = ITEMS.register("pink_salted_dried_kelp",
+            () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_DRIED_KELP)));
+
     public static final RegistryObject<Item> SALT_WATER_BUCKET = ITEMS.register("salt_water_bucket",
             () -> new BucketItem(Fluids.WATER, (new Item.Properties()).craftRemainder(Items.BUCKET).stacksTo(1)));
     public static final RegistryObject<Item> PINK_SALT_WATER_BUCKET = ITEMS.register("pink_salt_water_bucket",

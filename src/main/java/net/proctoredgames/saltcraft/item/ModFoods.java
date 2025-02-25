@@ -103,4 +103,15 @@ public class ModFoods {
     public static final FoodProperties SALTED_TROPICAL_FISH = new FoodProperties.Builder().nutrition(3).saturationMod(0.1F).build();
     public static final FoodProperties PINK_SALTED_TROPICAL_FISH = new FoodProperties.Builder().nutrition(5).saturationMod(0.1F)
             .effect(() -> new MobEffectInstance(MobEffects.REGENERATION, 600), 1.0f).build();
+
+    public static final FoodProperties SALTED_DRIED_KELP = new FoodProperties.Builder()
+            .nutrition(2)  // Vanilla (1) +1 as with other salted foods
+            .saturationMod(0.3F)  // Matches vanilla dried kelp's saturation
+            .build();
+
+    public static final FoodProperties PINK_SALTED_DRIED_KELP = new FoodProperties.Builder()
+            .nutrition(4)  // Vanilla (1) +3 as with other pink salted foods
+            .saturationMod(0.3F)  // Same saturation as base
+            .effect(() -> new MobEffectInstance(MobEffects.REGENERATION, 600), 1.0f)
+            .build();
 }

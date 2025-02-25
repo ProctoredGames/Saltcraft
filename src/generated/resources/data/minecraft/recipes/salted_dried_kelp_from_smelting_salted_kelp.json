@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "cookingtime": 200,
+  "experience": 0.35,
+  "ingredient": {
+    "item": "saltcraft:salted_kelp"
+  },
+  "result": "saltcraft:salted_dried_kelp"
+}

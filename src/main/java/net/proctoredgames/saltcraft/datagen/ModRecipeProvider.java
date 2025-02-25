@@ -81,6 +81,11 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 ModItems.PINK_SALTED_SALMON.get(), ModItems.PINK_SALTED_COOKED_SALMON.get(),
                 pWriter
         );
+        addSmeltingPair(
+                ModItems.SALTED_KELP.get(), ModItems.SALTED_DRIED_KELP.get(),
+                ModItems.PINK_SALTED_KELP.get(), ModItems.PINK_SALTED_DRIED_KELP.get(),
+                pWriter
+        );
 
         stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.CLUMPED_SALT_SLAB.get(), ModBlocks.CLUMPED_SALT_BLOCK.get(), 2);
         stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.CLUMPED_SALT_STAIRS.get(), ModBlocks.CLUMPED_SALT_BLOCK.get());
@@ -380,6 +385,10 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         addRecipePair(Items.COOKED_PORKCHOP, ModItems.SALTED_COOKED_PORKCHOP.get(), ModItems.PINK_SALTED_COOKED_PORKCHOP.get(), pWriter);
         addRecipePair(Items.COOKED_RABBIT, ModItems.SALTED_COOKED_RABBIT.get(), ModItems.PINK_SALTED_COOKED_RABBIT.get(), pWriter);
         addRecipePair(Items.COOKED_SALMON, ModItems.SALTED_COOKED_SALMON.get(), ModItems.PINK_SALTED_COOKED_SALMON.get(), pWriter);
+
+        addRecipePair(Items.KELP, ModItems.SALTED_KELP.get(), ModItems.PINK_SALTED_KELP.get(), pWriter);
+        addRecipePair(Items.DRIED_KELP, ModItems.SALTED_DRIED_KELP.get(), ModItems.PINK_SALTED_DRIED_KELP.get(), pWriter);
+
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SALT_WATER_BUCKET.get())
                 .requires(ModItems.SALT.get())

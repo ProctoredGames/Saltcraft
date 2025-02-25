@@ -163,6 +163,11 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModItems.SALTED_TROPICAL_FISH.get());
                         pOutput.accept(ModItems.PINK_SALTED_TROPICAL_FISH.get());
 
+                        pOutput.accept(ModItems.SALTED_KELP.get());
+                        pOutput.accept(ModItems.PINK_SALTED_KELP.get());
+                        pOutput.accept(ModItems.SALTED_DRIED_KELP.get());
+                        pOutput.accept(ModItems.PINK_SALTED_DRIED_KELP.get());
+
                     })
                     .build());
 

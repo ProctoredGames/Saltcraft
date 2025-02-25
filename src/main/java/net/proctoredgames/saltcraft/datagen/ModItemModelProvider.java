@@ -71,6 +71,11 @@ public class ModItemModelProvider extends ItemModelProvider {
         simpleItem(ModItems.SALTED_TROPICAL_FISH);
         simpleItem(ModItems.PINK_SALTED_TROPICAL_FISH);
 
+        simpleItem(ModItems.SALTED_KELP);
+        simpleItem(ModItems.PINK_SALTED_KELP);
+        simpleItem(ModItems.SALTED_DRIED_KELP);
+        simpleItem(ModItems.PINK_SALTED_DRIED_KELP);
+
         simpleItem(ModItems.PINK_SALTED_POTATO);
         simpleItem(ModItems.PINK_SALTED_BAKED_POTATO);
 

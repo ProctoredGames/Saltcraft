@@ -1,4 +1,4 @@
-// 1.20.1	2025-02-04T20:25:04.6766286	Item Models: saltcraft
+// 1.20.1	2025-02-24T21:02:32.2677728	Item Models: saltcraft
 abade38888047760db8782d2b0d6ccb62a472487 assets/saltcraft/models/item/ancient_staff_fragment.json
 ea6569b22e50f5635a0a4363a658d9036ffdeb30 assets/saltcraft/models/item/chiseled_rock_pink_salt_bricks.json
 b44e434ab0c52d376460eeb1087b0e2ae8ed38e0 assets/saltcraft/models/item/chiseled_rock_salt_bricks.json
@@ -39,6 +39,8 @@ a7535b7a12b573b48d148807fcba5322d72d6ff1 assets/saltcraft/models/item/pink_salte
 b11070b61d08d77fdb53f25bf9a4dec68b3b8527 assets/saltcraft/models/item/pink_salted_cooked_porkchop.json
 fcfd6775a2f6ec74cc9f5f79d20bb8c69d483450 assets/saltcraft/models/item/pink_salted_cooked_rabbit.json
 1d7ce313846224e8684277e65ae89bab795b2109 assets/saltcraft/models/item/pink_salted_cooked_salmon.json
+11f8f953cfd0dc16616b7cb58e207650fa6ec73f assets/saltcraft/models/item/pink_salted_dried_kelp.json
+bb78d57f6e46c9d9fc92804d91c462a7836037bc assets/saltcraft/models/item/pink_salted_kelp.json
 ac0117d4d62293677a47e7c507df718d2be7a407 assets/saltcraft/models/item/pink_salted_mutton.json
 aee5492e83e029b7855b0f3a364c3579e886ff56 assets/saltcraft/models/item/pink_salted_porkchop.json
 e5fd6c373f3dc0284d79162b2d67ccd4d58bc4c2 assets/saltcraft/models/item/pink_salted_potato.json
@@ -78,6 +80,8 @@ fe65299482bf0b2c266bf4f0b5c1875715c3933e assets/saltcraft/models/item/salted_coo
 6b7f668aa8495b359ed6133ef81bc69b8ca1e16a assets/saltcraft/models/item/salted_cooked_porkchop.json
 64638308ec2b682f99fbb4a8ed44de794b9d0113 assets/saltcraft/models/item/salted_cooked_rabbit.json
 7fa56a50182b8c7c366f4c2e3fda8bcc56936edf assets/saltcraft/models/item/salted_cooked_salmon.json
+49f268aee125c8456731beef7cc5286851b7a78b assets/saltcraft/models/item/salted_dried_kelp.json
+55b39c0ff2abb4043e1b4efc6aed82d3d20865b4 assets/saltcraft/models/item/salted_kelp.json
 c384e33d0e17f2a51d7ead1386e4efc06b0a3367 assets/saltcraft/models/item/salted_mutton.json
 c188ea82104e60d42278fd98b880f3e0ce5166fd assets/saltcraft/models/item/salted_porkchop.json
 fd217788d47f95a2e1d10fdd219e9433567470c8 assets/saltcraft/models/item/salted_potato.json
