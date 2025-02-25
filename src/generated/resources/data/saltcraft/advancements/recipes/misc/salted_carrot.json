@@ -1,0 +1,48 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_carrot": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:carrot"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_salt": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "saltcraft:salt"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "saltcraft:salted_carrot"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_salt",
+      "has_carrot",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "saltcraft:salted_carrot"
+    ]
+  },
+  "sends_telemetry_event": false
+}

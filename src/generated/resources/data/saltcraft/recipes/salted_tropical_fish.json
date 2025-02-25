@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "saltcraft:salt"
+    },
+    {
+      "item": "minecraft:tropical_fish"
+    }
+  ],
+  "result": {
+    "item": "saltcraft:salted_tropical_fish"
+  }
+}

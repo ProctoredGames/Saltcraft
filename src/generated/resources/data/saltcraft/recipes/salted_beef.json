@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "saltcraft:salt"
+    },
+    {
+      "item": "minecraft:beef"
+    }
+  ],
+  "result": {
+    "item": "saltcraft:salted_beef"
+  }
+}

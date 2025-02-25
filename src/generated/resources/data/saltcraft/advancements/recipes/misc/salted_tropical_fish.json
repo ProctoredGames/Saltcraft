@@ -1,0 +1,48 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_salt": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "saltcraft:salt"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "saltcraft:salted_tropical_fish"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tropical_fish": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:tropical_fish"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_salt",
+      "has_tropical_fish",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "saltcraft:salted_tropical_fish"
+    ]
+  },
+  "sends_telemetry_event": false
+}

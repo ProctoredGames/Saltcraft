@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "saltcraft:pink_salt"
+    },
+    {
+      "item": "minecraft:cooked_beef"
+    }
+  ],
+  "result": {
+    "item": "saltcraft:pink_salted_cooked_beef"
+  }
+}
