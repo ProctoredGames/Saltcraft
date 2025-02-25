@@ -53,7 +53,6 @@ public class Jellyfish extends AbstractFish implements VariantHolder<Jellyfish.V
     private static final EntityDataAccessor<Integer> DATA_VARIANT_ID;
 
     private static final EntityDataAccessor<Boolean> FROM_BUCKET;
-    private static final Predicate<LivingEntity> SCARY_MOB;
     static final TargetingConditions targetingConditions;
 
     public Jellyfish(EntityType<? extends Jellyfish> pEntityType, Level pLevel) {
@@ -99,6 +98,9 @@ public class Jellyfish extends AbstractFish implements VariantHolder<Jellyfish.V
     public final AnimationState idleAnimationState = new AnimationState();
     private int idleAnimationTimeout = 0;
 
+    public boolean addEffect(MobEffectInstance pEffectInstance, @javax.annotation.Nullable Entity pEntity) {
+        return pEffectInstance.getEffect() != MobEffects.POISON;
+    }
 
     @Override
     public void tick() {
@@ -140,15 +142,16 @@ public class Jellyfish extends AbstractFish implements VariantHolder<Jellyfish.V
     public void aiStep() {
         super.aiStep();
         if (this.isAlive()) {
+            //gets the entities
             List<Mob> $$0 = this.level().getEntitiesOfClass(Mob.class, this.getBoundingBox().inflate(0.3), (p_149013_) -> {
                 return targetingConditions.test(this, p_149013_);
             });
             Iterator var2 = $$0.iterator();
 
+            //tries to sting the entities
             while(var2.hasNext()) {
                 Mob $$1 = (Mob)var2.next();
                 if ($$1.isAlive()) {
-                    //the jellyfish stings SCARY_MOB mobs. That means everything except for creative mode players
                     this.touch($$1);
                 }
             }
@@ -240,14 +243,7 @@ public class Jellyfish extends AbstractFish implements VariantHolder<Jellyfish.V
 
     static {
         FROM_BUCKET = SynchedEntityData.defineId(Jellyfish.class, EntityDataSerializers.BOOLEAN);
-        SCARY_MOB = (p_289442_) -> {
-            if (p_289442_ instanceof Player && ((Player)p_289442_).isCreative()) {
-                return false;
-            } else {
-                return p_289442_.getType() != EntityType.TURTLE;
-            }
-        };
-        targetingConditions = TargetingConditions.forNonCombat().ignoreInvisibilityTesting().ignoreLineOfSight().selector(SCARY_MOB);
+        targetingConditions = TargetingConditions.forNonCombat().ignoreInvisibilityTesting().ignoreLineOfSight();
         DATA_VARIANT_ID = SynchedEntityData.defineId(Jellyfish.class, EntityDataSerializers.INT);
     }
 

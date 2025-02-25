@@ -1,8 +1,13 @@
 package net.proctoredgames.saltcraft.event;
 
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.AbstractFish;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
+import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.proctoredgames.saltcraft.Saltcraft;
 import net.proctoredgames.saltcraft.entity.ModEntities;
 import net.proctoredgames.saltcraft.entity.custom.*;
@@ -25,5 +30,11 @@ public class ModEventBusEvents {
     @SubscribeEvent
     public static void onEntityAttributeModification(EntityAttributeModificationEvent event){
         event.add(EntityType.TURTLE, Attributes.ATTACK_DAMAGE, 2.0);
+    }
+
+    @SubscribeEvent
+    public static void registerSpawnPlacement(SpawnPlacementRegisterEvent event) {
+        event.register(ModEntities.JELLYFISH.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                AbstractFish::checkMobSpawnRules, SpawnPlacementRegisterEvent.Operation.REPLACE);
     }
 }

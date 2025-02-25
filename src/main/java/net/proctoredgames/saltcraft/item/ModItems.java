@@ -135,9 +135,9 @@ public class ModItems {
             () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_TROPICAL_FISH)));
 
     public static final RegistryObject<Item> SALT_WATER_BUCKET = ITEMS.register("salt_water_bucket",
-            () -> new BucketItem(ModFluids.SOURCE_SALT_WATER, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+            () -> new BucketItem(Fluids.WATER, (new Item.Properties()).craftRemainder(Items.BUCKET).stacksTo(1)));
     public static final RegistryObject<Item> PINK_SALT_WATER_BUCKET = ITEMS.register("pink_salt_water_bucket",
-            () -> new BucketItem(ModFluids.SOURCE_PINK_SALT_WATER, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+            () -> new BucketItem(Fluids.WATER, (new Item.Properties()).craftRemainder(Items.BUCKET).stacksTo(1)));
     public static final RegistryObject<Item> JELLYFISH_BUCKET = ITEMS.register(
             "jellyfish_bucket",
             () -> new MobBucketItem(
