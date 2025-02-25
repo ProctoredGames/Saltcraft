@@ -229,6 +229,17 @@ public class Jellyfish extends AbstractFish implements VariantHolder<Jellyfish.V
         return pDistance < 512;
     }
 
+    @Override
+    public boolean hurt(DamageSource pSource, float pAmount) {
+        if (pSource.getEntity() instanceof Turtle) {
+            if (this.distanceTo(pSource.getEntity()) > 2.0) {
+                return false;
+            }
+        }
+        return super.hurt(pSource, pAmount); // Apply damage normally
+    }
+
+
     private void usePlayerItem(Player pPlayer, ItemStack pStack) {
         if (!pPlayer.getAbilities().instabuild) {
             pStack.shrink(1);
