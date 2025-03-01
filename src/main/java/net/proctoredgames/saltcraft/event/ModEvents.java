@@ -3,6 +3,7 @@ package net.proctoredgames.saltcraft.event;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.critereon.ConsumeItemTrigger;
 import net.minecraft.core.Holder;
+import net.minecraft.data.worldgen.SurfaceRuleData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -27,6 +28,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RenderGuiEvent;
@@ -62,6 +64,7 @@ import net.proctoredgames.saltcraft.potion.ModPotions;
 import net.proctoredgames.saltcraft.thirst.PlayerThirst;
 import net.proctoredgames.saltcraft.thirst.PlayerThirstProvider;
 import net.proctoredgames.saltcraft.util.ModTags;
+import net.proctoredgames.saltcraft.worldgen.biome.surface.ModSurfaceRules;
 
 import java.awt.image.SampleModel;
 import java.lang.annotation.Target;
@@ -275,5 +278,12 @@ public class ModEvents {
                 SpawnPlacementRegisterEvent.Operation.REPLACE
         );
     }
+
+//    @SubscribeEvent
+//    public static void onSurfaceRuleData(SurfaceRuleDataEvent event) {
+//        if (event.getDimensionType().equals(Level.OVERWORLD)) {
+//            event.getRules().add(0, ModSurfaceRules.makeRules());
+//        }
+//    }
 
 }

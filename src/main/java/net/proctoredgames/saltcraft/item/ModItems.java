@@ -144,10 +144,6 @@ public class ModItems {
     public static final RegistryObject<Item> PINK_SALTED_DRIED_KELP = ITEMS.register("pink_salted_dried_kelp",
             () -> new Item(new Item.Properties().food(ModFoods.PINK_SALTED_DRIED_KELP)));
 
-    public static final RegistryObject<Item> SALT_WATER_BUCKET = ITEMS.register("salt_water_bucket",
-            () -> new BucketItem(Fluids.WATER, (new Item.Properties()).craftRemainder(Items.BUCKET).stacksTo(1)));
-    public static final RegistryObject<Item> PINK_SALT_WATER_BUCKET = ITEMS.register("pink_salt_water_bucket",
-            () -> new BucketItem(Fluids.WATER, (new Item.Properties()).craftRemainder(Items.BUCKET).stacksTo(1)));
     public static final RegistryObject<Item> JELLYFISH_BUCKET = ITEMS.register(
             "jellyfish_bucket",
             () -> new MobBucketItem(
@@ -156,7 +152,7 @@ public class ModItems {
                     (Supplier<? extends SoundEvent>) () -> SoundEvents.BUCKET_EMPTY_FISH,
                     new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> OIL_BUCKET = ITEMS.register("oil_bucket",
-            () -> new BucketFuelItem(ModFluids.SOURCE_OIL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1), 10000));
+            () -> new BucketFuelItem(ModFluids.OIL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1), 10000));
 
     public static final RegistryObject<Item> SALT_TOME = ITEMS.register("salt_tome",
             () -> new EnchantedBookItem(new Item.Properties().rarity(Rarity.RARE).fireResistant()));

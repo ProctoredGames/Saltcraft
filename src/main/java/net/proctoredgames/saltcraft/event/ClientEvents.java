@@ -13,7 +13,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.proctoredgames.saltcraft.Saltcraft;
-import net.proctoredgames.saltcraft.capes.CustomCapeLayer;
 import net.proctoredgames.saltcraft.client.ThirstHudOverlay;
 //import net.proctoredgames.saltcraft.networking.ModMessages;
 //import net.proctoredgames.saltcraft.networking.packet.DrinkWaterC2SPacket;
@@ -32,19 +31,6 @@ import java.util.Objects;
 public class ClientEvents {
     @Mod.EventBusSubscriber(modid = Saltcraft.MOD_ID, value = Dist.CLIENT)
     public static class ClientForgeEvents {
-        @SubscribeEvent
-        public static void onRegisterRenderers(EntityRenderersEvent.AddLayers event) {
-            for (String skinType : Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap().keySet()) {
-                PlayerRenderer renderer = event.getSkin(skinType);
-
-                if (renderer != null) {
-                    renderer.addLayer(new CustomCapeLayer(renderer));
-                    System.out.println("Adding Custom Cape Layer for skin: " + skinType); // Debug log
-                } else {
-                    System.out.println("Renderer not found for skin: " + skinType); // Debug log for missing renderer
-                }
-            }
-        }
     }
 
     @Mod.EventBusSubscriber(modid = Saltcraft.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)

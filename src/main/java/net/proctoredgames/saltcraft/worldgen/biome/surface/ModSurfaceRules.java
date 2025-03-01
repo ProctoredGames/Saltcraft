@@ -48,24 +48,24 @@ public class ModSurfaceRules {
         // Main sequence of rules for the SALT_FLAT biome
         return SurfaceRules.sequence(
                 // Create a flat terrain appearance by setting blocks to AIR above the ground level
-                SurfaceRules.ifTrue(SurfaceRules.isBiome(ModBiomes.SALT_FLAT),
+                SurfaceRules.ifTrue(SurfaceRules.isBiome(ModBiomes.SALT_FLAT.getKey()),
                         SurfaceRules.ifTrue(SurfaceRules.yBlockCheck(VerticalAnchor.absolute(SALT_FLAT_GROUND_LEVEL), 0), AIR)
                 ),
 
                 // Set clumped salt on the floor of caves below the ground level
-                SurfaceRules.ifTrue(SurfaceRules.isBiome(ModBiomes.SALT_FLAT),
+                SurfaceRules.ifTrue(SurfaceRules.isBiome(ModBiomes.SALT_FLAT.getKey()),
                         SurfaceRules.ifTrue(SurfaceRules.yBlockCheck(VerticalAnchor.absolute(SALT_FLAT_GROUND_LEVEL), -10000),
                                 SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, CLUMPED_SALT)
                         )
                 ),
 
                 // Set rock salt on the ceiling of caves
-                SurfaceRules.ifTrue(SurfaceRules.isBiome(ModBiomes.SALT_FLAT),
+                SurfaceRules.ifTrue(SurfaceRules.isBiome(ModBiomes.SALT_FLAT.getKey()),
                         SurfaceRules.ifTrue(SurfaceRules.ON_CEILING, ROCK_SALT)
                 ),
 
                 // Generate a layer of clumped salt near the surface
-                SurfaceRules.ifTrue(SurfaceRules.isBiome(ModBiomes.SALT_FLAT),
+                SurfaceRules.ifTrue(SurfaceRules.isBiome(ModBiomes.SALT_FLAT.getKey()),
                         SurfaceRules.ifTrue(SurfaceRules.yBlockCheck(VerticalAnchor.absolute(SALT_FLAT_GROUND_LEVEL), -2), CLUMPED_SALT)
                 ),
 
@@ -140,7 +140,7 @@ public class ModSurfaceRules {
 
 
                 // Generate a layer of rock salt below the surface
-                SurfaceRules.ifTrue(SurfaceRules.isBiome(ModBiomes.SALT_FLAT),
+                SurfaceRules.ifTrue(SurfaceRules.isBiome(ModBiomes.SALT_FLAT.getKey()),
                         SurfaceRules.ifTrue(SurfaceRules.yBlockCheck(VerticalAnchor.absolute(SALT_FLAT_GROUND_LEVEL), -15), ROCK_SALT)
                 ),
 

@@ -135,11 +135,7 @@ public class ModBlocks {
             () -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.STONE).strength(1.5f)));
 
     public static final RegistryObject<LiquidBlock> OIL_BLOCK = BLOCKS.register("oil_block",
-            () -> new LiquidBlock(ModFluids.SOURCE_OIL, BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable()));
-    public static final RegistryObject<LiquidBlock> SALT_WATER_BLOCK = BLOCKS.register("salt_water_block",
-            () -> new LiquidBlock(ModFluids.SOURCE_SALT_WATER, BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable()));
-    public static final RegistryObject<LiquidBlock> PINK_SALT_WATER_BLOCK = BLOCKS.register("pink_salt_water_block",
-            () -> new LiquidBlock(ModFluids.SOURCE_PINK_SALT_WATER, BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable()));
+            () -> new LiquidBlock(ModFluids.OIL, BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable()));
 
     public static final RegistryObject<Block> SUMMONING_PLINTH = registerBlock("summoning_plinth",
             () -> new SummoningPlinthBlock(5, BlockBehaviour.Properties.copy(Blocks.REINFORCED_DEEPSLATE).lightLevel(litBlockEmission(7)).noOcclusion().noLootTable()));

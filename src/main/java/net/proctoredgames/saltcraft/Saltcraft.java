@@ -62,7 +62,8 @@ public class Saltcraft
         ModEffects.register(modEventBus);
         ModPotions.register(modEventBus);
 
-        ModBiomes.register("salt_flat");
+        ModBiomes.BIOMES.register(modEventBus);
+//        modEventBus.addListener(ModSurfaceRules::onSurfaceRuleData);
 
         modEventBus.addListener(this::commonSetup);
 
