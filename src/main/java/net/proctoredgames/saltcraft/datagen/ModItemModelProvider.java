@@ -83,8 +83,6 @@ public class ModItemModelProvider extends ItemModelProvider {
         simpleItem(ModItems.FLAMINGO_FEATHER);
         simpleItem(ModItems.WHITE_FLAMINGO_FEATHER);
 
-        simpleItem(ModItems.SALT_WATER_BUCKET);
-        simpleItem(ModItems.PINK_SALT_WATER_BUCKET);
         simpleItem(ModItems.JELLYFISH_BUCKET);
         simpleItem(ModItems.OIL_BUCKET);
 

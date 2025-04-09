@@ -91,9 +91,6 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModItems.FLAMINGO_FEATHER.get());
                         pOutput.accept(ModItems.WHITE_FLAMINGO_FEATHER.get());
 
-                        pOutput.accept(ModItems.SALT_WATER_BUCKET.get());
-                        pOutput.accept(ModItems.PINK_SALT_WATER_BUCKET.get());
-
                         pOutput.accept(ModItems.JELLYFISH_BUCKET.get());
                         pOutput.accept(ModItems.OIL_BUCKET.get());
 

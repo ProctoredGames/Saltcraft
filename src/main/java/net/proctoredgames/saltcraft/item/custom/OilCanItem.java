@@ -51,7 +51,7 @@ public class OilCanItem extends Item {
                     return InteractionResultHolder.pass(whatHandItem);
                 }
 
-                if (pLevel.getFluidState($$8).getType() == ModFluids.SOURCE_OIL.get()) {
+                if (pLevel.getFluidState($$8).getType() == ModFluids.OIL.get()) {
                     pLevel.playSound(pPlayer, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
                     pLevel.gameEvent(pPlayer, GameEvent.FLUID_PICKUP, $$8);
                     return InteractionResultHolder.sidedSuccess(this.turnBottleIntoItem(whatHandItem, pPlayer, new ItemStack(ModItems.FILLED_OIL_CAN.get())), pLevel.isClientSide());

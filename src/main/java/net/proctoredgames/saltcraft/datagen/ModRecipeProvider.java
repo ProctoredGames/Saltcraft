@@ -389,20 +389,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         addRecipePair(Items.KELP, ModItems.SALTED_KELP.get(), ModItems.PINK_SALTED_KELP.get(), pWriter);
         addRecipePair(Items.DRIED_KELP, ModItems.SALTED_DRIED_KELP.get(), ModItems.PINK_SALTED_DRIED_KELP.get(), pWriter);
 
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SALT_WATER_BUCKET.get())
-                .requires(ModItems.SALT.get())
-                .requires(Items.WATER_BUCKET)
-                .unlockedBy(getHasName(ModItems.SALT.get()), has(ModItems.SALT.get()))
-                .unlockedBy(getHasName(Items.WATER_BUCKET), has(Items.WATER_BUCKET))
-                .save(pWriter);
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.PINK_SALT_WATER_BUCKET.get())
-                .requires(ModItems.PINK_SALT.get())
-                .requires(Items.WATER_BUCKET)
-                .unlockedBy(getHasName(ModItems.PINK_SALT.get()), has(ModItems.PINK_SALT.get()))
-                .unlockedBy(getHasName(Items.WATER_BUCKET), has(Items.WATER_BUCKET))
-                .save(pWriter);
-
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.PINK_DYE,2)
                 .requires(ModItems.FLAMINGO_FEATHER.get())
                 .unlockedBy(getHasName(ModItems.FLAMINGO_FEATHER.get()), has(ModItems.FLAMINGO_FEATHER.get()))
