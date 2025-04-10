@@ -42,7 +42,7 @@ public class ThirstEffect extends MobEffect {
                 double randomTickThreshold = 0;
                 Holder<Biome> entityWhatBiome = pLivingEntity.level().getBiome(BlockPos.containing(pLivingEntity.position()));
                 boolean isUsingMoreEnergy = pLivingEntity.isSprinting() || pLivingEntity.isSwimming();
-                boolean isInHotBiome = entityWhatBiome.is(BiomeTags.SPAWNS_WARM_VARIANT_FROGS) || entityWhatBiome.is(ModBiomes.SALT_FLAT.getId());
+                boolean isInHotBiome = entityWhatBiome.is(BiomeTags.SPAWNS_WARM_VARIANT_FROGS) || entityWhatBiome.is(ModBiomes.SALT_FLAT);
                 if(isUsingMoreEnergy && isInHotBiome){
                     randomTickThreshold = extraAcceleratedRandomTickThreshold;
                 } else if(isUsingMoreEnergy){

@@ -47,7 +47,7 @@ public class ModBiomeModifiers {
                 biomes.get(Biomes.FROZEN_RIVER).get(),
                 biomes.get(Biomes.SWAMP).get(),
                 biomes.get(Biomes.MANGROVE_SWAMP).get(),
-                biomes.get(ModBiomes.SALT_FLAT.getKey()).get()
+                biomes.get(ModBiomes.SALT_FLAT).get()
         );
 
 //        List <Holder.Reference<Biome>> drainsExtraThirst = List.of(
@@ -61,7 +61,7 @@ public class ModBiomeModifiers {
 //                biomes.get(ModBiomes.SALT_FLAT).get()
 //        );
 
-        Optional<Holder.Reference<Biome>> isSaltFlat = biomes.get(ModBiomes.SALT_FLAT.getKey());
+        Optional<Holder.Reference<Biome>> isSaltFlat = biomes.get(ModBiomes.SALT_FLAT);
 
 
         context.register(ADD_SALT_ORE, new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
