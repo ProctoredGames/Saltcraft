@@ -28,6 +28,7 @@ public class ModBiomeModifiers {
 
     public static final ResourceKey<BiomeModifier> ADD_SALT_DOME = registerKey("add_salt_dome");
     public static final ResourceKey<BiomeModifier> ADD_SALT_LAKE = registerKey("add_salt_lake");
+    public static final ResourceKey<BiomeModifier> ADD_SALT_FLAT_WATER_CLEANUP = registerKey("add_salt_flat_water_cleanup");
 
     public static void bootstrap(BootstapContext<BiomeModifier> context) {
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
@@ -89,6 +90,12 @@ public class ModBiomeModifiers {
                 HolderSet.direct(isSaltFlat.get()),
                 HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.SALT_LAKE_PLACED_KEY)),
                 GenerationStep.Decoration.LAKES));
+
+        // Last decoration step, so it also catches water placed by springs and lakes
+        context.register(ADD_SALT_FLAT_WATER_CLEANUP, new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+                HolderSet.direct(isSaltFlat.get()),
+                HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.SALT_FLAT_WATER_CLEANUP_PLACED_KEY)),
+                GenerationStep.Decoration.TOP_LAYER_MODIFICATION));
 
     }
 

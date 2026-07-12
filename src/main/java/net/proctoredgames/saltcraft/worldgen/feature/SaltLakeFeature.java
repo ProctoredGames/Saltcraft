@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
@@ -47,11 +48,15 @@ public class SaltLakeFeature extends Feature<NoneFeatureConfiguration> {
         BlockPos $$1 = pContext.origin();
         WorldGenLevel $$2 = pContext.level();
         RandomSource $$3 = pContext.random();
-//        LakeFeature.Configuration $$4 = (LakeFeature.Configuration)pContext.config();
         if ($$1.getY() <= $$2.getMinBuildHeight() + 2) {
             return false;
         } else {
-            $$1 = $$1.below(2);
+            // Features may only place blocks in the decorated chunk and its direct neighbors.
+            // The 32x32 area must be anchored to the chunk rather than the random origin,
+            // or its far edge lands outside that range where setBlock silently fails and
+            // the lake gets cut off along chunk borders.
+            ChunkPos chunkPos = new ChunkPos($$1);
+            $$1 = new BlockPos(chunkPos.getMinBlockX() - 8, $$1.getY(), chunkPos.getMinBlockZ() - 8).below(2);
             boolean[] $$5 = new boolean[8192];
             int $$6 = $$3.nextInt(8) + 8;
 

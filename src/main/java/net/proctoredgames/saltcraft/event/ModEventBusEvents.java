@@ -35,11 +35,11 @@ public class ModEventBusEvents {
         event.add(EntityType.TURTLE, Attributes.ATTACK_DAMAGE, 2.0);
     }
 
-    @SubscribeEvent
-    public static void registerSpawnPlacement(SpawnPlacementRegisterEvent event) {
-        event.register(ModEntities.JELLYFISH.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                AbstractFish::checkMobSpawnRules, SpawnPlacementRegisterEvent.Operation.REPLACE);
-    }
+//    @SubscribeEvent
+//    public static void registerSpawnPlacement(SpawnPlacementRegisterEvent event) {
+//        event.register(ModEntities.JELLYFISH.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+//                AbstractFish::checkMobSpawnRules, SpawnPlacementRegisterEvent.Operation.REPLACE);
+//    }
 
 //    @SubscribeEvent
 //    public static void onSurfaceRuleData(EvenSurfaceRuleData event) {

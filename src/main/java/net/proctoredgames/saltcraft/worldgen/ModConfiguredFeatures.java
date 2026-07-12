@@ -54,6 +54,7 @@ public class ModConfiguredFeatures {
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> SALT_DOME_KEY = registerKey("salt_dome");
     public static final ResourceKey<ConfiguredFeature<?, ?>> SALT_LAKE_KEY = registerKey("salt_lake");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> SALT_FLAT_WATER_CLEANUP_KEY = registerKey("salt_flat_water_cleanup");
 
 
     public static void bootstrap(BootstapContext<ConfiguredFeature<?, ?>> context) {
@@ -71,6 +72,8 @@ public class ModConfiguredFeatures {
         register(context, SALT_DOME_KEY, ModFeatures.SALT_DOME.get(),
                 new NoneFeatureConfiguration());
         register(context, SALT_LAKE_KEY, ModFeatures.SALT_LAKE.get(),
+                new NoneFeatureConfiguration());
+        register(context, SALT_FLAT_WATER_CLEANUP_KEY, ModFeatures.SALT_FLAT_WATER_CLEANUP.get(),
                 new NoneFeatureConfiguration());
 
     }

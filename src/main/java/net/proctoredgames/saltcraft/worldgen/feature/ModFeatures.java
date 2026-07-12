@@ -20,6 +20,9 @@ public class ModFeatures {
     public static final RegistryObject<Feature<NoneFeatureConfiguration>> SALT_LAKE = FEATURES.register("salt_lake",
             () -> new SaltLakeFeature(NoneFeatureConfiguration.CODEC));
 
+    public static final RegistryObject<Feature<NoneFeatureConfiguration>> SALT_FLAT_WATER_CLEANUP = FEATURES.register("salt_flat_water_cleanup",
+            () -> new SaltFlatWaterCleanupFeature(NoneFeatureConfiguration.CODEC));
+
 
     public static void register(IEventBus eventBus) { FEATURES.register(eventBus); }
 

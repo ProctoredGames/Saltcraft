@@ -23,6 +23,7 @@ public class ModPlacedFeatures {
 
     public static final ResourceKey<PlacedFeature> SALT_DOME_PLACED_KEY = registerKey("salt_dome_placed");
     public static final ResourceKey<PlacedFeature> SALT_LAKE_PLACED_KEY = registerKey("salt_lake_placed");
+    public static final ResourceKey<PlacedFeature> SALT_FLAT_WATER_CLEANUP_PLACED_KEY = registerKey("salt_flat_water_cleanup_placed");
 
     public static void bootstrap(BootstapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
@@ -46,6 +47,11 @@ public class ModPlacedFeatures {
                 List.of(RarityFilter.onAverageOnceEvery(20), InSquarePlacement.spread(),
                         HeightRangePlacement.uniform(VerticalAnchor.absolute(ModSurfaceRules.SALT_FLAT_GROUND_LEVEL), VerticalAnchor.absolute(ModSurfaceRules.SALT_FLAT_GROUND_LEVEL)),
                         BiomeFilter.biome()));
+
+        // Runs once per chunk; the feature itself checks the biome per column, so no
+        // BiomeFilter here (it would sample at y=0 where a cave biome may sit instead).
+        register(context, SALT_FLAT_WATER_CLEANUP_PLACED_KEY, configuredFeatures.getOrThrow(ModConfiguredFeatures.SALT_FLAT_WATER_CLEANUP_KEY),
+                List.of());
 
     }
 
