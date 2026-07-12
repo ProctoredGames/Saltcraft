@@ -70,68 +70,70 @@ public class ModSurfaceRules {
                 ),
 
 
-                SurfaceRules.ifTrue(
-                        SurfaceRules.noiseCondition(
-                                ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft", "offset")),
-                                -1*(FULL_FOSSIL_NOISE_RANGE/2), FULL_FOSSIL_NOISE_RANGE/2
-                        ),
+                SurfaceRules.ifTrue(SurfaceRules.isBiome(ModBiomes.SALT_FLAT),
                         SurfaceRules.ifTrue(
-                                SurfaceRules.yBlockCheck(
-                                        VerticalAnchor.absolute(SALT_FLAT_GROUND_LEVEL), -15 // Range: 80 ± 5
+                                SurfaceRules.noiseCondition(
+                                        ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft", "offset")),
+                                        -1*(FULL_FOSSIL_NOISE_RANGE/2), FULL_FOSSIL_NOISE_RANGE/2
                                 ),
-                                SurfaceRules.sequence(
-                                        SurfaceRules.ifTrue(
-                                                SurfaceRules.noiseCondition(
-                                                        ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft", "offset")),
-                                                        -1*(FULL_FOSSIL_NOISE_RANGE/2), -1*(FULL_FOSSIL_NOISE_RANGE/2)*(2/3)
-                                                ),
-                                                SurfaceRules.state(
-                                                        ModBlocks.ROCK_SALT_FOSSIL_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.FACING, Direction.DOWN)
-                                                )
+                                SurfaceRules.ifTrue(
+                                        SurfaceRules.yBlockCheck(
+                                                VerticalAnchor.absolute(SALT_FLAT_GROUND_LEVEL), -15
                                         ),
-                                        SurfaceRules.ifTrue(
-                                                SurfaceRules.noiseCondition(
-                                                        ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft", "offset")),
-                                                        -1*(FULL_FOSSIL_NOISE_RANGE/2)*(2/3), -1*(FULL_FOSSIL_NOISE_RANGE/2)*(1/3)
+                                        SurfaceRules.sequence(
+                                                SurfaceRules.ifTrue(
+                                                        SurfaceRules.noiseCondition(
+                                                                ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft", "offset")),
+                                                                -1*(FULL_FOSSIL_NOISE_RANGE/2), -1*(FULL_FOSSIL_NOISE_RANGE/2)*(2.0/3)
+                                                        ),
+                                                        SurfaceRules.state(
+                                                                ModBlocks.ROCK_SALT_FOSSIL_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.FACING, Direction.DOWN)
+                                                        )
                                                 ),
-                                                SurfaceRules.state(
-                                                        ModBlocks.ROCK_SALT_FOSSIL_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.FACING, Direction.UP)
-                                                )
-                                        ),
-                                        SurfaceRules.ifTrue(
-                                                SurfaceRules.noiseCondition(
-                                                        ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft", "offset")),
-                                                        -1*(FULL_FOSSIL_NOISE_RANGE/2)*(1/3), 0.0
+                                                SurfaceRules.ifTrue(
+                                                        SurfaceRules.noiseCondition(
+                                                                ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft", "offset")),
+                                                                -1*(FULL_FOSSIL_NOISE_RANGE/2)*(2.0/3), -1*(FULL_FOSSIL_NOISE_RANGE/2)*(1.0/3)
+                                                        ),
+                                                        SurfaceRules.state(
+                                                                ModBlocks.ROCK_SALT_FOSSIL_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.FACING, Direction.UP)
+                                                        )
                                                 ),
-                                                SurfaceRules.state(
-                                                        ModBlocks.ROCK_SALT_FOSSIL_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.FACING, Direction.NORTH)
-                                                )
-                                        ),
-                                        SurfaceRules.ifTrue(
-                                                SurfaceRules.noiseCondition(
-                                                        ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft", "offset")),
-                                                        0.0, (FULL_FOSSIL_NOISE_RANGE/2)*(1/3)
+                                                SurfaceRules.ifTrue(
+                                                        SurfaceRules.noiseCondition(
+                                                                ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft", "offset")),
+                                                                -1*(FULL_FOSSIL_NOISE_RANGE/2)*(1.0/3), 0.0
+                                                        ),
+                                                        SurfaceRules.state(
+                                                                ModBlocks.ROCK_SALT_FOSSIL_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.FACING, Direction.NORTH)
+                                                        )
                                                 ),
-                                                SurfaceRules.state(
-                                                        ModBlocks.ROCK_SALT_FOSSIL_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.FACING, Direction.EAST)
-                                                )
-                                        ),
-                                        SurfaceRules.ifTrue(
-                                                SurfaceRules.noiseCondition(
-                                                        ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft", "offset")),
-                                                        (FULL_FOSSIL_NOISE_RANGE/2)*(1/3), (FULL_FOSSIL_NOISE_RANGE/2)*(2/3)
+                                                SurfaceRules.ifTrue(
+                                                        SurfaceRules.noiseCondition(
+                                                                ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft", "offset")),
+                                                                0.0, (FULL_FOSSIL_NOISE_RANGE/2)*(1.0/3)
+                                                        ),
+                                                        SurfaceRules.state(
+                                                                ModBlocks.ROCK_SALT_FOSSIL_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.FACING, Direction.EAST)
+                                                        )
                                                 ),
-                                                SurfaceRules.state(
-                                                        ModBlocks.ROCK_SALT_FOSSIL_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.FACING, Direction.SOUTH)
-                                                )
-                                        ),
-                                        SurfaceRules.ifTrue(
-                                                SurfaceRules.noiseCondition(
-                                                        ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft", "offset")),
-                                                        (FULL_FOSSIL_NOISE_RANGE/2)*(2/3), (FULL_FOSSIL_NOISE_RANGE/2)
+                                                SurfaceRules.ifTrue(
+                                                        SurfaceRules.noiseCondition(
+                                                                ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft", "offset")),
+                                                                (FULL_FOSSIL_NOISE_RANGE/2)*(1.0/3), (FULL_FOSSIL_NOISE_RANGE/2)*(2.0/3)
+                                                        ),
+                                                        SurfaceRules.state(
+                                                                ModBlocks.ROCK_SALT_FOSSIL_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.FACING, Direction.SOUTH)
+                                                        )
                                                 ),
-                                                SurfaceRules.state(
-                                                        ModBlocks.ROCK_SALT_FOSSIL_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.FACING, Direction.WEST)
+                                                SurfaceRules.ifTrue(
+                                                        SurfaceRules.noiseCondition(
+                                                                ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft", "offset")),
+                                                                (FULL_FOSSIL_NOISE_RANGE/2)*(2.0/3), (FULL_FOSSIL_NOISE_RANGE/2)
+                                                        ),
+                                                        SurfaceRules.state(
+                                                                ModBlocks.ROCK_SALT_FOSSIL_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.FACING, Direction.WEST)
+                                                        )
                                                 )
                                         )
                                 )
