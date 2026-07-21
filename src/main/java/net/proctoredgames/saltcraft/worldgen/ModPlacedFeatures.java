@@ -38,10 +38,10 @@ public class ModPlacedFeatures {
                 ModOrePlacement.rareOrePlacement(2,
                         HeightRangePlacement.triangle(VerticalAnchor.absolute(0), VerticalAnchor.absolute(60))));
 
+        // Must run for every chunk: the feature derives one dome per 512x512 cell from the
+        // world seed and each chunk places only its slice, so rarity lives in the feature
         register(context, SALT_DOME_PLACED_KEY, configuredFeatures.getOrThrow(ModConfiguredFeatures.SALT_DOME_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(1000), InSquarePlacement.spread(),
-                        HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(0)),
-                        BiomeFilter.biome()));
+                List.of());
 
         register(context, SALT_LAKE_PLACED_KEY, configuredFeatures.getOrThrow(ModConfiguredFeatures.SALT_LAKE_KEY),
                 List.of(RarityFilter.onAverageOnceEvery(20), InSquarePlacement.spread(),

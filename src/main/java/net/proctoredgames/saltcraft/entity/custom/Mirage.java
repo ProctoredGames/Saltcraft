@@ -168,11 +168,13 @@ public class Mirage extends Monster{
             if(!isInvisible()){
                 spawnAmbientParticles();
             }
-        } else{
-            if (this.level().isNight()) {
-                // Despawn the entity if it's nighttime
-                this.remove(Entity.RemovalReason.KILLED);
-            }
+            return;
+        }
+
+        if (this.level().isNight()) {
+            // Despawn the entity if it's nighttime
+            this.discard();
+            return;
         }
 
         // Get the nearest player
@@ -258,7 +260,7 @@ public class Mirage extends Monster{
     }
 
     private void spawnTeleportParticles(Entity pEntity) {
-        RandomSource random = RandomSource.create();
+        RandomSource random = pEntity.level().random;
         Vec3 position = pEntity.position();
         for(int i = 0; i<pEntity.getBbWidth()*pEntity.getBbHeight()*10; i++){
             double x = position.x+random.nextDouble()*pEntity.getBbWidth()-(pEntity.getBbWidth())/2;

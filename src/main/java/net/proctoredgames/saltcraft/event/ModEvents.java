@@ -2,12 +2,10 @@ package net.proctoredgames.saltcraft.event;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.critereon.ConsumeItemTrigger;
-import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.SurfaceRuleData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.Container;
 import net.minecraft.world.damagesource.*;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -20,11 +18,11 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.Foods;
 import net.minecraft.world.inventory.AnvilMenu;
-import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -34,7 +32,6 @@ import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RenderGuiEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.sound.SoundEvent;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -52,7 +49,6 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.proctoredgames.saltcraft.Saltcraft;
 import net.proctoredgames.saltcraft.block.ModBlocks;
-import net.proctoredgames.saltcraft.client.ThirstHudOverlay;
 import net.proctoredgames.saltcraft.effect.ModEffects;
 import net.proctoredgames.saltcraft.entity.ModEntities;
 //import net.proctoredgames.saltcraft.entity.custom.CustomTurtle;
@@ -61,19 +57,12 @@ import net.proctoredgames.saltcraft.item.ModItems;
 import net.proctoredgames.saltcraft.networking.ModMessages;
 import net.proctoredgames.saltcraft.networking.packet.ThirstDataSyncS2CPacket;
 import net.proctoredgames.saltcraft.potion.ModPotions;
-import net.proctoredgames.saltcraft.thirst.PlayerThirst;
 import net.proctoredgames.saltcraft.thirst.PlayerThirstProvider;
 import net.proctoredgames.saltcraft.util.ModTags;
 import net.proctoredgames.saltcraft.worldgen.biome.surface.ModSurfaceRules;
 
-import java.awt.image.SampleModel;
-import java.lang.annotation.Target;
 import java.util.List;
 import java.util.Map;
-
-import java.lang.reflect.Field;
-
-import static net.minecraft.world.item.enchantment.EnchantmentHelper.getEnchantmentLevel;
 
 @Mod.EventBusSubscriber(modid = Saltcraft.MOD_ID)
 public class ModEvents {
@@ -115,12 +104,12 @@ public class ModEvents {
 
         rareTrades.add((pTrader, pRandom) -> new MerchantOffer(
                 new ItemStack(Items.EMERALD, 5),
-                new ItemStack((Holder<Item>) ModPotions.SALT_WATER_BOTTLE.get(), 1),
+                PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.SALT_WATER_BOTTLE.get()),
                 10, 2, 0.2f));
 
         rareTrades.add((pTrader, pRandom) -> new MerchantOffer(
                 new ItemStack(Items.EMERALD, 20),
-                new ItemStack((Holder<Item>) ModPotions.PINK_SALT_WATER_BOTTLE.get(), 1),
+                PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.PINK_SALT_WATER_BOTTLE.get()),
                 10, 2, 0.2f));
 
     }
@@ -182,26 +171,14 @@ public class ModEvents {
         }
     }
 
+    // Anvil menu slots: 0 and 1 are the inputs, 2 is the result. Accessing them through
+    // getSlot avoids reflection on field names, which breaks in obfuscated production builds.
     public static ItemStack getResultSlot(AnvilMenu anvilMenu) {
-        try {
-            Field resultSlotField = AnvilMenu.class.getDeclaredField("resultSlots");
-            resultSlotField.setAccessible(true); // Make the field accessible
-            return ((ResultContainer) resultSlotField.get(anvilMenu)).getItem(0);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return ItemStack.EMPTY;
+        return anvilMenu.getSlot(2).getItem();
     }
 
     public static ItemStack getInputSlot(AnvilMenu anvilMenu, int slot) {
-        try {
-            Field inputSlotsField = AnvilMenu.class.getDeclaredField("inputSlots");
-            inputSlotsField.setAccessible(true); // Make the field accessible
-            return ((Container) inputSlotsField.get(anvilMenu)).getItem(slot);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return ItemStack.EMPTY;
+        return anvilMenu.getSlot(slot).getItem();
     }
 
 
@@ -217,17 +194,15 @@ public class ModEvents {
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
         if(event.isWasDeath()) {
+            // The dead player's capabilities are invalidated by the time this fires
+            event.getOriginal().reviveCaps();
             event.getOriginal().getCapability(PlayerThirstProvider.PLAYER_THIRST).ifPresent(oldStore -> {
-                event.getOriginal().getCapability(PlayerThirstProvider.PLAYER_THIRST).ifPresent(newStore -> {
+                event.getEntity().getCapability(PlayerThirstProvider.PLAYER_THIRST).ifPresent(newStore -> {
                     newStore.copyFrom(oldStore);
                 });
             });
+            event.getOriginal().invalidateCaps();
         }
-    }
-
-    @SubscribeEvent
-    public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
-        event.register(PlayerThirst.class);
     }
 
     @SubscribeEvent
@@ -235,7 +210,6 @@ public class ModEvents {
         if(!event.getLevel().isClientSide()) {
             if(event.getEntity() instanceof ServerPlayer player) {
                 player.getCapability(PlayerThirstProvider.PLAYER_THIRST).ifPresent(thirst -> {
-                    ThirstHudOverlay.setPlayer((Player) event.getEntity());
                     ModMessages.sendToPlayer(new ThirstDataSyncS2CPacket(thirst.getThirst()), player);
                 });
             }

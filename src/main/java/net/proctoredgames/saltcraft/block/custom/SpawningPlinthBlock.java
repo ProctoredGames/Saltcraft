@@ -78,7 +78,7 @@ public class SpawningPlinthBlock extends Block implements SimpleWaterloggedBlock
     public void onProjectileHit(Level pLevel, BlockState pState, BlockHitResult pHit, Projectile pProjectile) {
         super.onProjectileHit(pLevel, pState, pHit, pProjectile);
 
-        if(!(Boolean)pState.getValue(LIT)){
+        if(!pLevel.isClientSide && !(Boolean)pState.getValue(LIT)){
             if(canSpawn(pLevel, pHit.getBlockPos().getCenter())) {
                 pLevel.setBlock(pHit.getBlockPos(), pState.setValue(LIT, true), 3);
                 spawnSaltMage(pLevel, BlockPos.containing(pHit.getBlockPos().getCenter()));
@@ -86,15 +86,21 @@ public class SpawningPlinthBlock extends Block implements SimpleWaterloggedBlock
         }
     }
 
+    // Arena-sized radius; scanning further would force-load chunks and freeze the server
+    public static final int PLINTH_SEARCH_RADIUS = 48;
+
     public boolean canSpawn(Level level, Vec3 position){
         BlockState blockState;
         BlockPos blockPos;
         int relativeYLayer = 0;
         boolean checkingLayers = true;
         while(checkingLayers){
-            for(int z = -100; z<=100; z++){
-                for(int x = -100; x<=100; x++){
+            for(int z = -PLINTH_SEARCH_RADIUS; z<=PLINTH_SEARCH_RADIUS; z++){
+                for(int x = -PLINTH_SEARCH_RADIUS; x<=PLINTH_SEARCH_RADIUS; x++){
                     blockPos = new BlockPos((int)position.x+x, (int)position.y+relativeYLayer, (int)position.z+z);
+                    if(!level.hasChunkAt(blockPos)){
+                        continue;
+                    }
                     blockState = level.getBlockState(blockPos);
                     if(blockState.is(ModBlocks.SUMMONING_PLINTH.get())){
                         if(!blockState.getValue(SummoningPlinthBlock.LIT)){
@@ -119,12 +125,10 @@ public class SpawningPlinthBlock extends Block implements SimpleWaterloggedBlock
     public void spawnSaltMage(Level level, BlockPos position){
         SaltMage entity = new SaltMage(ModEntities.SALT_MAGE.get(), level);
         entity.setPos(position.getCenter());
-        level.addFreshEntity(entity);
-        if (!level.isClientSide) {
-            level.explode(null, null, (ExplosionDamageCalculator)null, position.getX(),
-                    position.getY()+2, position.getZ(), 2.0F, false, Level.ExplosionInteraction.NONE);
-        }
         entity.SetSpawningPlinthPosition(position);
+        level.addFreshEntity(entity);
+        level.explode(null, null, (ExplosionDamageCalculator)null, position.getX(),
+                position.getY()+2, position.getZ(), 2.0F, false, Level.ExplosionInteraction.NONE);
     }
 
     static {

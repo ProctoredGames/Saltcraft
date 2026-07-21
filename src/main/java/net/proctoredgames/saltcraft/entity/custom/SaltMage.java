@@ -4,6 +4,7 @@ package net.proctoredgames.saltcraft.entity.custom;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerBossEvent;
@@ -99,6 +100,9 @@ public class SaltMage extends SpellcasterIllager {
 
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
+        if (pCompound.contains("SpawningPlinthPos")) {
+            this.spawningPlinthPosition = NbtUtils.readBlockPos(pCompound.getCompound("SpawningPlinthPos"));
+        }
     }
 
     public SoundEvent getCelebrateSound() {
@@ -107,6 +111,9 @@ public class SaltMage extends SpellcasterIllager {
 
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
+        if (this.spawningPlinthPosition != null) {
+            pCompound.put("SpawningPlinthPos", NbtUtils.writeBlockPos(this.spawningPlinthPosition));
+        }
     }
 
     protected void customServerAiStep() {
@@ -262,6 +269,10 @@ public class SaltMage extends SpellcasterIllager {
             double wallSummonDistance;
 
             LivingEntity livingentity = SaltMage.this.getTarget();
+            // The target can die or be cleared during the cast warmup
+            if (livingentity == null) {
+                return;
+            }
 
             doWallRotation = Math.abs(SaltMage.this.getZ()-livingentity.getZ()) > Math.abs(SaltMage.this.getX()-livingentity.getX());
 
@@ -365,7 +376,11 @@ public class SaltMage extends SpellcasterIllager {
     @Override
     public void die(DamageSource pCause) {
         if(spawningPlinthPosition != null){
-            this.level().setBlock(spawningPlinthPosition, this.level().getBlockState(spawningPlinthPosition).setValue(SpawningPlinthBlock.LIT, false), 3);
+            // The plinth may have been broken or replaced since the boss spawned
+            BlockState plinthState = this.level().getBlockState(spawningPlinthPosition);
+            if (plinthState.is(ModBlocks.SPAWNING_PLINTH.get())) {
+                this.level().setBlock(spawningPlinthPosition, plinthState.setValue(SpawningPlinthBlock.LIT, false), 3);
+            }
             if (!this.level().isClientSide) {
                 this.level().explode(null, null, (ExplosionDamageCalculator)null, spawningPlinthPosition.getX(),
                         spawningPlinthPosition.getY(), spawningPlinthPosition.getZ(), 3.0F, false, Level.ExplosionInteraction.NONE);
@@ -385,10 +400,14 @@ public class SaltMage extends SpellcasterIllager {
         BlockPos blockPos;
         int relativeYLayer = 0;
         boolean checkingLayers = true;
+        int radius = SpawningPlinthBlock.PLINTH_SEARCH_RADIUS;
         while(checkingLayers) {
-            for (int z = -100; z <= 100; z++) {
-                for (int x = -100; x <= 100; x++) {
+            for (int z = -radius; z <= radius; z++) {
+                for (int x = -radius; x <= radius; x++) {
                     blockPos = new BlockPos((int) position.getX() + x, (int) position.getY()+relativeYLayer, (int) position.getZ() + z);
+                    if (!level.hasChunkAt(blockPos)) {
+                        continue;
+                    }
                     blockState = level.getBlockState(blockPos);
                     if (blockState.is(ModBlocks.SUMMONING_PLINTH.get())) {
                         level.setBlock(blockPos, blockState.setValue(SummoningPlinthBlock.CRACKED, true).setValue(SummoningPlinthBlock.LIT, false), 3);

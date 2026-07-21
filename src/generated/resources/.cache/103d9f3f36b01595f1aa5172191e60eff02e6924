@@ -1,4 +1,4 @@
-// 1.20.1	2026-07-12T16:30:20.7257882	Registries
+// 1.20.1	2026-07-12T17:09:42.8655043	Registries
 19728bc8a64ee0156f850c4399c151afb7258403 data/saltcraft/forge/biome_modifier/add_oil_vein.json
 16192fadd1637d578700c598a01bd00f86396317 data/saltcraft/forge/biome_modifier/add_pink_salt_ore.json
 a8104766835963bff3704cc6fedc5cfaad5c21b3 data/saltcraft/forge/biome_modifier/add_salt_dome.json
@@ -14,7 +14,7 @@ bba9264285a2eca2a9bb33c4e8093a5186e2788a data/saltcraft/worldgen/configured_feat
 8a20fa68ba3f6f92bb61c7c602c22ca52f3d5f10 data/saltcraft/worldgen/configured_feature/salt_ore.json
 967393b89bb0dd08568b7fc8719750c0dc62eccd data/saltcraft/worldgen/placed_feature/oil_vein_placed.json
 c3f5da57a62f5e4eea4312c47873de79c7fe3bb5 data/saltcraft/worldgen/placed_feature/pink_salt_ore_placed.json
-f3e1ad050a465fa50654fa9611ab9a23a6f3e8b5 data/saltcraft/worldgen/placed_feature/salt_dome_placed.json
+9a9806a4d2952e5855576a9ded3844b608d1e27b data/saltcraft/worldgen/placed_feature/salt_dome_placed.json
 6def7a7b3153a43e283a2d2ef97f95e405ca5995 data/saltcraft/worldgen/placed_feature/salt_flat_water_cleanup_placed.json
 9edf98d2d2a9d4b4310e15e06d6e268a88e3a502 data/saltcraft/worldgen/placed_feature/salt_lake_placed.json
 f214bdbbb459ea65b799cf6f81dbf01d42775747 data/saltcraft/worldgen/placed_feature/salt_ore_placed.json

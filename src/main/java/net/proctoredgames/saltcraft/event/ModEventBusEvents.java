@@ -8,9 +8,11 @@ import net.minecraft.world.entity.animal.AbstractFish;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.proctoredgames.saltcraft.Saltcraft;
+import net.proctoredgames.saltcraft.thirst.PlayerThirst;
 import net.proctoredgames.saltcraft.entity.ModEntities;
 import net.proctoredgames.saltcraft.entity.custom.*;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -33,6 +35,12 @@ public class ModEventBusEvents {
     @SubscribeEvent
     public static void onEntityAttributeModification(EntityAttributeModificationEvent event){
         event.add(EntityType.TURTLE, Attributes.ATTACK_DAMAGE, 2.0);
+    }
+
+    // RegisterCapabilitiesEvent fires on the mod bus, so it must live here rather than in ModEvents
+    @SubscribeEvent
+    public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
+        event.register(PlayerThirst.class);
     }
 
 //    @SubscribeEvent

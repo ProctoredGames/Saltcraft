@@ -1,16 +1,13 @@
 package net.proctoredgames.saltcraft.client;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.telemetry.TelemetryProperty;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.proctoredgames.saltcraft.Saltcraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.proctoredgames.saltcraft.effect.ModEffects;
-import net.proctoredgames.saltcraft.thirst.PlayerThirst;
 
 public class ThirstHudOverlay {
     private static final ResourceLocation FILLED_THIRST = new ResourceLocation(Saltcraft.MOD_ID,
@@ -19,12 +16,15 @@ public class ThirstHudOverlay {
             "textures/thirst/half_thirst.png");
     private static final ResourceLocation EMPTY_THIRST = new ResourceLocation(Saltcraft.MOD_ID,
             "textures/thirst/empty_thirst.png");
-    private static Player player;
-    private static boolean hasExtraRenderingTime = false;
-    private static final int MAX_TICKS_UNTIL_STOP_RENDERING = 20;
-    private static int ticksUntilStopRendering = MAX_TICKS_UNTIL_STOP_RENDERING;
+    private static final int EXTRA_RENDER_TICKS = 20;
+    private static int lastSatisfiedGuiTick = Integer.MIN_VALUE;
 
     public static final IGuiOverlay HUD_THIRST = ((gui, guiGraphics, partialTick, width, height) -> {
+        Player player = Minecraft.getInstance().player;
+        if (player == null) {
+            return;
+        }
+
         int x = width / 2;
         int y = height;
         int j;
@@ -33,20 +33,13 @@ public class ThirstHudOverlay {
 
         boolean satisfiesRenderingConditions = ((player.hasEffect(ModEffects.THIRST.get())) || (ClientThirstData.getPlayerThirst() != 20));
         if(satisfiesRenderingConditions){
-            hasExtraRenderingTime = true;
-            ticksUntilStopRendering = MAX_TICKS_UNTIL_STOP_RENDERING;
+            lastSatisfiedGuiTick = gui.getGuiTicks();
         }
+        // Keep the bar on screen for a moment after it refills; gui ticks rather than
+        // frames so the fade time does not depend on the framerate
+        boolean hasExtraRenderingTime = gui.getGuiTicks() - lastSatisfiedGuiTick < EXTRA_RENDER_TICKS;
 
-        if(hasExtraRenderingTime && ClientThirstData.getPlayerThirst() == 20){
-            ticksUntilStopRendering --;
-            if(ticksUntilStopRendering <= 0){
-                hasExtraRenderingTime = false;
-                ticksUntilStopRendering = MAX_TICKS_UNTIL_STOP_RENDERING;
-            }
-        }
-
-
-        if((satisfiesRenderingConditions || (hasExtraRenderingTime && ClientThirstData.getPlayerThirst() == 20)) && !(player.isSpectator() || player.isCreative())){
+        if((satisfiesRenderingConditions || hasExtraRenderingTime) && !(player.isSpectator() || player.isCreative())){
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderTexture(0, EMPTY_THIRST);
@@ -71,7 +64,4 @@ public class ThirstHudOverlay {
             }
         }
     });
-    public static void setPlayer(Player pPlayer){
-        player = pPlayer;
-    }
 }

@@ -33,7 +33,8 @@ public class CrystidAttackGoal extends MeleeAttackGoal {
             this.crystid.setAggressive(true);
         }else if (this.openMouthTicks >= 0 && this.getTicksUntilNextAttack() > this.getAttackInterval() / 2) {
             crystid.setAttacking(true);
-            if(this.crystid.getRandom().nextDouble()<=0.2){
+            // The target can die/unload between this goal's canContinueToUse() check and this tick
+            if(this.crystid.getTarget() != null && this.crystid.getRandom().nextDouble()<=0.2){
                 this.crystid.getTarget().addEffect(new MobEffectInstance(ModEffects.THIRST.get(), 150, 1));
 
             }

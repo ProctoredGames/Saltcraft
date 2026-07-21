@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -45,6 +46,7 @@ import net.minecraft.world.phys.Vec3;
 import net.proctoredgames.saltcraft.entity.custom.Mirage;
 import net.proctoredgames.saltcraft.item.ModItems;
 import net.proctoredgames.saltcraft.util.SandTeleport;
+import org.jetbrains.annotations.Nullable;
 import org.joml.RayAabIntersection;
 
 import java.awt.*;
@@ -52,9 +54,11 @@ import java.awt.*;
 
 public class StaffOfTheDesertItem extends Item implements Vanishable {
 
-    private final Multimap<Attribute, AttributeModifier> defaultModifiers;
+    // Items are singletons shared by every player on both sides, so the current target
+    // is stored per-stack (as a network entity id) rather than in a field
+    private static final String TARGET_ID_TAG = "SaltcraftStaffTargetId";
 
-    Entity targetEntity;
+    private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
     public StaffOfTheDesertItem(Properties pProperties) {
         super(pProperties);
@@ -76,14 +80,15 @@ public class StaffOfTheDesertItem extends Item implements Vanishable {
     }
 
     public void releaseUsing(ItemStack pStack, Level pLevel, LivingEntity pEntityLiving, int pTimeLeft) {
-        if (pEntityLiving instanceof Player $$4 && targetEntity != null) {
+        Entity targetEntity = getTargetEntity(pLevel, pStack);
+        pStack.removeTagKey(TARGET_ID_TAG);
+        if (pEntityLiving instanceof Player && targetEntity != null) {
             int $$5 = this.getUseDuration(pStack) - pTimeLeft;
             if ($$5 >=20) {
                 if(targetEntity instanceof LivingEntity){
                     ((LivingEntity) targetEntity).removeEffect(MobEffects.GLOWING);
                 }
                 SandTeleport.teleportTo(targetEntity, pEntityLiving);
-                targetEntity = null;
             }
         }
         if (pStack.hurt(1, pEntityLiving.getRandom(), pEntityLiving instanceof ServerPlayer ? (ServerPlayer) pEntityLiving : null)) {
@@ -112,8 +117,9 @@ public class StaffOfTheDesertItem extends Item implements Vanishable {
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pHand) {
         ItemStack $$3 = pPlayer.getItemInHand(pHand);
-        targetEntity = runThroughFindMob(pPlayer);
+        Entity targetEntity = runThroughFindMob(pPlayer);
         if(targetEntity != null){
+            $$3.getOrCreateTag().putInt(TARGET_ID_TAG, targetEntity.getId());
             pPlayer.startUsingItem(pHand);
         }
         return InteractionResultHolder.sidedSuccess($$3, pLevel.isClientSide());
@@ -121,15 +127,26 @@ public class StaffOfTheDesertItem extends Item implements Vanishable {
 
     @Override
     public void onUseTick(Level pLevel, LivingEntity pLivingEntity, ItemStack pStack, int pRemainingUseDuration) {
+        Entity targetEntity = getTargetEntity(pLevel, pStack);
         if(targetEntity instanceof LivingEntity){
             ((LivingEntity) targetEntity).addEffect(new MobEffectInstance(MobEffects.GLOWING, 5, 0, false, false));
         }
         if(pLivingEntity instanceof Player){
             if(runThroughFindMob((Player) pLivingEntity) == null){
-                targetEntity = null;
+                pStack.removeTagKey(TARGET_ID_TAG);
                 pLivingEntity.stopUsingItem();
-            };
+            }
         }
+    }
+
+    @Nullable
+    private Entity getTargetEntity(Level pLevel, ItemStack pStack) {
+        CompoundTag tag = pStack.getTag();
+        if (tag == null || !tag.contains(TARGET_ID_TAG)) {
+            return null;
+        }
+        Entity entity = pLevel.getEntity(tag.getInt(TARGET_ID_TAG));
+        return entity != null && entity.isAlive() ? entity : null;
     }
 
     public boolean hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
@@ -141,9 +158,11 @@ public class StaffOfTheDesertItem extends Item implements Vanishable {
 
     private void replaceWithUncharged(LivingEntity entity, ItemStack stack) {
         if (entity instanceof Player player) {
+            InteractionHand hand = player.getItemInHand(InteractionHand.OFF_HAND) == stack
+                    ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
             ItemStack newItem = new ItemStack(ModItems.UNCHARGED_STAFF_OF_THE_DESERT.get());
             newItem.setTag(stack.getTag()); // Preserve NBT data if needed
-            player.setItemInHand(InteractionHand.MAIN_HAND, newItem);
+            player.setItemInHand(hand, newItem);
         }
     }
 

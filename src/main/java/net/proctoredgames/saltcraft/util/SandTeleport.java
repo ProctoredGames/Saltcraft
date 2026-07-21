@@ -71,7 +71,7 @@ public class SandTeleport {
     }
 
     private static void spawnTeleportParticles(Entity pEntity) {
-        RandomSource random = RandomSource.create();
+        RandomSource random = pEntity.level().random;
         Vec3 position = pEntity.position();
         for(int i = 0; i<pEntity.getBbWidth()*pEntity.getBbHeight()*10; i++){
             double x = position.x+random.nextDouble()*pEntity.getBbWidth()-(pEntity.getBbWidth())/2;

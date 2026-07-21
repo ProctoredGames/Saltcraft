@@ -59,8 +59,10 @@ public class ThirstEffect extends MobEffect {
                         pLivingEntity.hurt(pLivingEntity.level().damageSources().dryOut(), 1);
                     }
                 }
-                if (thirst.getThirst() <= 5 && entityWhatBiome.is(Biomes.DESERT) && pLivingEntity.level().isDay()) {
-                    RandomSource random = RandomSource.create();
+                // Only attempt the Mirage spawn every 100 ticks; the biome ring search and
+                // entity query below are far too expensive to run every effect tick
+                if (thirst.getThirst() <= 5 && pLivingEntity.tickCount % 100 == 0
+                        && entityWhatBiome.is(Biomes.DESERT) && pLivingEntity.level().isDay()) {
                     double spawnAngle = 0;
 
                     // Calculate initial spawn position offset

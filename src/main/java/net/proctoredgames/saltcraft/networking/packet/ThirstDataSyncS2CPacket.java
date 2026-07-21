@@ -27,6 +27,7 @@ public class ThirstDataSyncS2CPacket {
             // HERE WE ARE ON THE CLIENT!
             ClientThirstData.set(thirst);
         });
+        context.setPacketHandled(true);
         return true;
     }
 }

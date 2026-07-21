@@ -12,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
@@ -55,6 +56,8 @@ public class Crystid extends Monster {
 
     @Nullable
     Mob owner;
+    @Nullable
+    private UUID ownerUUID;
     @Nullable
 
 
@@ -101,6 +104,9 @@ public class Crystid extends Monster {
             this.setLimitedLife(pCompound.getInt("LifeTicks"));
         }
         this.setBaby(pCompound.getBoolean("IsBaby"));
+        if (pCompound.hasUUID("OwnerUUID")) {
+            this.ownerUUID = pCompound.getUUID("OwnerUUID");
+        }
 
     }
 
@@ -111,6 +117,10 @@ public class Crystid extends Monster {
             pCompound.putInt("LifeTicks", this.limitedLifeTicks);
         }
         pCompound.putBoolean("IsBaby", this.isBaby());
+        UUID ownerId = this.owner != null ? this.owner.getUUID() : this.ownerUUID;
+        if (ownerId != null) {
+            pCompound.putUUID("OwnerUUID", ownerId);
+        }
 
     }
 
@@ -141,6 +151,7 @@ public class Crystid extends Monster {
 
     public void setOwner(Mob pOwner) {
         this.owner = pOwner;
+        this.ownerUUID = pOwner.getUUID();
     }
     public void setLimitedLife(int pLimitedLifeTicks) {
         this.hasLimitedLife = true;
@@ -149,6 +160,13 @@ public class Crystid extends Monster {
 
     @Nullable
     public Mob getOwner() {
+        // Re-resolve after a chunk/server reload, when setOwner() was never called on this instance
+        if (this.owner == null && this.ownerUUID != null && this.level() instanceof ServerLevel serverLevel) {
+            Entity entity = serverLevel.getEntity(this.ownerUUID);
+            if (entity instanceof Mob mob) {
+                this.owner = mob;
+            }
+        }
         return this.owner;
     }
 
@@ -189,6 +207,7 @@ public class Crystid extends Monster {
 
         if (this.level().isClientSide()) {
             this.setupAnimationStates();
+            return;
         }
         if (this.hasLimitedLife && --this.limitedLifeTicks <= 0) {
             this.limitedLifeTicks = 20;
@@ -248,11 +267,12 @@ public class Crystid extends Monster {
         }
 
         public boolean canUse() {
-            return Crystid.this.owner != null && Crystid.this.owner.getTarget() != null && this.canAttack(Crystid.this.owner.getTarget(), this.copyOwnerTargeting);
+            Mob owner = Crystid.this.getOwner();
+            return owner != null && owner.getTarget() != null && this.canAttack(owner.getTarget(), this.copyOwnerTargeting);
         }
 
         public void start() {
-            Crystid.this.setTarget(Crystid.this.owner.getTarget());
+            Crystid.this.setTarget(Crystid.this.getOwner().getTarget());
             super.start();
         }
     }

@@ -43,9 +43,8 @@ public class SaltItem extends Item {
     @Override
     public InteractionResult useOn(UseOnContext pContext) {
         if (!pContext.getLevel().isClientSide()) {
-            Player player = pContext.getPlayer();
             ItemStack thisItemStack = pContext.getItemInHand();
-            Level level = player.level();
+            Level level = pContext.getLevel();
             BlockPos positionClicked = pContext.getClickedPos();
             BlockState blockState = pContext.getLevel().getBlockState(positionClicked);
 

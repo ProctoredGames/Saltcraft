@@ -77,10 +77,10 @@ public class SummoningPlinthBlock extends Block implements SimpleWaterloggedBloc
 
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         boolean flag = !(Boolean)pState.getValue(LIT);
-        if(flag && pPlayer.getMainHandItem().getItem() == Items.FLINT_AND_STEEL){
+        if(flag && pPlayer.getItemInHand(pHand).getItem() == Items.FLINT_AND_STEEL){
             if (!pLevel.isClientSide()) {
                 pLevel.playSound((Player)null, pPos, SoundEvents.SUSPICIOUS_GRAVEL_BREAK, SoundSource.BLOCKS, 5.0F, 1.0F);
-                pPlayer.getMainHandItem().hurt(1, RandomSource.create(), (ServerPlayer) pPlayer);
+                pPlayer.getItemInHand(pHand).hurt(1, pPlayer.getRandom(), pPlayer instanceof ServerPlayer serverPlayer ? serverPlayer : null);
                 pLevel.setBlock(pPos, pState.setValue(CRACKED, true).setValue(LIT, true), 3);
                 return InteractionResult.SUCCESS;
             } else{
@@ -140,7 +140,7 @@ public class SummoningPlinthBlock extends Block implements SimpleWaterloggedBloc
         BlockPos blockpos = pHit.getBlockPos();
         if (pProjectile.mayInteract(pLevel, blockpos) && pProjectile.isOnFire() && !(Boolean)pState.getValue(LIT) && !(Boolean)pState.getValue(WATERLOGGED)) {
             if(!pLevel.isClientSide){
-                pLevel.setBlock(blockpos, pState.setValue(BlockStateProperties.CAN_SUMMON, true).setValue(BlockStateProperties.LIT, true), 11);
+                pLevel.setBlock(blockpos, pState.setValue(CRACKED, true).setValue(LIT, true), 11);
             }else{
                 for(int i = 0; i < 20; ++i) {
                     makeParticles((Level)pLevel, new BlockPos((int)pHit.getBlockPos().getCenter().x, (int)pHit.getBlockPos().getCenter().y, (int)pHit.getBlockPos().getCenter().z));
