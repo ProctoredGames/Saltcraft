@@ -18,7 +18,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "saltcraft:z_thirst_icon_item"
+      "item": "saltcraft:salt"
     },
     "show_toast": true,
     "title": {

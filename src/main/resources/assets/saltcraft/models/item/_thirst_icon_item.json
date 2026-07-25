@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "saltcraft:item/thirst_icon_item"
-  }
-}
