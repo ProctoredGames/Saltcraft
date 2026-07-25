@@ -22,17 +22,6 @@ public class ModFluidTypes {
                     new Vector3f(0f / 255f, 0f / 255f, 0f / 255f),
                     FluidType.Properties.create().lightLevel(0).viscosity(6).density(13)));
 
-    public static final RegistryObject<FluidType> SALT_WATER_FLUID_TYPE = registerFluidType("salt_water",
-            new BaseFluidType(WATER_STILL_RL, WATER_FLOWING_RL, WATER_OVERLAY_RL, 0x0A0A0A,
-                    new Vector3f(10f / 255f, 10f / 255f, 10f / 255f),
-                    FluidType.Properties.create().lightLevel(0).viscosity(6).density(13)));
-
-    public static final RegistryObject<FluidType> PINK_SALT_WATER_FLUID_TYPE = registerFluidType("pink_salt_water",
-            new BaseFluidType(WATER_STILL_RL, WATER_FLOWING_RL, WATER_OVERLAY_RL, 0x0A0A0A,
-                    new Vector3f(10f / 255f, 10f / 255f, 10f / 255f),
-                    FluidType.Properties.create().lightLevel(0).viscosity(6).density(13)));
-
-
     private static RegistryObject<FluidType> registerFluidType(String name, FluidType fluidType) {
         return FLUID_TYPES.register(name, () -> fluidType);
     }
