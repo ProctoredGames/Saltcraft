@@ -24,9 +24,6 @@
 		],
 		"fabric-datagen": [
 			"net.proctoredgames.saltcraft.SaltcraftDataGenerator"
-		],
-		"jei_mod_plugin": [
-			"net.proctoredgames.saltcraft.compat.JEISaltcraftPlugin"
 		]
 	},
 	"mixins": [
