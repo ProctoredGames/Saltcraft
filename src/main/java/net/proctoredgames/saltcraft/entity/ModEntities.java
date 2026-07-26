@@ -22,11 +22,9 @@ public class ModEntities {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
             DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Saltcraft.MOD_ID);
 
-    static int templateClientTrackingRange = EntityType.COW.clientTrackingRange();
-
     public static final RegistryObject<EntityType<Jellyfish>> JELLYFISH =
             ENTITY_TYPES.register("jellyfish", () -> EntityType.Builder.of(Jellyfish::new, MobCategory.WATER_AMBIENT)
-                    .sized(0.5f, 0.25f).clientTrackingRange(8).build("jellyfish"));
+                    .sized(0.5f, 0.25f).clientTrackingRange(10).build("jellyfish"));
 
     public static final RegistryObject<EntityType<Crystid>> CRYSTID =
             ENTITY_TYPES.register("crystid", () -> EntityType.Builder.of(Crystid::new, MobCategory.MONSTER)
