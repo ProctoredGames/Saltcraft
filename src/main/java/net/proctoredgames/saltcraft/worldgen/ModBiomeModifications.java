@@ -57,5 +57,9 @@ public class ModBiomeModifications {
         BiomeModifications.addSpawn(
                 BiomeSelectors.includeByKey(BiomeKeys.WARM_OCEAN),
                 SpawnGroup.WATER_CREATURE, ModEntities.JELLYFISH, 10, 2, 4);
+
+        BiomeModifications.addSpawn(
+                BiomeSelectors.includeByKey(ModBiomes.SALT_FLAT),
+                SpawnGroup.WATER_CREATURE, ModEntities.JELLYFISH, 10, 2, 4);
     }
 }

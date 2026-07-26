@@ -16,7 +16,7 @@ public class ModEntities {
     public static final EntityType<Jellyfish> JELLYFISH = Registry.register(Registries.ENTITY_TYPE,
             Identifier.of(Saltcraft.MOD_ID, "jellyfish"),
             EntityType.Builder.create(Jellyfish::new, SpawnGroup.WATER_AMBIENT)
-                    .dimensions(0.5f, 0.25f).maxTrackingRange(8).build());
+                    .dimensions(0.5f, 0.25f).maxTrackingRange(10).build());
 
     public static final EntityType<Crystid> CRYSTID = Registry.register(Registries.ENTITY_TYPE,
             Identifier.of(Saltcraft.MOD_ID, "crystid"),
