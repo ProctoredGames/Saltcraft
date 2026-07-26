@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.Model;
+import net.minecraft.data.client.ModelIds;
 import net.minecraft.data.client.Models;
 import net.minecraft.util.Identifier;
 import net.proctoredgames.saltcraft.block.ModBlocks;
@@ -23,17 +24,17 @@ public class ModModelProvider extends FabricModelProvider {
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
         // Plain cube-all blocks with no derived shapes
         blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.SALT_BLOCK);
-        blockStateModelGenerator.registerItemModel(ModBlocks.SALT_BLOCK);
+        registerCubeItemModel(blockStateModelGenerator, ModBlocks.SALT_BLOCK);
         blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.PINK_SALT_BLOCK);
-        blockStateModelGenerator.registerItemModel(ModBlocks.PINK_SALT_BLOCK);
+        registerCubeItemModel(blockStateModelGenerator, ModBlocks.PINK_SALT_BLOCK);
         blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.SALT_ORE);
-        blockStateModelGenerator.registerItemModel(ModBlocks.SALT_ORE);
+        registerCubeItemModel(blockStateModelGenerator, ModBlocks.SALT_ORE);
         blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.PINK_SALT_ORE);
-        blockStateModelGenerator.registerItemModel(ModBlocks.PINK_SALT_ORE);
+        registerCubeItemModel(blockStateModelGenerator, ModBlocks.PINK_SALT_ORE);
         blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.DEEPSLATE_SALT_ORE);
-        blockStateModelGenerator.registerItemModel(ModBlocks.DEEPSLATE_SALT_ORE);
+        registerCubeItemModel(blockStateModelGenerator, ModBlocks.DEEPSLATE_SALT_ORE);
         blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.DEEPSLATE_PINK_SALT_ORE);
-        blockStateModelGenerator.registerItemModel(ModBlocks.DEEPSLATE_PINK_SALT_ORE);
+        registerCubeItemModel(blockStateModelGenerator, ModBlocks.DEEPSLATE_PINK_SALT_ORE);
 
         // Block families: base block + stairs/slab/wall sharing the base block's texture
         registerFamily(blockStateModelGenerator, ModBlocks.CLUMPED_SALT_BLOCK, ModBlocks.CLUMPED_SALT_STAIRS, ModBlocks.CLUMPED_SALT_SLAB, ModBlocks.CLUMPED_SALT_WALL);
@@ -56,10 +57,19 @@ public class ModModelProvider extends FabricModelProvider {
                                  net.minecraft.block.Block slab,
                                  net.minecraft.block.Block wall) {
         BlockStateModelGenerator.BlockTexturePool pool = blockStateModelGenerator.registerCubeAllModelTexturePool(base);
-        blockStateModelGenerator.registerItemModel(base);
+        registerCubeItemModel(blockStateModelGenerator, base);
         pool.stairs(stairs);
         pool.slab(slab);
         pool.wall(wall);
+    }
+
+    /**
+     * {@link BlockStateModelGenerator#registerItemModel(net.minecraft.item.Item)} always
+     * produces a flat item/generated icon; a cube-shaped block's item icon needs to instead
+     * parent to the block's own 3D model.
+     */
+    private void registerCubeItemModel(BlockStateModelGenerator blockStateModelGenerator, net.minecraft.block.Block block) {
+        blockStateModelGenerator.registerParentedItemModel(block, ModelIds.getBlockModelId(block));
     }
 
     @Override

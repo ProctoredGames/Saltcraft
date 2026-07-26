@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "saltcraft:block/deepslate_pink_salt_ore"
-  }
+  "parent": "saltcraft:block/deepslate_pink_salt_ore"
 }

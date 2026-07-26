@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-26T01:52:45.8957794	Saltcraft/Block Loot Tables
+// 1.21.1	2026-07-26T02:08:23.4916452	Saltcraft/Block Loot Tables
 79bbf648154fd05cc7679e5c372c0a6be58900b1 data\saltcraft\loot_table\blocks\rock_pink_salt_brick_slab.json
 33196b17982a4cd152184e00dbbcb0914be82816 data\saltcraft\loot_table\blocks\cracked_rock_salt_bricks.json
 f02eab35f957ab91e3f92321daf3e893c5e22b22 data\saltcraft\loot_table\blocks\cracked_rock_pink_salt_brick_stairs.json
@@ -24,8 +24,8 @@ c9e26e49fb1e18d65ed8a39468b949ab087d980e data\saltcraft\loot_table\blocks\rock_s
 55c91a7c8eff9e15a54d89e004938d9d99f0c540 data\saltcraft\loot_table\blocks\rock_salt_slab.json
 d9bfea272c01dea0f619d95058797ba235c74b5f data\saltcraft\loot_table\blocks\clumped_salt_slab.json
 be634b02852adf125e063f357d7595d0e7361d00 data\saltcraft\loot_table\blocks\clumped_pink_salt_slab.json
-02336d4985bb5e31a032a487016631b8f3962582 data\saltcraft\loot_table\blocks\rock_pink_salt_bricks.json
 6a48dcea04b2fb11a5cccde86ddd2b02ce602da7 data\saltcraft\loot_table\blocks\deepslate_salt_ore.json
+02336d4985bb5e31a032a487016631b8f3962582 data\saltcraft\loot_table\blocks\rock_pink_salt_bricks.json
 d5303632bdf671a0fd66ba0125e8477e411e05db data\saltcraft\loot_table\blocks\rock_salt_wall.json
 b4057673e3d8d3515b25935ba640fcda63dfe2d5 data\saltcraft\loot_table\blocks\cracked_rock_salt_brick_slab.json
 74e22a6f62463299f6f555c51ee8b099d8d04269 data\saltcraft\loot_table\blocks\rock_pink_salt_block.json

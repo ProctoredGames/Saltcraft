@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "saltcraft:block/salt_block"
-  }
+  "parent": "saltcraft:block/salt_block"
 }
