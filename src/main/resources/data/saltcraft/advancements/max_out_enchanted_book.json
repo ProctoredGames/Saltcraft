@@ -1,23 +1,15 @@
 {
-  "parent": "saltcraft:root",
+  "parent": "saltcraft:obtain_salt_tome",
   "criteria": {
-    "use_salt_tome": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "saltcraft:salt_tome"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:impossible"
+    "max_out_enchant": {
+      "trigger": "minecraft:impossible",
+      "conditions": {}
     }
   },
   "display": {
     "announce_to_chat": true,
     "description": {
-      "translate": "advancements.obtain_salt_tome.description"
+      "translate": "advancements.max_out_enchanted_book.description"
     },
     "frame": "challenge",
     "hidden": false,
@@ -26,12 +18,12 @@
     },
     "show_toast": true,
     "title": {
-      "translate": "advancements.obtain_salt_tome.title"
+      "translate": "advancements.max_out_enchanted_book.title"
     }
   },
   "requirements": [
     [
-      "use_salt_tome"
+      "max_out_enchant"
     ]
   ],
   "sends_telemetry_event": true

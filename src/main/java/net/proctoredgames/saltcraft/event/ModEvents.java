@@ -162,7 +162,7 @@ public class ModEvents {
                 if (rightInput.getItem() == ModItems.SALT_TOME.get()) {
                     // Trigger advancement
                     Advancement advancement = player.server.getAdvancements()
-                            .getAdvancement(new ResourceLocation("saltcraft", "max_out_enchanted_book_level"));
+                            .getAdvancement(new ResourceLocation("saltcraft", "max_out_enchanted_book"));
                     if (advancement != null) {
                         player.getAdvancements().award(advancement, "max_out_enchant");
                     }

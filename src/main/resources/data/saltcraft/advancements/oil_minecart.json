@@ -2,21 +2,13 @@
   "parent": "saltcraft:obtain_oil_can",
   "criteria": {
     "use_oil_can_on_minecart": {
-      "trigger": "minecraft:item_used_on_entity",
+      "trigger": "minecraft:player_interacted_with_entity",
       "conditions": {
-        "location": {
-          "condition": "minecraft:match_tool",
-          "predicate": {
-            "items": [
-              "saltcraft:filled_oil_can"
-            ]
-          }
+        "item": {
+          "items": "saltcraft:filled_oil_can"
         },
         "entity": {
-          "condition": "minecraft:match_entity",
-          "predicate": {
-            "type": "minecraft:minecart"
-          }
+          "type": "minecraft:minecart"
         }
       }
     }
