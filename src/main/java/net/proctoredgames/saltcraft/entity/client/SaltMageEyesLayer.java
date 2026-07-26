@@ -1,24 +1,22 @@
 package net.proctoredgames.saltcraft.entity.client;
 
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.layers.EyesLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.entity.feature.EyesFeatureRenderer;
+import net.minecraft.client.render.entity.feature.FeatureRendererContext;
+import net.minecraft.util.Identifier;
 import net.proctoredgames.saltcraft.Saltcraft;
 import net.proctoredgames.saltcraft.entity.custom.SaltMage;
 
-public class SaltMageEyesLayer extends EyesLayer<SaltMage, SaltMageModel<SaltMage>> {
-    // Define the emissive texture
-    private static final RenderType EYES = RenderType.eyes(
-            new ResourceLocation(Saltcraft.MOD_ID, "textures/entity/salt_mage/salt_mage_eyes.png")
-    );
+public class SaltMageEyesLayer extends EyesFeatureRenderer<SaltMage, SaltMageModel<SaltMage>> {
+    private static final RenderLayer EYES = RenderLayer.getEyes(
+            Identifier.of(Saltcraft.MOD_ID, "textures/entity/salt_mage/salt_mage_eyes.png"));
 
-    public SaltMageEyesLayer(RenderLayerParent<SaltMage, SaltMageModel<SaltMage>> renderer) {
-        super(renderer);
+    public SaltMageEyesLayer(FeatureRendererContext<SaltMage, SaltMageModel<SaltMage>> context) {
+        super(context);
     }
 
     @Override
-    public RenderType renderType() {
-        return EYES; // Return the emissive texture's RenderType
+    public RenderLayer getEyesTexture() {
+        return EYES;
     }
 }

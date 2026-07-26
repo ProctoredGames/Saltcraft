@@ -1,0 +1,34 @@
+{
+  "parent": "saltcraft:obtain_thirst_effect",
+  "criteria": {
+    "kill_mirage": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "saltcraft:mirage"
+        }
+      }
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.kill_mirage.description"
+    },
+    "frame": "challenge",
+    "hidden": false,
+    "icon": {
+      "id": "minecraft:sand"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.kill_mirage.title"
+    }
+  },
+  "requirements": [
+    [
+      "kill_mirage"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

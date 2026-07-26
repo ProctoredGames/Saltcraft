@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "cookingtime": 200,
+  "experience": 0.35,
+  "ingredient": {
+    "item": "saltcraft:pink_salted_potato"
+  },
+  "result": {
+    "id": "saltcraft:pink_salted_baked_potato"
+  }
+}

@@ -1,26 +1,25 @@
 package net.proctoredgames.saltcraft.potion;
 
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.item.alchemy.Potion;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.potion.Potion;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
 import net.proctoredgames.saltcraft.Saltcraft;
 import net.proctoredgames.saltcraft.effect.ModEffects;
 
 public class ModPotions {
-    public static final DeferredRegister<Potion> POTIONS =
-            DeferredRegister.create(ForgeRegistries.POTIONS, Saltcraft.MOD_ID);
+    public static final Potion SALT_WATER_BOTTLE = register("salt_water_bottle",
+            new Potion(new StatusEffectInstance(ModEffects.THIRST, 600, 0)));
+    public static final Potion PINK_SALT_WATER_BOTTLE = register("pink_salt_water_bottle",
+            new Potion(new StatusEffectInstance(ModEffects.THIRST, 600, 0),
+                    new StatusEffectInstance(StatusEffects.REGENERATION, 600, 0)));
 
-    public static final RegistryObject<Potion> SALT_WATER_BOTTLE = POTIONS.register("salt_water_bottle",
-            () -> new Potion(new MobEffectInstance(ModEffects.THIRST.get(), 600, 0)));
-    public static final RegistryObject<Potion> PINK_SALT_WATER_BOTTLE = POTIONS.register("pink_salt_water_bottle",
-            () -> new Potion(new MobEffectInstance(ModEffects.THIRST.get(), 600, 0),
-                    new MobEffectInstance(MobEffects.REGENERATION, 600, 0)));
+    private static Potion register(String name, Potion potion) {
+        return Registry.register(Registries.POTION, Identifier.of(Saltcraft.MOD_ID, name), potion);
+    }
 
-    public static void register(IEventBus eventBus){
-        POTIONS.register(eventBus);
+    public static void register() {
     }
 }

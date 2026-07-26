@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": {
+      "item": "saltcraft:ancient_staff_fragment"
+    }
+  },
+  "pattern": [
+    "   ",
+    " S ",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "saltcraft:uncharged_staff_of_the_desert"
+  }
+}

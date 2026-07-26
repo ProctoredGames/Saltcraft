@@ -1,69 +1,55 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package net.proctoredgames.saltcraft.item.custom;
 
-import java.util.List;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.stats.Stats;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUtils;
-import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ClipContext.Fluid;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsage;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.stat.Stats;
+import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.RaycastContext;
+import net.minecraft.world.World;
+import net.minecraft.world.event.GameEvent;
 import net.proctoredgames.saltcraft.fluid.ModFluids;
 import net.proctoredgames.saltcraft.item.ModItems;
 
 public class OilCanItem extends Item {
-    public OilCanItem(Item.Properties pProperties) {
-        super(pProperties);
+    public OilCanItem(Settings settings) {
+        super(settings);
     }
 
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pHand) {
+    @Override
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack handItem = player.getStackInHand(hand);
 
-        ItemStack whatHandItem = pPlayer.getItemInHand(pHand);
-
-        BlockHitResult $$7 = getPlayerPOVHitResult(pLevel, pPlayer, Fluid.SOURCE_ONLY);
-        if ($$7.getType() == Type.MISS) {
-            return InteractionResultHolder.pass(whatHandItem);
+        BlockHitResult hit = raycast(world, player, RaycastContext.FluidHandling.SOURCE_ONLY);
+        if (hit.getType() == HitResult.Type.MISS) {
+            return TypedActionResult.pass(handItem);
         } else {
-            if ($$7.getType() == Type.BLOCK) {
-                BlockPos $$8 = $$7.getBlockPos();
-                if (!pLevel.mayInteract(pPlayer, $$8)) {
-                    return InteractionResultHolder.pass(whatHandItem);
+            if (hit.getType() == HitResult.Type.BLOCK) {
+                BlockPos pos = hit.getBlockPos();
+                if (!world.canPlayerModifyAt(player, pos)) {
+                    return TypedActionResult.pass(handItem);
                 }
 
-                if (pLevel.getFluidState($$8).getType() == ModFluids.OIL.get()) {
-                    pLevel.playSound(pPlayer, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
-                    pLevel.gameEvent(pPlayer, GameEvent.FLUID_PICKUP, $$8);
-                    return InteractionResultHolder.sidedSuccess(this.turnBottleIntoItem(whatHandItem, pPlayer, new ItemStack(ModItems.FILLED_OIL_CAN.get())), pLevel.isClientSide());
+                if (world.getFluidState(pos).getFluid() == ModFluids.OIL) {
+                    world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.NEUTRAL, 1.0F, 1.0F);
+                    world.emitGameEvent(player, GameEvent.FLUID_PICKUP, pos);
+                    return TypedActionResult.success(this.turnCanIntoItem(handItem, player, new ItemStack(ModItems.FILLED_OIL_CAN)), world.isClient);
                 }
             }
 
-            return InteractionResultHolder.pass(whatHandItem);
+            return TypedActionResult.pass(handItem);
         }
     }
 
-    protected ItemStack turnBottleIntoItem(ItemStack pBottleStack, Player pPlayer, ItemStack pFilledBottleStack) {
-        pPlayer.awardStat(Stats.ITEM_USED.get(this));
-        return ItemUtils.createFilledResult(pBottleStack, pPlayer, pFilledBottleStack);
+    protected ItemStack turnCanIntoItem(ItemStack canStack, PlayerEntity player, ItemStack filledCanStack) {
+        player.incrementStat(Stats.USED.getOrCreateStat(this));
+        return ItemUsage.exchangeStack(canStack, player, filledCanStack);
     }
 }

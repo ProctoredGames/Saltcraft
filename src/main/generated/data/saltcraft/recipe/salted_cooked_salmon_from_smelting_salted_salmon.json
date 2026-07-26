@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "cookingtime": 200,
+  "experience": 0.35,
+  "ingredient": {
+    "item": "saltcraft:salted_salmon"
+  },
+  "result": {
+    "id": "saltcraft:salted_cooked_salmon"
+  }
+}

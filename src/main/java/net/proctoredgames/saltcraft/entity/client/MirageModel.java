@@ -1,20 +1,20 @@
-package net.proctoredgames.saltcraft.entity.client;// Made with Blockbench 4.11.2
-// Exported for Minecraft version 1.17 or later with Mojang mappings
-// Paste this class into your mod and generate all required imports
+package net.proctoredgames.saltcraft.entity.client;
 
-
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.HierarchicalModel;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.world.entity.Entity;
-import net.proctoredgames.saltcraft.entity.custom.Mirage;
+import net.minecraft.client.model.Dilation;
+import net.minecraft.client.model.ModelData;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.model.ModelPartBuilder;
+import net.minecraft.client.model.ModelPartData;
+import net.minecraft.client.model.ModelTransform;
+import net.minecraft.client.model.TexturedModelData;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.entity.model.SinglePartEntityModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.proctoredgames.saltcraft.entity.animations.ModAnimationDefinitions;
-import net.proctoredgames.saltcraft.entity.custom.Crystid;
+import net.proctoredgames.saltcraft.entity.custom.Mirage;
 
-public class MirageModel<T extends Mirage> extends HierarchicalModel<T> {
+// Made with Blockbench, converted to Yarn mappings
+public class MirageModel<T extends Mirage> extends SinglePartEntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	private final ModelPart mirage_body;
 	private final ModelPart right_arm;
@@ -38,50 +38,50 @@ public class MirageModel<T extends Mirage> extends HierarchicalModel<T> {
 		this.body = this.mirage_body.getChild("body");
 	}
 
-	public static LayerDefinition createBodyLayer() {
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition partdefinition = meshdefinition.getRoot();
+	public static TexturedModelData getTexturedModelData() {
+		ModelData meshdefinition = new ModelData();
+		ModelPartData partdefinition = meshdefinition.getRoot();
 
-		PartDefinition mirage_body = partdefinition.addOrReplaceChild("mirage_body", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
+		ModelPartData mirage_body = partdefinition.addChild("mirage_body", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 24.0F, 0.0F));
 
-		PartDefinition right_arm = mirage_body.addOrReplaceChild("right_arm", CubeListBuilder.create().texOffs(24, 16).addBox(0.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(4.0F, -22.0F, -1.0F));
+		ModelPartData right_arm = mirage_body.addChild("right_arm", ModelPartBuilder.create().uv(24, 16).cuboid(0.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(4.0F, -22.0F, -1.0F));
 
-		PartDefinition head = mirage_body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -24.0F, -1.0F));
+		ModelPartData head = mirage_body.addChild("head", ModelPartBuilder.create().uv(0, 0).cuboid(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -24.0F, -1.0F));
 
-		PartDefinition left_head_flap = head.addOrReplaceChild("left_head_flap", CubeListBuilder.create().texOffs(32, 32).addBox(-4.0F, -4.0F, 0.0F, 4.0F, 8.0F, 0.0F, new CubeDeformation(0.0F))
-				.texOffs(32, 40).addBox(-4.0F, -4.0F, 0.01F, 4.0F, 8.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-4.0F, -4.0F, -2.0F, 0.0F, -0.2618F, 0.0F));
+		ModelPartData left_head_flap = head.addChild("left_head_flap", ModelPartBuilder.create().uv(32, 32).cuboid(-4.0F, -4.0F, 0.0F, 4.0F, 8.0F, 0.0F, new Dilation(0.0F))
+				.uv(32, 40).cuboid(-4.0F, -4.0F, 0.01F, 4.0F, 8.0F, 0.0F, new Dilation(0.0F)), ModelTransform.of(-4.0F, -4.0F, -2.0F, 0.0F, -0.2618F, 0.0F));
 
-		PartDefinition right_head_flap = head.addOrReplaceChild("right_head_flap", CubeListBuilder.create().texOffs(40, 16).addBox(0.0F, -4.0F, 0.0F, 4.0F, 8.0F, 0.0F, new CubeDeformation(0.0F))
-				.texOffs(40, 24).addBox(0.0F, -4.0F, 0.01F, 4.0F, 8.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(4.0F, -4.0F, -2.0F, 0.0F, 0.2618F, 0.0F));
+		ModelPartData right_head_flap = head.addChild("right_head_flap", ModelPartBuilder.create().uv(40, 16).cuboid(0.0F, -4.0F, 0.0F, 4.0F, 8.0F, 0.0F, new Dilation(0.0F))
+				.uv(40, 24).cuboid(0.0F, -4.0F, 0.01F, 4.0F, 8.0F, 0.0F, new Dilation(0.0F)), ModelTransform.of(4.0F, -4.0F, -2.0F, 0.0F, 0.2618F, 0.0F));
 
-		PartDefinition left_arm = mirage_body.addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(0, 32).addBox(-4.0F, -2.0F, -2.0F, 4.0F, 14.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(-4.0F, -22.0F, -1.0F));
+		ModelPartData left_arm = mirage_body.addChild("left_arm", ModelPartBuilder.create().uv(0, 32).cuboid(-4.0F, -2.0F, -2.0F, 4.0F, 14.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(-4.0F, -22.0F, -1.0F));
 
-		PartDefinition right_leg = mirage_body.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(32, 0).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(2.0F, -12.0F, 0.0F));
+		ModelPartData right_leg = mirage_body.addChild("right_leg", ModelPartBuilder.create().uv(32, 0).cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(2.0F, -12.0F, 0.0F));
 
-		PartDefinition left_leg = mirage_body.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(16, 32).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(-2.0F, -12.0F, 0.0F));
+		ModelPartData left_leg = mirage_body.addChild("left_leg", ModelPartBuilder.create().uv(16, 32).cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(-2.0F, -12.0F, 0.0F));
 
-		PartDefinition body = mirage_body.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 16).addBox(-4.0F, -12.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -12.0F, 0.0F));
+		ModelPartData body = mirage_body.addChild("body", ModelPartBuilder.create().uv(0, 16).cuboid(-4.0F, -12.0F, -2.0F, 8.0F, 12.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -12.0F, 0.0F));
 
-		return LayerDefinition.create(meshdefinition, 64, 64);
+		return TexturedModelData.of(meshdefinition, 64, 64);
 	}
 
 	@Override
-	public void setupAnim(Mirage entity, float pLimbSwing, float pLimbSwingAmount, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
-		this.root().getAllParts().forEach(ModelPart::resetPose);
-		this.head.yRot = pNetHeadYaw * 0.017453292F;
-		this.head.xRot = pHeadPitch * 0.017453292F;
+	public void setAngles(Mirage entity, float pLimbSwing, float pLimbSwingAmount, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
+		this.getPart().traverse().forEach(ModelPart::resetTransform);
+		this.head.yaw = pNetHeadYaw * 0.017453292F;
+		this.head.pitch = pHeadPitch * 0.017453292F;
 
-		this.animateWalk(ModAnimationDefinitions.MIRAGE_WALK, pLimbSwing, pLimbSwingAmount, 2f, 2.5f);
-		this.animate(entity.attackAnimationState, ModAnimationDefinitions.MIRAGE_PUNCH, pAgeInTicks, 1f);
+		this.animateMovement(ModAnimationDefinitions.MIRAGE_WALK, pLimbSwing, pLimbSwingAmount, 2f, 2.5f);
+		this.updateAnimation(entity.attackAnimationState, ModAnimationDefinitions.MIRAGE_PUNCH, pAgeInTicks, 1f);
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		mirage_body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void render(MatrixStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+		mirage_body.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override
-	public ModelPart root() {
+	public ModelPart getPart() {
 		return mirage_body;
 	}
 }

@@ -1,270 +1,194 @@
 package net.proctoredgames.saltcraft.entity.custom;
 
-import com.mojang.serialization.Codec;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ByIdMap;
-import net.minecraft.util.RandomSource;
-import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
-import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.animal.*;
-import net.minecraft.world.entity.animal.axolotl.Axolotl;
-import net.minecraft.world.entity.animal.frog.Frog;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
-import net.proctoredgames.saltcraft.entity.ModEntities;
+import net.minecraft.entity.AnimationState;
+import net.minecraft.entity.EntityData;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.VariantHolder;
+import net.minecraft.entity.ai.goal.FleeEntityGoal;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.passive.FishEntity;
+import net.minecraft.entity.passive.TurtleEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
+import net.minecraft.world.World;
 import net.proctoredgames.saltcraft.item.ModItems;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
 
-public class Jellyfish extends AbstractFish implements VariantHolder<Jellyfish.Variant>{
-
-    private static final EntityDataAccessor<Integer> DATA_VARIANT_ID;
-
-    private static final EntityDataAccessor<Boolean> FROM_BUCKET;
-    private static final Predicate<LivingEntity> SCARY_MOB;
-    static final TargetingConditions targetingConditions;
-
-    public Jellyfish(EntityType<? extends Jellyfish> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 1.0F, 0F, true);
-        this.lookControl = new SmoothSwimmingLookControl(this, 10);
-    }
-
-    @javax.annotation.Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @javax.annotation.Nullable SpawnGroupData pSpawnData, @javax.annotation.Nullable CompoundTag pDataTag) {
-        RandomSource $$5 = pLevel.getRandom();
-        this.setVariant(Jellyfish.Variant.getRandom($$5));
-        if (pSpawnData == null) {
-            pSpawnData = new AgeableMob.AgeableMobGroupData(false);
-        }
-
-        return super.finalizeSpawn(pLevel, pDifficulty, pReason, (SpawnGroupData)pSpawnData, pDataTag);
-    }
-
-    public void addAdditionalSaveData(CompoundTag pCompound) {
-        super.addAdditionalSaveData(pCompound);
-        pCompound.putInt("Variant", this.getVariant().id);
-        pCompound.putBoolean("FromBucket", this.fromBucket());
-    }
-
-    public void readAdditionalSaveData(CompoundTag pCompound) {
-        super.readAdditionalSaveData(pCompound);
-        this.setVariant(Jellyfish.Variant.byId(pCompound.getInt("Variant")));
-        this.setFromBucket(pCompound.getBoolean("FromBucket"));
-    }
-
-    @Override
-    public void setVariant(Variant pVariant) {
-        this.entityData.set(DATA_VARIANT_ID, pVariant.id);
-    }
-
-    @Override
-    public Jellyfish.Variant getVariant() {
-        return Jellyfish.Variant.byId((Integer)this.entityData.get(DATA_VARIANT_ID));
-    }
+public class Jellyfish extends FishEntity implements VariantHolder<Jellyfish.Variant> {
+    private static final TrackedData<Integer> VARIANT =
+            DataTracker.registerData(Jellyfish.class, TrackedDataHandlerRegistry.INTEGER);
 
     public final AnimationState idleAnimationState = new AnimationState();
     private int idleAnimationTimeout = 0;
 
-    public boolean addEffect(MobEffectInstance pEffectInstance, @javax.annotation.Nullable Entity pEntity) {
-        return pEffectInstance.getEffect() != MobEffects.POISON;
+    public Jellyfish(EntityType<? extends Jellyfish> entityType, World world) {
+        super(entityType, world);
+    }
+
+    public static DefaultAttributeContainer.Builder createAttributes() {
+        return FishEntity.createFishAttributes()
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 20D)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 24D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
-        if (pSource.getEntity() instanceof Turtle) {
-            if (this.distanceTo(pSource.getEntity()) > 2) {
-                return false;
-            }
+    protected void initDataTracker(DataTracker.Builder builder) {
+        super.initDataTracker(builder);
+        builder.add(VARIANT, 0);
+    }
+
+    @Override
+    protected void initGoals() {
+        super.initGoals();
+        this.goalSelector.add(1, new FleeEntityGoal<>(this, TurtleEntity.class, 6F, 2, 1.4));
+    }
+
+    @Nullable
+    @Override
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+        this.setVariant(Variant.getRandom(world.getRandom()));
+        return super.initialize(world, difficulty, spawnReason, entityData);
+    }
+
+    @Override
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putInt("Variant", this.getVariant().id);
+    }
+
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        this.setVariant(Variant.byId(nbt.getInt("Variant")));
+    }
+
+    @Override
+    public void setVariant(Variant variant) {
+        this.dataTracker.set(VARIANT, variant.id);
+    }
+
+    @Override
+    public Variant getVariant() {
+        return Variant.byId(this.dataTracker.get(VARIANT));
+    }
+
+    @Override
+    public boolean canHaveStatusEffect(StatusEffectInstance effect) {
+        return effect.getEffectType() != StatusEffects.POISON;
+    }
+
+    @Override
+    public boolean damage(DamageSource source, float amount) {
+        if (source.getSource() instanceof TurtleEntity && this.distanceTo(source.getSource()) > 2) {
+            return false;
         }
-        return super.hurt(pSource, pAmount); // Apply damage normally
+        return super.damage(source, amount);
     }
 
     @Override
     public void tick() {
         super.tick();
-
-        if(this.level().isClientSide()) {
+        if (this.getWorld().isClient) {
             setupAnimationStates();
         }
     }
 
     private void setupAnimationStates() {
-        if(this.idleAnimationTimeout <= 0) {
+        if (this.idleAnimationTimeout <= 0) {
             this.idleAnimationTimeout = this.random.nextInt(40) + 80;
-            this.idleAnimationState.start(this.tickCount);
+            this.idleAnimationState.start(this.age);
         } else {
             --this.idleAnimationTimeout;
         }
     }
 
     @Override
-    protected void registerGoals() {
-        this.goalSelector.addGoal(1, new AvoidEntityGoal<>(this, Turtle.class, 6F, 2, 1.4));
-        this.goalSelector.addGoal(2, new FollowBoatGoal(this));}
-
-    public static AttributeSupplier.Builder createAttributes() {
-        return Animal.createLivingAttributes()
-                .add(Attributes.MAX_HEALTH, 20D)
-                .add(Attributes.FOLLOW_RANGE, 24D)
-                .add(Attributes.MOVEMENT_SPEED, 0.25D);
-    }
-
-
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(DATA_VARIANT_ID, 0);
-        this.entityData.define(FROM_BUCKET, false);
-    }
-
-    public void aiStep() {
-        super.aiStep();
-        if (this.isAlive()) {
-            List<Mob> $$0 = this.level().getEntitiesOfClass(Mob.class, this.getBoundingBox().inflate(0.3), (p_149013_) -> {
-                return targetingConditions.test(this, p_149013_);
-            });
-            Iterator var2 = $$0.iterator();
-
-            while(var2.hasNext()) {
-                Mob $$1 = (Mob)var2.next();
-                if ($$1.isAlive()) {
-                    //the jellyfish stings SCARY_MOB mobs. That means everything except for creative mode players
-                    this.touch($$1);
+    public void tickMovement() {
+        super.tickMovement();
+        if (this.isAlive() && !this.getWorld().isClient) {
+            // The jellyfish stings everything except creative players and turtles
+            List<MobEntity> nearby = this.getWorld().getEntitiesByClass(MobEntity.class, this.getBoundingBox().expand(0.3),
+                    mob -> mob != this && mob.getType() != EntityType.TURTLE);
+            for (MobEntity mob : nearby) {
+                if (mob.isAlive()) {
+                    sting(mob);
                 }
             }
         }
-
     }
 
-    private void touch(Mob pMob) {
-        if (pMob.position().y<this.position().y-0.2) {
-            pMob.hurt(this.damageSources().mobAttack(this), (float)(2));
-            pMob.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 0), this);
+    private void sting(net.minecraft.entity.LivingEntity target) {
+        if (target.getY() < this.getY() - 0.2) {
+            target.damage(this.getDamageSources().mobAttack(this), 2.0F);
+            target.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 60, 0), this);
         }
-
-    }
-
-    public void playerTouch(Player pEntity) {
-        if (pEntity instanceof ServerPlayer && pEntity.position().y<this.position().y-0.2) {
-            pEntity.hurt(this.damageSources().mobAttack(this), (float)(2));
-            pEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 0), this);
-        }
-
     }
 
     @Override
-    public double getFluidJumpThreshold() {
-        return 1.0;
+    public void onPlayerCollision(net.minecraft.entity.player.PlayerEntity player) {
+        if (player instanceof net.minecraft.server.network.ServerPlayerEntity && player.getY() < this.getY() - 0.2) {
+            player.damage(this.getDamageSources().mobAttack(this), 2.0F);
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 60, 0), this);
+        }
+    }
+
+    @Override
+    public ItemStack getBucketItem() {
+        return new ItemStack(ModItems.JELLYFISH_BUCKET);
+    }
+
+    @Override
+    public SoundEvent getBucketFillSound() {
+        return SoundEvents.ITEM_BUCKET_FILL_AXOLOTL;
     }
 
     @Nullable
     @Override
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.PUFFER_FISH_AMBIENT;
+        return SoundEvents.ENTITY_PUFFER_FISH_AMBIENT;
     }
 
     @Nullable
     @Override
-    protected SoundEvent getHurtSound(DamageSource pDamageSource) {
-        return SoundEvents.SLIME_HURT;
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return SoundEvents.ENTITY_SLIME_HURT;
     }
 
     @Nullable
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.SLIME_DEATH;
-    }
-
-    public boolean canBreatheUnderwater() {
-        return true;
-    }
-
-    public boolean isPushedByFluid() {
-        return true;
-    }
-
-    public MobType getMobType() {
-        return MobType.WATER;
+        return SoundEvents.ENTITY_SLIME_DEATH;
     }
 
     @Override
-    public ItemStack getBucketItemStack() {
-        return new ItemStack(ModItems.JELLYFISH_BUCKET.get());
-    }
-
-    @Override
-    public SoundEvent getPickupSound() {
-        return SoundEvents.BUCKET_FILL_AXOLOTL;
-    }
-
     protected SoundEvent getFlopSound() {
-        return SoundEvents.TADPOLE_FLOP;
+        return SoundEvents.ENTITY_TADPOLE_FLOP;
     }
 
     @Override
-    public boolean shouldRenderAtSqrDistance(double pDistance) {
-        return pDistance < 512;
+    public boolean shouldRender(double distance) {
+        return distance < 512;
     }
 
-    private void usePlayerItem(Player pPlayer, ItemStack pStack) {
-        if (!pPlayer.getAbilities().instabuild) {
-            pStack.shrink(1);
-        }
-
-    }
-
-    @Override
-    protected ResourceLocation getDefaultLootTable() {
-        return new ResourceLocation("saltcraft", "entities/jellyfish");
-    }
-
-    static {
-        FROM_BUCKET = SynchedEntityData.defineId(Jellyfish.class, EntityDataSerializers.BOOLEAN);
-        SCARY_MOB = (p_289442_) -> {
-            if (p_289442_ instanceof Player && ((Player)p_289442_).isCreative()) {
-                return false;
-            } else {
-                return p_289442_.getType() != EntityType.TURTLE;
-            }
-        };
-        targetingConditions = TargetingConditions.forNonCombat().ignoreInvisibilityTesting().ignoreLineOfSight().selector(SCARY_MOB);
-        DATA_VARIANT_ID = SynchedEntityData.defineId(Jellyfish.class, EntityDataSerializers.INT);
-    }
-
-    public static enum Variant implements StringRepresentable {
+    public enum Variant implements StringIdentifiable {
         BLUE(0, "blue"),
         CYAN(1, "cyan"),
         ORANGE(2, "orange"),
@@ -272,40 +196,30 @@ public class Jellyfish extends AbstractFish implements VariantHolder<Jellyfish.V
         PURPLE(4, "purple"),
         RED(5, "red");
 
-        public static final Codec<Jellyfish.Variant> CODEC = StringRepresentable.fromEnum(Jellyfish.Variant::values);
-        private static final IntFunction<Jellyfish.Variant> BY_ID = ByIdMap.continuous(Jellyfish.Variant::getId, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
         final int id;
         private final String name;
 
-        private Variant(int pId, String pName) {
-            this.id = pId;
-            this.name = pName;
+        Variant(int id, String name) {
+            this.id = id;
+            this.name = name;
         }
 
         public int getId() {
             return this.id;
         }
 
-        public static Jellyfish.Variant byId(int pId) {
-            return (Jellyfish.Variant)BY_ID.apply(pId);
+        public static Variant byId(int id) {
+            Variant[] values = values();
+            return values[Math.max(0, Math.min(id, values.length - 1))];
         }
 
-        public String getSerializedName() {
+        @Override
+        public String asString() {
             return this.name;
         }
 
-        public static Jellyfish.Variant getRandom(RandomSource pRandom){
-            int number = pRandom.nextInt(0,6);
-            return switch (number) {
-                case 0 -> BLUE;
-                case 1 -> CYAN;
-                case 2 -> ORANGE;
-                case 3 -> PINK;
-                case 4 -> PURPLE;
-                case 5 -> RED;
-                default -> BLUE;
-            };
+        public static Variant getRandom(Random random) {
+            return byId(random.nextInt(values().length));
         }
-
     }
 }

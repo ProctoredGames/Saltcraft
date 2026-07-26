@@ -1,29 +1,26 @@
 package net.proctoredgames.saltcraft.worldgen.feature;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.GeodeConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
-import net.proctoredgames.saltcraft.worldgen.feature.SaltDomeFeature;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.gen.feature.DefaultFeatureConfig;
+import net.minecraft.world.gen.feature.Feature;
+import net.proctoredgames.saltcraft.Saltcraft;
 
 public class ModFeatures {
-    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, "saltcraft");
+    public static final Feature<DefaultFeatureConfig> SALT_DOME = register("salt_dome",
+            new SaltDomeFeature(DefaultFeatureConfig.CODEC));
 
-    // Register the custom blob feature
-    public static final RegistryObject<Feature<NoneFeatureConfiguration>> SALT_DOME = FEATURES.register("salt_dome",
-            () -> new SaltDomeFeature(NoneFeatureConfiguration.CODEC));
+    public static final Feature<DefaultFeatureConfig> SALT_LAKE = register("salt_lake",
+            new SaltLakeFeature(DefaultFeatureConfig.CODEC));
 
-    public static final RegistryObject<Feature<NoneFeatureConfiguration>> SALT_LAKE = FEATURES.register("salt_lake",
-            () -> new SaltLakeFeature(NoneFeatureConfiguration.CODEC));
+    public static final Feature<DefaultFeatureConfig> SALT_FLAT_WATER_CLEANUP = register("salt_flat_water_cleanup",
+            new SaltFlatWaterCleanupFeature(DefaultFeatureConfig.CODEC));
 
-    public static final RegistryObject<Feature<NoneFeatureConfiguration>> SALT_FLAT_WATER_CLEANUP = FEATURES.register("salt_flat_water_cleanup",
-            () -> new SaltFlatWaterCleanupFeature(NoneFeatureConfiguration.CODEC));
+    private static <T extends Feature<?>> T register(String name, T feature) {
+        return Registry.register(Registries.FEATURE, Identifier.of(Saltcraft.MOD_ID, name), feature);
+    }
 
-
-    public static void register(IEventBus eventBus) { FEATURES.register(eventBus); }
-
+    public static void register() {
+    }
 }

@@ -1,0 +1,48 @@
+{
+  "parent": "saltcraft:enter_salt_flat",
+  "criteria": {
+    "flamingo_feather": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "saltcraft:flamingo_feather"
+            ]
+          },
+          {
+            "items": [
+              "saltcraft:white_flamingo_feather"
+            ]
+          },
+          {
+            "items": [
+              "minecraft:feather"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.obtain_all_feathers.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "id": "saltcraft:flamingo_feather"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.obtain_all_feathers.title"
+    }
+  },
+  "requirements": [
+    [
+      "flamingo_feather"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

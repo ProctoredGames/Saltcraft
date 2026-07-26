@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "saltcraft:rock_salt_block"
+  },
+  "result": {
+    "count": 1,
+    "id": "saltcraft:rock_salt_pillar"
+  }
+}

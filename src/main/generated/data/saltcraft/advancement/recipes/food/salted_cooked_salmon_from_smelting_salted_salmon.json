@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_salted_salmon": {
+      "conditions": {
+        "items": [
+          {
+            "items": "saltcraft:salted_salmon"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:salted_cooked_salmon_from_smelting_salted_salmon"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_salted_salmon"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:salted_cooked_salmon_from_smelting_salted_salmon"
+    ]
+  }
+}

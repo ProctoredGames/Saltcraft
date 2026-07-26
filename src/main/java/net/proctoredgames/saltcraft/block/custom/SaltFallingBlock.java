@@ -1,30 +1,36 @@
 package net.proctoredgames.saltcraft.block.custom;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.FallingBlock;
-import net.minecraft.world.level.block.state.BlockState;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.FallingBlock;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.proctoredgames.saltcraft.item.custom.SaltItem;
 
-import java.util.Map;
-
 public class SaltFallingBlock extends FallingBlock {
-    public SaltFallingBlock(Properties pProperties) {
-        super(pProperties);
+    public static final MapCodec<SaltFallingBlock> CODEC = createCodec(SaltFallingBlock::new);
+
+    public SaltFallingBlock(Settings settings) {
+        super(settings);
     }
 
     @Override
-    public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
-        for(int i = 0; i< pRandom.nextInt(6); i++){
-            BlockPos adjacentPos = pPos.relative(Direction.getRandom(pRandom));
-            BlockState adjacentState = pLevel.getBlockState(adjacentPos);
+    protected MapCodec<? extends FallingBlock> getCodec() {
+        return CODEC;
+    }
+
+    @Override
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        for (int i = 0; i < random.nextInt(6); i++) {
+            BlockPos adjacentPos = pos.offset(Direction.random(random));
+            BlockState adjacentState = world.getBlockState(adjacentPos);
             Block replacementBlock = SaltItem.getBlockTransformations().get(adjacentState.getBlock());
             if (replacementBlock != null && adjacentState.getBlock() != Blocks.POWDER_SNOW_CAULDRON) {
-                pLevel.setBlock(adjacentPos, replacementBlock.defaultBlockState(), 3);
+                world.setBlockState(adjacentPos, replacementBlock.getDefaultState(), 3);
             }
         }
     }

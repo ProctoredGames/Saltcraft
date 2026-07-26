@@ -1,0 +1,37 @@
+{
+  "parent": "saltcraft:obtain_oil_can",
+  "criteria": {
+    "use_oil_can_on_minecart": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": "saltcraft:filled_oil_can"
+        },
+        "entity": {
+          "type": "minecraft:minecart"
+        }
+      }
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.oil_minecart.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "id": "minecraft:minecart"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.oil_minecart.title"
+    }
+  },
+  "requirements": [
+    [
+      "use_oil_can_on_minecart"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

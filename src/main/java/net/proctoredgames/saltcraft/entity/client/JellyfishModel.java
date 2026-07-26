@@ -1,18 +1,21 @@
-package net.proctoredgames.saltcraft.entity.client;// Made with Blockbench 4.10.4
-// Exported for Minecraft version 1.17 or later with Mojang mappings
-// Paste this class into your mod and generate all required imports
+package net.proctoredgames.saltcraft.entity.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.proctoredgames.saltcraft.entity.custom.Jellyfish;
+import net.minecraft.client.model.Dilation;
+import net.minecraft.client.model.ModelData;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.model.ModelPartBuilder;
+import net.minecraft.client.model.ModelPartData;
+import net.minecraft.client.model.ModelTransform;
+import net.minecraft.client.model.TexturedModelData;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.entity.model.SinglePartEntityModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.proctoredgames.saltcraft.entity.animations.ModAnimationDefinitions;
-import net.minecraft.client.model.HierarchicalModel;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.world.entity.Entity;
+import net.proctoredgames.saltcraft.entity.custom.Jellyfish;
+import net.minecraft.entity.Entity;
 
-public class JellyfishModel<T extends Entity> extends HierarchicalModel<T> {
+// Made with Blockbench, converted to Yarn mappings
+public class JellyfishModel<T extends Entity> extends SinglePartEntityModel<T> {
 
 	private final ModelPart jellyfish_body;
 	private final ModelPart hood;
@@ -42,56 +45,56 @@ public class JellyfishModel<T extends Entity> extends HierarchicalModel<T> {
 		this.oral_arms = root.getChild("jellyfish_body").getChild("oral_arms");
 	}
 
-	public static LayerDefinition createBodyLayer() {
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition partdefinition = meshdefinition.getRoot();
+	public static TexturedModelData getTexturedModelData() {
+		ModelData meshdefinition = new ModelData();
+		ModelPartData partdefinition = meshdefinition.getRoot();
 
-		PartDefinition jellyfish_body = partdefinition.addOrReplaceChild("jellyfish_body", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
+		ModelPartData jellyfish_body = partdefinition.addChild("jellyfish_body", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 24.0F, 0.0F));
 
-		PartDefinition hood = jellyfish_body.addOrReplaceChild("hood", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 4.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+		ModelPartData hood = jellyfish_body.addChild("hood", ModelPartBuilder.create().uv(0, 0).cuboid(-4.0F, -4.0F, -4.0F, 8.0F, 4.0F, 8.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
 
-		PartDefinition tentacles = jellyfish_body.addOrReplaceChild("tentacles", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+		ModelPartData tentacles = jellyfish_body.addChild("tentacles", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
 
-		PartDefinition tentacle_1 = tentacles.addOrReplaceChild("tentacle_1", CubeListBuilder.create().texOffs(0, 15).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 12.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(1.25F, 0.0F, -3.0F));
+		ModelPartData tentacle_1 = tentacles.addChild("tentacle_1", ModelPartBuilder.create().uv(0, 15).cuboid(-0.5F, 0.0F, -0.5F, 1.0F, 12.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(1.25F, 0.0F, -3.0F));
 
-		PartDefinition tentacle_2 = tentacles.addOrReplaceChild("tentacle_2", CubeListBuilder.create().texOffs(0, 15).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 12.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(-1.25F, 0.0F, -3.0F));
+		ModelPartData tentacle_2 = tentacles.addChild("tentacle_2", ModelPartBuilder.create().uv(0, 15).cuboid(-0.5F, 0.0F, -0.5F, 1.0F, 12.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(-1.25F, 0.0F, -3.0F));
 
-		PartDefinition tentacle_3 = tentacles.addOrReplaceChild("tentacle_3", CubeListBuilder.create().texOffs(0, 15).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 12.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(-3.0F, 0.0F, -1.25F));
+		ModelPartData tentacle_3 = tentacles.addChild("tentacle_3", ModelPartBuilder.create().uv(0, 15).cuboid(-0.5F, 0.0F, -0.5F, 1.0F, 12.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(-3.0F, 0.0F, -1.25F));
 
-		PartDefinition tentacle_4 = tentacles.addOrReplaceChild("tentacle_4", CubeListBuilder.create().texOffs(0, 15).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 12.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(-3.0F, 0.0F, 1.25F));
+		ModelPartData tentacle_4 = tentacles.addChild("tentacle_4", ModelPartBuilder.create().uv(0, 15).cuboid(-0.5F, 0.0F, -0.5F, 1.0F, 12.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(-3.0F, 0.0F, 1.25F));
 
-		PartDefinition tentacle_5 = tentacles.addOrReplaceChild("tentacle_5", CubeListBuilder.create().texOffs(0, 15).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 12.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(-1.25F, 0.0F, 3.0F));
+		ModelPartData tentacle_5 = tentacles.addChild("tentacle_5", ModelPartBuilder.create().uv(0, 15).cuboid(-0.5F, 0.0F, -0.5F, 1.0F, 12.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(-1.25F, 0.0F, 3.0F));
 
-		PartDefinition tentacle_6 = tentacles.addOrReplaceChild("tentacle_6", CubeListBuilder.create().texOffs(0, 15).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 12.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(1.25F, 0.0F, 3.0F));
+		ModelPartData tentacle_6 = tentacles.addChild("tentacle_6", ModelPartBuilder.create().uv(0, 15).cuboid(-0.5F, 0.0F, -0.5F, 1.0F, 12.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(1.25F, 0.0F, 3.0F));
 
-		PartDefinition tentacle_7 = tentacles.addOrReplaceChild("tentacle_7", CubeListBuilder.create().texOffs(0, 15).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 12.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(3.0F, 0.0F, 1.25F));
+		ModelPartData tentacle_7 = tentacles.addChild("tentacle_7", ModelPartBuilder.create().uv(0, 15).cuboid(-0.5F, 0.0F, -0.5F, 1.0F, 12.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(3.0F, 0.0F, 1.25F));
 
-		PartDefinition tentacle_8 = tentacles.addOrReplaceChild("tentacle_8", CubeListBuilder.create().texOffs(0, 15).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 12.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(3.0F, 0.0F, -1.25F));
+		ModelPartData tentacle_8 = tentacles.addChild("tentacle_8", ModelPartBuilder.create().uv(0, 15).cuboid(-0.5F, 0.0F, -0.5F, 1.0F, 12.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(3.0F, 0.0F, -1.25F));
 
-		PartDefinition oral_arms = jellyfish_body.addOrReplaceChild("oral_arms", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+		ModelPartData oral_arms = jellyfish_body.addChild("oral_arms", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
 
-		PartDefinition cube_r1 = oral_arms.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(16, 12).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 8.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -2.3562F, 0.0F));
+		ModelPartData cube_r1 = oral_arms.addChild("cube_r1", ModelPartBuilder.create().uv(16, 12).cuboid(-2.0F, 0.0F, 0.0F, 4.0F, 8.0F, 0.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, -2.3562F, 0.0F));
 
-		PartDefinition cube_r2 = oral_arms.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(16, 24).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 8.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -0.7854F, 0.0F));
+		ModelPartData cube_r2 = oral_arms.addChild("cube_r2", ModelPartBuilder.create().uv(16, 24).cuboid(-2.0F, 0.0F, 0.0F, 4.0F, 8.0F, 0.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, -0.7854F, 0.0F));
 
-		return LayerDefinition.create(meshdefinition, 32, 32);
+		return TexturedModelData.of(meshdefinition, 32, 32);
 	}
 
 	@Override
-	public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		this.root().getAllParts().forEach(ModelPart::resetPose);
+	public void setAngles(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		this.getPart().traverse().forEach(ModelPart::resetTransform);
 
-		this.animateWalk(ModAnimationDefinitions.JELLYFISH_DRIFT, limbSwing, limbSwingAmount, 2f, 2.5f);
-		this.animate(((Jellyfish) entity).idleAnimationState, ModAnimationDefinitions.JELLYFISH_IDLE, ageInTicks, 1f);
+		this.animateMovement(ModAnimationDefinitions.JELLYFISH_DRIFT, limbSwing, limbSwingAmount, 2f, 2.5f);
+		this.updateAnimation(((Jellyfish) entity).idleAnimationState, ModAnimationDefinitions.JELLYFISH_IDLE, ageInTicks, 1f);
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		jellyfish_body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void render(MatrixStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+		jellyfish_body.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override
-	public ModelPart root() {
+	public ModelPart getPart() {
 		return jellyfish_body;
 	}
 }

@@ -1,32 +1,27 @@
 package net.proctoredgames.saltcraft.entity.ai.goal;
 
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.player.Player;
-import net.proctoredgames.saltcraft.effect.ModEffects;
-import net.proctoredgames.saltcraft.entity.custom.Crystid;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.proctoredgames.saltcraft.entity.custom.Mirage;
 
-public class MirageNearestAttackableTargetGoal extends NearestAttackableTargetGoal {
+public class MirageNearestAttackableTargetGoal<T extends LivingEntity> extends ActiveTargetGoal<T> {
     private final Mirage mirage;
 
-    public MirageNearestAttackableTargetGoal(Mirage pMirage, Class pTargetType, boolean pFollowingTargetEvenIfNotSeen) {
-        super(pMirage, pTargetType, pFollowingTargetEvenIfNotSeen);
-        this.mirage = pMirage;
+    public MirageNearestAttackableTargetGoal(Mirage mirage, Class<T> targetClass, boolean checkVisibility) {
+        super(mirage, targetClass, checkVisibility);
+        this.mirage = mirage;
     }
 
     @Override
-    public boolean canUse() {
-        if(mirage.isHunting()){
-            if (this.randomInterval > 0 && this.mob.getRandom().nextInt(this.randomInterval) != 0) {
+    public boolean canStart() {
+        if (mirage.isHunting()) {
+            if (this.reciprocalChance > 0 && this.mob.getRandom().nextInt(this.reciprocalChance) != 0) {
                 return false;
             } else {
-                this.findTarget();
-                return this.target != null;
+                this.findClosestTarget();
+                return this.targetEntity != null;
             }
-        } else{
+        } else {
             return false;
         }
     }

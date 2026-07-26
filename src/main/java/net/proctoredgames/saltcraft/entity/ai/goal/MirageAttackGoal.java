@@ -1,10 +1,7 @@
 package net.proctoredgames.saltcraft.entity.ai.goal;
 
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.proctoredgames.saltcraft.effect.ModEffects;
-import net.proctoredgames.saltcraft.entity.custom.Crystid;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.proctoredgames.saltcraft.entity.custom.Mirage;
 
 public class MirageAttackGoal extends MeleeAttackGoal {
@@ -12,48 +9,44 @@ public class MirageAttackGoal extends MeleeAttackGoal {
     private int punchTicks;
     private final double attackRange;
 
-    public MirageAttackGoal(Mirage pMirage, double pSpeedModifier, boolean pFollowingTargetEvenIfNotSeen, double pAttackRange) {
-        super(pMirage, pSpeedModifier, pFollowingTargetEvenIfNotSeen);
-        this.attackRange = pAttackRange;
-        this.mirage = pMirage;
+    public MirageAttackGoal(Mirage mirage, double speed, boolean pauseWhenMobIdle, double attackRange) {
+        super(mirage, speed, pauseWhenMobIdle);
+        this.attackRange = attackRange;
+        this.mirage = mirage;
     }
 
+    @Override
     public void start() {
         super.start();
         this.punchTicks = 0;
     }
 
+    @Override
     public void stop() {
         super.stop();
+        this.mirage.setAttackWindup(false);
         this.mirage.setAttacking(false);
-        this.mirage.setAggressive(false);
     }
 
+    @Override
     public void tick() {
         super.tick();
         ++this.punchTicks;
-        if (this.punchTicks >= 5 && this.getTicksUntilNextAttack() < this.getAttackInterval() / 2) {
-            this.mirage.setAggressive(true);
-        }else if (this.punchTicks >= 0 && this.getTicksUntilNextAttack() > this.getAttackInterval() / 2) {
-            mirage.setAttacking(true);
+        if (this.punchTicks >= 5 && this.getCooldown() < this.getMaxCooldown() / 2) {
+            this.mirage.setAttacking(true);
+        } else if (this.punchTicks >= 0 && this.getCooldown() > this.getMaxCooldown() / 2) {
+            mirage.setAttackWindup(true);
         } else {
+            this.mirage.setAttackWindup(false);
             this.mirage.setAttacking(false);
-            this.mirage.setAggressive(false);
-        }
-
-    }
-
-    @Override
-    protected void checkAndPerformAttack(LivingEntity enemy, double squaredDistance) {
-        double attackReachSq = this.getAttackReachSqr(enemy);
-        if (squaredDistance <= attackReachSq && this.isTimeToAttack()) {
-            this.resetAttackCooldown();
-            this.mob.doHurtTarget(enemy);
         }
     }
 
     @Override
-    protected double getAttackReachSqr(LivingEntity target) {
-        return this.attackRange * this.attackRange;
+    protected void attack(LivingEntity target) {
+        if (this.mirage.squaredDistanceTo(target) <= this.attackRange * this.attackRange && this.isCooledDown()) {
+            this.resetCooldown();
+            this.mob.tryAttack(target);
+        }
     }
 }

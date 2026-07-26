@@ -1,179 +1,170 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package net.proctoredgames.saltcraft.block.custom;
 
-import java.util.Optional;
-import javax.annotation.Nullable;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.stats.Stats;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.Containers;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.pathfinder.PathComputationType;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.BooleanOp;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.proctoredgames.saltcraft.block.ModBlocks;
-import net.proctoredgames.saltcraft.entity.ModEntities;
-import net.proctoredgames.saltcraft.entity.custom.Crystid;
-import net.proctoredgames.saltcraft.entity.custom.SaltMage;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.FluidFillable;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.block.Waterloggable;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.particle.SimpleParticleType;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.Hand;
+import net.minecraft.util.ItemActionResult;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 
-public class SummoningPlinthBlock extends Block implements SimpleWaterloggedBlock {
-    protected static final VoxelShape SHAPE = Block.box(1.0, 0.0, 1.0, 15.0, 8.0, 15.0);
-    public static final BooleanProperty CRACKED;
-    public static final BooleanProperty LIT;
-    public static final BooleanProperty WATERLOGGED;
+public class SummoningPlinthBlock extends Block implements FluidFillable, Waterloggable {
+    public static final MapCodec<SummoningPlinthBlock> CODEC = createCodec(settings -> new SummoningPlinthBlock(5, settings));
+    protected static final VoxelShape SHAPE = Block.createCuboidShape(1.0, 0.0, 1.0, 15.0, 8.0, 15.0);
+    public static final BooleanProperty CRACKED = Properties.CRACKED;
+    public static final BooleanProperty LIT = Properties.LIT;
+    public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     private final int fireDamage;
 
-    public SummoningPlinthBlock(int pFireDamage, Properties pProperties) {
-        super(pProperties);
-        this.fireDamage = pFireDamage;
-        this.registerDefaultState(this.stateDefinition.any().setValue(CRACKED, false).setValue(LIT, false).setValue(WATERLOGGED, false));
+    public SummoningPlinthBlock(int fireDamage, Settings settings) {
+        super(settings);
+        this.fireDamage = fireDamage;
+        this.setDefaultState(this.stateManager.getDefaultState().with(CRACKED, false).with(LIT, false).with(WATERLOGGED, false));
     }
 
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        boolean flag = !(Boolean)pState.getValue(LIT);
-        if(flag && pPlayer.getItemInHand(pHand).getItem() == Items.FLINT_AND_STEEL){
-            if (!pLevel.isClientSide()) {
-                pLevel.playSound((Player)null, pPos, SoundEvents.SUSPICIOUS_GRAVEL_BREAK, SoundSource.BLOCKS, 5.0F, 1.0F);
-                pPlayer.getItemInHand(pHand).hurt(1, pPlayer.getRandom(), pPlayer instanceof ServerPlayer serverPlayer ? serverPlayer : null);
-                pLevel.setBlock(pPos, pState.setValue(CRACKED, true).setValue(LIT, true), 3);
-                return InteractionResult.SUCCESS;
-            } else{
-                for(int i = 0; i < 20; ++i) {
-                    makeParticles((Level)pLevel, pPos);
+    @Override
+    protected MapCodec<? extends Block> getCodec() {
+        return CODEC;
+    }
+
+    @Override
+    public ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        boolean notLit = !state.get(LIT);
+        if (notLit && stack.getItem() == Items.FLINT_AND_STEEL) {
+            if (!world.isClient) {
+                world.playSound(null, pos, SoundEvents.BLOCK_SUSPICIOUS_GRAVEL_BREAK, SoundCategory.BLOCKS, 5.0F, 1.0F);
+                stack.damage(1, player, net.minecraft.entity.EquipmentSlot.MAINHAND);
+                world.setBlockState(pos, state.with(CRACKED, true).with(LIT, true), 3);
+                return ItemActionResult.SUCCESS;
+            } else {
+                for (int i = 0; i < 20; ++i) {
+                    makeParticles(world, pos);
                 }
             }
-            return InteractionResult.CONSUME_PARTIAL;
+            return ItemActionResult.CONSUME;
         }
-        return InteractionResult.PASS;
+        return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
-    public void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity) {
-        if (pState.getValue(LIT) && pEntity instanceof LivingEntity && !EnchantmentHelper.hasFrostWalker((LivingEntity)pEntity)) {
-            pEntity.hurt(pLevel.damageSources().magic(), (float)this.fireDamage);
+    @Override
+    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
+        if (state.get(LIT) && entity instanceof LivingEntity livingEntity && !hasFrostWalker(world, livingEntity)) {
+            entity.damage(world.getDamageSources().magic(), (float) this.fireDamage);
         }
 
-        super.entityInside(pState, pLevel, pPos, pEntity);
+        super.onEntityCollision(state, world, pos, entity);
     }
 
-    public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-        if (pState.getValue(WATERLOGGED)) {
-            pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
+    private static boolean hasFrostWalker(World world, LivingEntity entity) {
+        return world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Enchantments.FROST_WALKER)
+                .map(enchantment -> EnchantmentHelper.getEquipmentLevel(enchantment, entity) > 0)
+                .orElse(false);
+    }
+
+    @Override
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        if (state.get(WATERLOGGED)) {
+            world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
 
-        return super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
+        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
     }
 
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+    @Override
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return SHAPE;
     }
 
-    public RenderShape getRenderShape(BlockState pState) {
-        return RenderShape.MODEL;
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.MODEL;
     }
 
-    public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, RandomSource pRandom) {
-        if (pState.getValue(LIT)) {
-            if (pRandom.nextInt(10) == 0) {
-                pLevel.playLocalSound((double)pPos.getX() + 0.5, (double)pPos.getY() + 0.5, (double)pPos.getZ() + 0.5, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 0.5F + pRandom.nextFloat(), pRandom.nextFloat() * 0.7F + 0.6F, false);
+    @Override
+    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
+        if (state.get(LIT)) {
+            if (random.nextInt(10) == 0) {
+                world.playSound((double) pos.getX() + 0.5, (double) pos.getY() + 0.5, (double) pos.getZ() + 0.5, SoundEvents.BLOCK_CAMPFIRE_CRACKLE, SoundCategory.BLOCKS, 0.5F + random.nextFloat(), random.nextFloat() * 0.7F + 0.6F, false);
             }
         }
-
     }
 
-    public boolean placeLiquid(LevelAccessor pLevel, BlockPos pPos, BlockState pState, FluidState pFluidState) {
-        if (!(Boolean)pState.getValue(BlockStateProperties.WATERLOGGED) && pFluidState.getType() == Fluids.WATER) {
-            pLevel.setBlock(pPos, pState.setValue(WATERLOGGED, true), 3);
-            pLevel.scheduleTick(pPos, pFluidState.getType(), pFluidState.getType().getTickDelay(pLevel));
+    @Override
+    public boolean canFillWithFluid(PlayerEntity player, BlockView world, BlockPos pos, BlockState state, net.minecraft.fluid.Fluid fluid) {
+        return !state.get(WATERLOGGED) && fluid == Fluids.WATER;
+    }
+
+    @Override
+    public boolean tryFillWithFluid(WorldAccess world, BlockPos pos, BlockState state, FluidState fluidState) {
+        if (!state.get(WATERLOGGED) && fluidState.getFluid() == Fluids.WATER) {
+            world.setBlockState(pos, state.with(WATERLOGGED, true), 3);
+            world.scheduleFluidTick(pos, fluidState.getFluid(), fluidState.getFluid().getTickRate(world));
             return true;
         } else {
             return false;
         }
     }
 
-    public void onProjectileHit(Level pLevel, BlockState pState, BlockHitResult pHit, Projectile pProjectile) {
-        BlockPos blockpos = pHit.getBlockPos();
-        if (pProjectile.mayInteract(pLevel, blockpos) && pProjectile.isOnFire() && !(Boolean)pState.getValue(LIT) && !(Boolean)pState.getValue(WATERLOGGED)) {
-            if(!pLevel.isClientSide){
-                pLevel.setBlock(blockpos, pState.setValue(CRACKED, true).setValue(LIT, true), 11);
-            }else{
-                for(int i = 0; i < 20; ++i) {
-                    makeParticles((Level)pLevel, new BlockPos((int)pHit.getBlockPos().getCenter().x, (int)pHit.getBlockPos().getCenter().y, (int)pHit.getBlockPos().getCenter().z));
+    @Override
+    public void onProjectileHit(World world, BlockState state, BlockHitResult hit, ProjectileEntity projectile) {
+        BlockPos pos = hit.getBlockPos();
+        if (projectile.canModifyAt(world, pos) && projectile.isOnFire() && !state.get(LIT) && !state.get(WATERLOGGED)) {
+            if (!world.isClient) {
+                world.setBlockState(pos, state.with(CRACKED, true).with(LIT, true), 11);
+            } else {
+                for (int i = 0; i < 20; ++i) {
+                    makeParticles(world, BlockPos.ofFloored(hit.getBlockPos().toCenterPos()));
                 }
             }
-
         }
-
     }
 
-    public static void makeParticles(Level pLevel, BlockPos pPos) {
-        RandomSource randomsource = pLevel.getRandom();
-        SimpleParticleType simpleparticletype = ParticleTypes.POOF;
-        pLevel.addAlwaysVisibleParticle(simpleparticletype, true, (double)pPos.getX() + 0.5 + randomsource.nextDouble() / 3.0 * (double)(randomsource.nextBoolean() ? 1 : -1), (double)pPos.getY() + randomsource.nextDouble() + randomsource.nextDouble(), (double)pPos.getZ() + 0.5 + randomsource.nextDouble() / 3.0 * (double)(randomsource.nextBoolean() ? 1 : -1), 0.0, 0.07, 0.0);
-
+    public static void makeParticles(World world, BlockPos pos) {
+        Random random = world.getRandom();
+        SimpleParticleType particleType = ParticleTypes.POOF;
+        world.addImportantParticle(particleType, true, (double) pos.getX() + 0.5 + random.nextDouble() / 3.0 * (random.nextBoolean() ? 1 : -1), (double) pos.getY() + random.nextDouble() + random.nextDouble(), (double) pos.getZ() + 0.5 + random.nextDouble() / 3.0 * (random.nextBoolean() ? 1 : -1), 0.0, 0.07, 0.0);
     }
 
-    public FluidState getFluidState(BlockState pState) {
-        return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
+    @Override
+    public FluidState getFluidState(BlockState state) {
+        return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
     }
 
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(new Property[]{CRACKED, LIT, WATERLOGGED});
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(CRACKED, LIT, WATERLOGGED);
     }
 
-
-    public boolean isPathfindable(BlockState pState, BlockGetter pLevel, BlockPos pPos, PathComputationType pType) {
+    @Override
+    protected boolean canPathfindThrough(BlockState state, net.minecraft.entity.ai.pathing.NavigationType type) {
         return false;
-    }
-
-    static {
-        CRACKED = BlockStateProperties.CRACKED;
-        LIT = BlockStateProperties.LIT;
-        WATERLOGGED = BlockStateProperties.WATERLOGGED;
     }
 }

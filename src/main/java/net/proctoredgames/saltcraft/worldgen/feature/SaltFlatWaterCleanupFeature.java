@@ -1,15 +1,15 @@
 package net.proctoredgames.saltcraft.worldgen.feature;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.Heightmap;
+import net.minecraft.world.StructureWorldAccess;
+import net.minecraft.world.gen.feature.DefaultFeatureConfig;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.util.FeatureContext;
 import net.proctoredgames.saltcraft.worldgen.biome.ModBiomes;
 import net.proctoredgames.saltcraft.worldgen.biome.surface.ModSurfaceRules;
 
@@ -20,36 +20,36 @@ import net.proctoredgames.saltcraft.worldgen.biome.surface.ModSurfaceRules;
  * left floating in midair. This feature runs in the last decoration step and clears
  * any fluid above ground level in salt flat columns.
  */
-public class SaltFlatWaterCleanupFeature extends Feature<NoneFeatureConfiguration> {
+public class SaltFlatWaterCleanupFeature extends Feature<DefaultFeatureConfig> {
 
-    public SaltFlatWaterCleanupFeature(Codec<NoneFeatureConfiguration> codec) {
+    public SaltFlatWaterCleanupFeature(Codec<DefaultFeatureConfig> codec) {
         super(codec);
     }
 
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-        WorldGenLevel level = context.level();
-        ChunkPos chunkPos = new ChunkPos(context.origin());
-        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-        BlockState air = Blocks.AIR.defaultBlockState();
+    public boolean generate(FeatureContext<DefaultFeatureConfig> context) {
+        StructureWorldAccess world = context.getWorld();
+        ChunkPos chunkPos = new ChunkPos(context.getOrigin());
+        BlockPos.Mutable pos = new BlockPos.Mutable();
+        BlockState air = Blocks.AIR.getDefaultState();
         boolean changed = false;
 
-        for (int x = chunkPos.getMinBlockX(); x <= chunkPos.getMaxBlockX(); ++x) {
-            for (int z = chunkPos.getMinBlockZ(); z <= chunkPos.getMaxBlockZ(); ++z) {
-                int top = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);
+        for (int x = chunkPos.getStartX(); x <= chunkPos.getEndX(); ++x) {
+            for (int z = chunkPos.getStartZ(); z <= chunkPos.getEndZ(); ++z) {
+                int top = world.getTopY(Heightmap.Type.WORLD_SURFACE_WG, x, z);
                 if (top <= ModSurfaceRules.SALT_FLAT_GROUND_LEVEL) {
                     continue;
                 }
 
                 pos.set(x, ModSurfaceRules.SALT_FLAT_GROUND_LEVEL, z);
-                if (!level.getBiome(pos).is(ModBiomes.SALT_FLAT)) {
+                if (!world.getBiome(pos).matchesKey(ModBiomes.SALT_FLAT)) {
                     continue;
                 }
 
                 for (int y = ModSurfaceRules.SALT_FLAT_GROUND_LEVEL; y < top; ++y) {
                     pos.setY(y);
-                    if (!level.getBlockState(pos).getFluidState().isEmpty()) {
-                        level.setBlock(pos, air, 2);
+                    if (!world.getBlockState(pos).getFluidState().isEmpty()) {
+                        world.setBlockState(pos, air, 2);
                         changed = true;
                     }
                 }

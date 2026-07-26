@@ -1,54 +1,43 @@
 package net.proctoredgames.saltcraft.entity.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.MobEntityRenderer;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
 import net.proctoredgames.saltcraft.Saltcraft;
 import net.proctoredgames.saltcraft.entity.custom.Jellyfish;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
 
-public class JellyfishRenderer extends MobRenderer<Jellyfish, JellyfishModel<Jellyfish>> {
-    private static final ResourceLocation BLUE = new ResourceLocation(Saltcraft.MOD_ID, "textures/entity/jellyfish/jellyfish_blue.png");
-    private static final ResourceLocation CYAN = new ResourceLocation(Saltcraft.MOD_ID, "textures/entity/jellyfish/jellyfish_cyan.png");
-    private static final ResourceLocation ORANGE = new ResourceLocation(Saltcraft.MOD_ID, "textures/entity/jellyfish/jellyfish_orange.png");
-    private static final ResourceLocation PINK = new ResourceLocation(Saltcraft.MOD_ID, "textures/entity/jellyfish/jellyfish_pink.png");
-    private static final ResourceLocation PURPLE = new ResourceLocation(Saltcraft.MOD_ID, "textures/entity/jellyfish/jellyfish_purple.png");
-    private static final ResourceLocation RED = new ResourceLocation(Saltcraft.MOD_ID, "textures/entity/jellyfish/jellyfish_red.png");
+public class JellyfishRenderer extends MobEntityRenderer<Jellyfish, JellyfishModel<Jellyfish>> {
+    private static final Identifier BLUE = Identifier.of(Saltcraft.MOD_ID, "textures/entity/jellyfish/jellyfish_blue.png");
+    private static final Identifier CYAN = Identifier.of(Saltcraft.MOD_ID, "textures/entity/jellyfish/jellyfish_cyan.png");
+    private static final Identifier ORANGE = Identifier.of(Saltcraft.MOD_ID, "textures/entity/jellyfish/jellyfish_orange.png");
+    private static final Identifier PINK = Identifier.of(Saltcraft.MOD_ID, "textures/entity/jellyfish/jellyfish_pink.png");
+    private static final Identifier PURPLE = Identifier.of(Saltcraft.MOD_ID, "textures/entity/jellyfish/jellyfish_purple.png");
+    private static final Identifier RED = Identifier.of(Saltcraft.MOD_ID, "textures/entity/jellyfish/jellyfish_red.png");
 
-
-    public JellyfishRenderer(EntityRendererProvider.Context pContext) {
-        super(pContext, new JellyfishModel<>(pContext.bakeLayer(ModModelLayers.JELLYFISH_LAYER)), 0.4f);
+    public JellyfishRenderer(EntityRendererFactory.Context context) {
+        super(context, new JellyfishModel<>(context.getPart(ModModelLayers.JELLYFISH_LAYER)), 0.4f);
     }
 
     @Override
-    public ResourceLocation getTextureLocation(Jellyfish pEntity) {
-        return getVariantTexture(pEntity.getVariant());
-    }
-
-    public static ResourceLocation getVariantTexture(Jellyfish.Variant pVariant) {
-        ResourceLocation var10000;
-        switch (pVariant) {
-            case BLUE -> var10000 = BLUE;
-            case CYAN -> var10000 = CYAN;
-            case ORANGE -> var10000 = ORANGE;
-            case PINK -> var10000 = PINK;
-            case PURPLE -> var10000 = PURPLE;
-            case RED -> var10000 = RED;
-            default -> throw new IncompatibleClassChangeError();
-        }
-
-        return var10000;
+    public Identifier getTexture(Jellyfish entity) {
+        return switch (entity.getVariant()) {
+            case BLUE -> BLUE;
+            case CYAN -> CYAN;
+            case ORANGE -> ORANGE;
+            case PINK -> PINK;
+            case PURPLE -> PURPLE;
+            case RED -> RED;
+        };
     }
 
     @Override
-    public void render(Jellyfish pEntity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack,
-                       MultiBufferSource pBuffer, int pPackedLight) {
-        if(pEntity.isBaby()) {
-            pMatrixStack.scale(0.5f, 0.5f, 0.5f);
+    public void render(Jellyfish entity, float yaw, float tickDelta, MatrixStack matrices,
+                       VertexConsumerProvider vertexConsumers, int light) {
+        if (entity.isBaby()) {
+            matrices.scale(0.5f, 0.5f, 0.5f);
         }
-
-        super.render(pEntity, pEntityYaw, pPartialTicks, pMatrixStack, pBuffer, pPackedLight);
+        super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);
     }
-
 }

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_salted_porkchop": {
+      "conditions": {
+        "items": [
+          {
+            "items": "saltcraft:salted_porkchop"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:salted_cooked_porkchop_from_smelting_salted_porkchop"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_salted_porkchop"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:salted_cooked_porkchop_from_smelting_salted_porkchop"
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "saltcraft:salt"
+    },
+    {
+      "item": "minecraft:cod"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "saltcraft:salted_cod"
+  }
+}

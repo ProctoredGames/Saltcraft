@@ -1,32 +1,32 @@
 package net.proctoredgames.saltcraft.entity.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.MobEntityRenderer;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
 import net.proctoredgames.saltcraft.Saltcraft;
 import net.proctoredgames.saltcraft.entity.custom.Crystid;
 
-public class CrystidRenderer extends MobRenderer<Crystid, CrystidModel<Crystid>> {
-    private static final ResourceLocation CRYSTID_LOCATION = new ResourceLocation(Saltcraft.MOD_ID, "textures/entity/crystid/crystid.png");
+public class CrystidRenderer extends MobEntityRenderer<Crystid, CrystidModel<Crystid>> {
+    private static final Identifier CRYSTID_LOCATION = Identifier.of(Saltcraft.MOD_ID, "textures/entity/crystid/crystid.png");
 
-    public CrystidRenderer(EntityRendererProvider.Context pContext) {
-        super(pContext, new CrystidModel<>(pContext.bakeLayer(ModModelLayers.CRYSTID_LAYER)), 0.5f);
-        this.addLayer(new CrystidEyesLayer(this));
+    public CrystidRenderer(EntityRendererFactory.Context context) {
+        super(context, new CrystidModel<>(context.getPart(ModModelLayers.CRYSTID_LAYER)), 0.5f);
+        this.addFeature(new CrystidEyesLayer(this));
     }
 
     @Override
-    public ResourceLocation getTextureLocation(Crystid pEntity) {
+    public Identifier getTexture(Crystid entity) {
         return CRYSTID_LOCATION;
     }
 
     @Override
-    public void render(Crystid pEntity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack,
-                       MultiBufferSource pBuffer, int pPackedLight) {
-        if (pEntity.isBaby()) {
-            pMatrixStack.scale(0.6f, 0.6f, 0.6f);
+    public void render(Crystid entity, float yaw, float tickDelta, MatrixStack matrices,
+                       VertexConsumerProvider vertexConsumers, int light) {
+        if (entity.isBaby()) {
+            matrices.scale(0.6f, 0.6f, 0.6f);
         }
-        super.render(pEntity, pEntityYaw, pPartialTicks, pMatrixStack, pBuffer, pPackedLight);
+        super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);
     }
 }

@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_beetroot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:beetroot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_pink_salt": {
+      "conditions": {
+        "items": [
+          {
+            "items": "saltcraft:pink_salt"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "saltcraft:pink_salted_beetroot"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_pink_salt",
+      "has_beetroot"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "saltcraft:pink_salted_beetroot"
+    ]
+  }
+}

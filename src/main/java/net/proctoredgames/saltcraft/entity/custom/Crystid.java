@@ -1,48 +1,51 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package net.proctoredgames.saltcraft.entity.custom;
 
+import net.minecraft.entity.AnimationState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityPose;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.TargetPredicate;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.LookAroundGoal;
+import net.minecraft.entity.ai.goal.LookAtEntityGoal;
+import net.minecraft.entity.ai.goal.RevengeGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.ai.goal.TrackTargetGoal;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.PathAwareEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.raid.RaiderEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.proctoredgames.saltcraft.Saltcraft;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.UUID;
-import javax.annotation.Nullable;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.TargetGoal;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.raid.Raider;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.proctoredgames.saltcraft.entity.ai.goal.CrystidAttackGoal;
 
-public class Crystid extends Monster {
-    private static final UUID SPEED_MODIFIER_BABY_UUID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
-    private static final AttributeModifier SPEED_MODIFIER_BABY;
-    private static final EntityDataAccessor<Boolean> DATA_BABY_ID;
+public class Crystid extends HostileEntity {
+    private static final Identifier SPEED_MODIFIER_BABY_ID = Identifier.of(Saltcraft.MOD_ID, "baby_speed_boost");
+    private static final EntityAttributeModifier SPEED_MODIFIER_BABY =
+            new EntityAttributeModifier(SPEED_MODIFIER_BABY_ID, 0.5, EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 
-    private static final EntityDataAccessor<Boolean> ATTACKING =
-            SynchedEntityData.defineId(Crystid.class, EntityDataSerializers.BOOLEAN);
-//    private static final EntityDataAccessor<Integer> DATA_ID_TYPE_VARIANT =
-//            SynchedEntityData.defineId(Crystid.class, EntityDataSerializers.INT);
+    private static final TrackedData<Boolean> BABY =
+            DataTracker.registerData(Crystid.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Boolean> ATTACK_WINDUP =
+            DataTracker.registerData(Crystid.class, TrackedDataHandlerRegistry.BOOLEAN);
 
     public final AnimationState idleAnimationState = new AnimationState();
     private int idleAnimationTimeout = 0;
@@ -53,150 +56,133 @@ public class Crystid extends Monster {
     private boolean hasLimitedLife;
     private int limitedLifeTicks;
 
-
     @Nullable
-    Mob owner;
+    private MobEntity owner;
     @Nullable
-    private UUID ownerUUID;
-    @Nullable
+    private UUID ownerUuid;
 
-
-    public Crystid(EntityType<? extends Crystid> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
+    public Crystid(EntityType<? extends Crystid> entityType, World world) {
+        super(entityType, world);
     }
 
-    protected void registerGoals() {
-        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-        this.addBehaviourGoals();
+    public static DefaultAttributeContainer.Builder createAttributes() {
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 15.0)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 35.0)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0);
     }
 
-    protected void addBehaviourGoals() {
-        super.registerGoals();
-        this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(4, new CrystidAttackGoal(this, 1.5, false));
-        this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
-        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
-        this.targetSelector.addGoal(1, (new HurtByTargetGoal(this, new Class[]{Raider.class})).setAlertOthers(new Class[0]));
-        this.targetSelector.addGoal(2, new CrystidCopyOwnerTargetGoal(this));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, Player.class, true));
-
+    @Override
+    protected void initDataTracker(DataTracker.Builder builder) {
+        super.initDataTracker(builder);
+        builder.add(BABY, false);
+        builder.add(ATTACK_WINDUP, false);
     }
 
-    public static AttributeSupplier.Builder createAttributes() {
-        return Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 15.0)
-                .add(Attributes.FOLLOW_RANGE, 35.0)
-                .add(Attributes.MOVEMENT_SPEED, 0.2)
-                .add(Attributes.ATTACK_DAMAGE, 3.0);
+    @Override
+    protected void initGoals() {
+        this.goalSelector.add(0, new SwimGoal(this));
+        this.goalSelector.add(4, new net.proctoredgames.saltcraft.entity.ai.goal.CrystidAttackGoal(this, 1.5, false));
+        this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.add(8, new LookAroundGoal(this));
+        this.goalSelector.add(9, new LookAtEntityGoal(this, PlayerEntity.class, 3.0F, 1.0F));
+        this.goalSelector.add(10, new LookAtEntityGoal(this, MobEntity.class, 8.0F));
+        this.targetSelector.add(1, new RevengeGoal(this, RaiderEntity.class).setGroupRevenge());
+        this.targetSelector.add(2, new CrystidCopyOwnerTargetGoal(this));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.getEntityData().define(DATA_BABY_ID, false);
-        this.entityData.define(ATTACKING, false);
-    }
-
-    public void readAdditionalSaveData(CompoundTag pCompound) {
-        super.readAdditionalSaveData(pCompound);
-
-        if (pCompound.contains("LifeTicks")) {
-            this.setLimitedLife(pCompound.getInt("LifeTicks"));
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        if (nbt.contains("LifeTicks")) {
+            this.setLimitedLife(nbt.getInt("LifeTicks"));
         }
-        this.setBaby(pCompound.getBoolean("IsBaby"));
-        if (pCompound.hasUUID("OwnerUUID")) {
-            this.ownerUUID = pCompound.getUUID("OwnerUUID");
+        this.setBaby(nbt.getBoolean("IsBaby"));
+        if (nbt.containsUuid("OwnerUUID")) {
+            this.ownerUuid = nbt.getUuid("OwnerUUID");
         }
-
     }
 
-    public void addAdditionalSaveData(CompoundTag pCompound) {
-        super.addAdditionalSaveData(pCompound);
-
+    @Override
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
         if (this.hasLimitedLife) {
-            pCompound.putInt("LifeTicks", this.limitedLifeTicks);
+            nbt.putInt("LifeTicks", this.limitedLifeTicks);
         }
-        pCompound.putBoolean("IsBaby", this.isBaby());
-        UUID ownerId = this.owner != null ? this.owner.getUUID() : this.ownerUUID;
+        nbt.putBoolean("IsBaby", this.isBaby());
+        UUID ownerId = this.owner != null ? this.owner.getUuid() : this.ownerUuid;
         if (ownerId != null) {
-            pCompound.putUUID("OwnerUUID", ownerId);
+            nbt.putUuid("OwnerUUID", ownerId);
         }
-
     }
 
     public boolean isBaby() {
-        return (Boolean)this.getEntityData().get(DATA_BABY_ID);
+        return this.dataTracker.get(BABY);
     }
 
-    public int getExperienceReward() {
-        if (this.isBaby()) {
-            this.xpReward = (int)((double)this.xpReward * 2.5);
-        }
-
-        return super.getExperienceReward();
+    @Override
+    protected int getXpToDrop() {
+        int base = super.getXpToDrop();
+        return this.isBaby() ? (int) (base * 2.5) : base;
     }
 
-    public void setBaby(boolean pChildCrystid) {
-        this.getEntityData().set(DATA_BABY_ID, pChildCrystid);
-        if (!this.level().isClientSide) {
-            AttributeInstance attributeinstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
-            assert attributeinstance != null;
-            attributeinstance.removeModifier(SPEED_MODIFIER_BABY);
-            if (pChildCrystid) {
-                attributeinstance.addTransientModifier(SPEED_MODIFIER_BABY);
+    public void setBaby(boolean baby) {
+        this.dataTracker.set(BABY, baby);
+        if (!this.getWorld().isClient) {
+            EntityAttributeInstance speed = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+            speed.removeModifier(SPEED_MODIFIER_BABY);
+            if (baby) {
+                speed.addTemporaryModifier(SPEED_MODIFIER_BABY);
             }
         }
-
     }
 
-    public void setOwner(Mob pOwner) {
-        this.owner = pOwner;
-        this.ownerUUID = pOwner.getUUID();
+    public void setOwner(MobEntity owner) {
+        this.owner = owner;
+        this.ownerUuid = owner.getUuid();
     }
-    public void setLimitedLife(int pLimitedLifeTicks) {
+
+    public void setLimitedLife(int limitedLifeTicks) {
         this.hasLimitedLife = true;
-        this.limitedLifeTicks = pLimitedLifeTicks;
+        this.limitedLifeTicks = limitedLifeTicks;
     }
 
     @Nullable
-    public Mob getOwner() {
+    public MobEntity getOwner() {
         // Re-resolve after a chunk/server reload, when setOwner() was never called on this instance
-        if (this.owner == null && this.ownerUUID != null && this.level() instanceof ServerLevel serverLevel) {
-            Entity entity = serverLevel.getEntity(this.ownerUUID);
-            if (entity instanceof Mob mob) {
+        if (this.owner == null && this.ownerUuid != null && this.getWorld() instanceof ServerWorld serverWorld) {
+            Entity entity = serverWorld.getEntity(this.ownerUuid);
+            if (entity instanceof MobEntity mob) {
                 this.owner = mob;
             }
         }
         return this.owner;
     }
 
-    protected void updateWalkAnimation(float v) {
-        float f;
-        if (this.getPose() == Pose.STANDING) {
-            f = Math.min(v * 6.0F, 1.0F);
-        } else {
-            f = 0.0F;
-        }
-
-        this.walkAnimation.update(f, 0.2F);
+    @Override
+    protected void updateLimbs(float posDelta) {
+        float f = this.getPose() == EntityPose.STANDING ? Math.min(posDelta * 6.0F, 1.0F) : 0.0F;
+        this.limbAnimator.updateLimbs(f, 0.2F);
     }
 
     private void setupAnimationStates() {
         if (this.idleAnimationTimeout <= 0) {
             this.idleAnimationTimeout = this.random.nextInt(40) + 80;
-            this.idleAnimationState.start(this.tickCount);
+            this.idleAnimationState.start(this.age);
         } else {
             --this.idleAnimationTimeout;
         }
 
-        if(this.isAttacking() && attackAnimationTimeout <= 0) {
-            attackAnimationTimeout = 10; // Length in ticks of your animation
-            attackAnimationState.start(this.tickCount);
+        if (this.isAttackWindup() && attackAnimationTimeout <= 0) {
+            attackAnimationTimeout = 10;
+            attackAnimationState.start(this.age);
         } else {
             --this.attackAnimationTimeout;
         }
 
-        if(!this.isAttacking()) {
+        if (!this.isAttackWindup()) {
             attackAnimationState.stop();
         }
     }
@@ -205,80 +191,81 @@ public class Crystid extends Monster {
     public void tick() {
         super.tick();
 
-        if (this.level().isClientSide()) {
-            this.setupAnimationStates();
+        if (this.getWorld().isClient) {
+            setupAnimationStates();
             return;
         }
         if (this.hasLimitedLife && --this.limitedLifeTicks <= 0) {
             this.limitedLifeTicks = 20;
-            this.hurt(this.damageSources().starve(), 1.0F);
+            this.damage(this.getDamageSources().starve(), 1.0F);
         }
     }
 
-    public void setAttacking(boolean attacking) {
-        this.entityData.set(ATTACKING, attacking);
+    public void setAttackWindup(boolean windup) {
+        this.dataTracker.set(ATTACK_WINDUP, windup);
     }
 
-    public boolean isAttacking() {
-        return this.entityData.get(ATTACKING);
+    public boolean isAttackWindup() {
+        return this.dataTracker.get(ATTACK_WINDUP);
     }
 
-    public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
-        if (DATA_BABY_ID.equals(pKey)) {
-            this.refreshDimensions();
+    @Override
+    public void onTrackedDataSet(TrackedData<?> data) {
+        if (BABY.equals(data)) {
+            this.calculateDimensions();
         }
-
-        super.onSyncedDataUpdated(pKey);
+        super.onTrackedDataSet(data);
     }
 
-//    public boolean isSensitiveToWater() {
-//        return true;
-//    }
-
+    @Override
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.GLASS_STEP;
+        return SoundEvents.BLOCK_GLASS_STEP;
     }
 
-    protected SoundEvent getHurtSound(DamageSource pDamageSource) {
-        return SoundEvents.SUSPICIOUS_GRAVEL_BREAK;
+    @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return SoundEvents.BLOCK_SUSPICIOUS_GRAVEL_BREAK;
     }
 
+    @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.GLASS_BREAK;
+        return SoundEvents.BLOCK_GLASS_BREAK;
     }
 
     protected SoundEvent getStepSound() {
-        return SoundEvents.GLASS_PLACE;
+        return SoundEvents.BLOCK_GLASS_PLACE;
     }
 
-    protected void playStepSound(BlockPos pPos, BlockState pBlock) {
+    @Override
+    protected void playStepSound(BlockPos pos, net.minecraft.block.BlockState state) {
         this.playSound(this.getStepSound(), 0.15F, 1.0F);
     }
 
-    protected float getStandingEyeHeight(Pose pPose, EntityDimensions pSize) {
-        return this.isBaby() ? 0.45F : 0.90F;
+    @Override
+    protected EntityDimensions getBaseDimensions(EntityPose pose) {
+        return super.getBaseDimensions(pose).withEyeHeight(this.isBaby() ? 0.45F : 0.90F);
     }
 
-    private class CrystidCopyOwnerTargetGoal extends TargetGoal {
-        private final TargetingConditions copyOwnerTargeting = TargetingConditions.forNonCombat().ignoreLineOfSight().ignoreInvisibilityTesting();
+    private static class CrystidCopyOwnerTargetGoal extends TrackTargetGoal {
+        private final TargetPredicate copyOwnerTargeting = TargetPredicate.createNonAttackable().ignoreVisibility().ignoreDistanceScalingFactor();
+        private final Crystid crystid;
 
-        public CrystidCopyOwnerTargetGoal(PathfinderMob pMob) {
-            super(pMob, false);
+        public CrystidCopyOwnerTargetGoal(Crystid crystid) {
+            super(crystid, false);
+            this.crystid = crystid;
         }
 
-        public boolean canUse() {
-            Mob owner = Crystid.this.getOwner();
-            return owner != null && owner.getTarget() != null && this.canAttack(owner.getTarget(), this.copyOwnerTargeting);
+        @Override
+        public boolean canStart() {
+            MobEntity owner = this.crystid.getOwner();
+            return owner != null && owner.getTarget() != null && this.canTrack(owner.getTarget(), this.copyOwnerTargeting);
         }
 
+        @Override
         public void start() {
-            Crystid.this.setTarget(Crystid.this.getOwner().getTarget());
+            this.crystid.setTarget(this.crystid.getOwner().getTarget());
             super.start();
         }
     }
 
-    static {
-        SPEED_MODIFIER_BABY = new AttributeModifier(SPEED_MODIFIER_BABY_UUID, "Baby speed boost", 0.5, Operation.MULTIPLY_BASE);
-        DATA_BABY_ID = SynchedEntityData.defineId(Crystid.class, EntityDataSerializers.BOOLEAN);
-    }
 }

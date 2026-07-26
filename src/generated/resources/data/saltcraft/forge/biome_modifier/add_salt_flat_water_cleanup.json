@@ -1,6 +1,0 @@
-{
-  "type": "forge:add_features",
-  "biomes": "saltcraft:salt_flat",
-  "features": "saltcraft:salt_flat_water_cleanup_placed",
-  "step": "top_layer_modification"
-}

@@ -1,20 +1,20 @@
-package net.proctoredgames.saltcraft.entity.client;// Made with Blockbench 4.10.4
-// Exported for Minecraft version 1.17 or later with Mojang mappings
-// Paste this class into your mod and generate all required imports
+package net.proctoredgames.saltcraft.entity.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.util.Mth;
-import net.proctoredgames.saltcraft.entity.custom.Crystid;
-import net.proctoredgames.saltcraft.entity.custom.Jellyfish;
+import net.minecraft.client.model.Dilation;
+import net.minecraft.client.model.ModelData;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.model.ModelPartBuilder;
+import net.minecraft.client.model.ModelPartData;
+import net.minecraft.client.model.ModelTransform;
+import net.minecraft.client.model.TexturedModelData;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.entity.model.SinglePartEntityModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.proctoredgames.saltcraft.entity.animations.ModAnimationDefinitions;
-import net.minecraft.client.model.HierarchicalModel;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.world.entity.Entity;
+import net.proctoredgames.saltcraft.entity.custom.Crystid;
 
-public class CrystidModel<T extends Crystid> extends HierarchicalModel<T> {
+// Made with Blockbench, converted to Yarn mappings
+public class CrystidModel<T extends Crystid> extends SinglePartEntityModel<T> {
 
 	private final ModelPart crystid_body;
 	private final ModelPart head;
@@ -36,63 +36,63 @@ public class CrystidModel<T extends Crystid> extends HierarchicalModel<T> {
 		this.body = root.getChild("crystid_body").getChild("body");
 	}
 
-	public static LayerDefinition createBodyLayer() {
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition partdefinition = meshdefinition.getRoot();
+	public static TexturedModelData getTexturedModelData() {
+		ModelData meshdefinition = new ModelData();
+		ModelPartData partdefinition = meshdefinition.getRoot();
 
-		PartDefinition crystid_body = partdefinition.addOrReplaceChild("crystid_body", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
+		ModelPartData crystid_body = partdefinition.addChild("crystid_body", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 24.0F, 0.0F));
 
-		PartDefinition head = crystid_body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 30).addBox(-5.0F, -4.0F, -4.0F, 10.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-				.texOffs(-4, 24).addBox(-5.0F, 0.0F, -4.0F, 10.0F, 0.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -10.0F, -6.0F));
+		ModelPartData head = crystid_body.addChild("head", ModelPartBuilder.create().uv(0, 30).cuboid(-5.0F, -4.0F, -4.0F, 10.0F, 6.0F, 4.0F, new Dilation(0.0F))
+				.uv(-4, 24).cuboid(-5.0F, 0.0F, -4.0F, 10.0F, 0.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -10.0F, -6.0F));
 
-		PartDefinition jaw = head.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(28, 30).addBox(-5.0F, 0.0F, -4.0F, 10.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 2.0F, 0.0F));
+		ModelPartData jaw = head.addChild("jaw", ModelPartBuilder.create().uv(28, 30).cuboid(-5.0F, 0.0F, -4.0F, 10.0F, 2.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 2.0F, 0.0F));
 
-		PartDefinition leg_fl = crystid_body.addOrReplaceChild("leg_fl", CubeListBuilder.create().texOffs(0, 40).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(5.0F, -4.0F, -4.0F));
+		ModelPartData leg_fl = crystid_body.addChild("leg_fl", ModelPartBuilder.create().uv(0, 40).cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 4.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(5.0F, -4.0F, -4.0F));
 
-		PartDefinition leg_fr = crystid_body.addOrReplaceChild("leg_fr", CubeListBuilder.create().texOffs(36, 0).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(-5.0F, -4.0F, -4.0F));
+		ModelPartData leg_fr = crystid_body.addChild("leg_fr", ModelPartBuilder.create().uv(36, 0).cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 4.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(-5.0F, -4.0F, -4.0F));
 
-		PartDefinition leg_br = crystid_body.addOrReplaceChild("leg_br", CubeListBuilder.create().texOffs(24, 36).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(-5.0F, -4.0F, 4.0F));
+		ModelPartData leg_br = crystid_body.addChild("leg_br", ModelPartBuilder.create().uv(24, 36).cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 4.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(-5.0F, -4.0F, 4.0F));
 
-		PartDefinition leg_bl = crystid_body.addOrReplaceChild("leg_bl", CubeListBuilder.create().texOffs(48, 8).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(5.0F, -4.0F, 4.0F));
+		ModelPartData leg_bl = crystid_body.addChild("leg_bl", ModelPartBuilder.create().uv(48, 8).cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 4.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(5.0F, -4.0F, 4.0F));
 
-		PartDefinition body = crystid_body.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-6.0F, -6.0F, -6.0F, 12.0F, 12.0F, 12.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -10.0F, 0.0F));
+		ModelPartData body = crystid_body.addChild("body", ModelPartBuilder.create().uv(0, 0).cuboid(-6.0F, -6.0F, -6.0F, 12.0F, 12.0F, 12.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -10.0F, 0.0F));
 
-		PartDefinition cube_r1 = body.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(40, 33).addBox(0.0F, -7.0F, -1.0F, 0.0F, 14.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(8.0F, 0.0F, 0.0F, 1.5708F, -0.7854F, -1.5708F));
+		ModelPartData cube_r1 = body.addChild("cube_r1", ModelPartBuilder.create().uv(40, 33).cuboid(0.0F, -7.0F, -1.0F, 0.0F, 14.0F, 3.0F, new Dilation(0.0F)), ModelTransform.of(8.0F, 0.0F, 0.0F, 1.5708F, -0.7854F, -1.5708F));
 
-		PartDefinition cube_r2 = body.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(16, 37).addBox(0.0F, -7.0F, -1.0F, 0.0F, 14.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(8.0F, 0.0F, 0.0F, 1.5708F, -2.3562F, -1.5708F));
+		ModelPartData cube_r2 = body.addChild("cube_r2", ModelPartBuilder.create().uv(16, 37).cuboid(0.0F, -7.0F, -1.0F, 0.0F, 14.0F, 3.0F, new Dilation(0.0F)), ModelTransform.of(8.0F, 0.0F, 0.0F, 1.5708F, -2.3562F, -1.5708F));
 
-		PartDefinition cube_r3 = body.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(28, 41).addBox(0.0F, -7.0F, -1.0F, 0.0F, 14.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -8.0F, 0.0F, -1.5708F, -0.7854F, 0.0F));
+		ModelPartData cube_r3 = body.addChild("cube_r3", ModelPartBuilder.create().uv(28, 41).cuboid(0.0F, -7.0F, -1.0F, 0.0F, 14.0F, 3.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -8.0F, 0.0F, -1.5708F, -0.7854F, 0.0F));
 
-		PartDefinition cube_r4 = body.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(22, 41).addBox(0.0F, -7.0F, -1.0F, 0.0F, 14.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -8.0F, 0.0F, -1.5708F, 0.7854F, 0.0F));
+		ModelPartData cube_r4 = body.addChild("cube_r4", ModelPartBuilder.create().uv(22, 41).cuboid(0.0F, -7.0F, -1.0F, 0.0F, 14.0F, 3.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -8.0F, 0.0F, -1.5708F, 0.7854F, 0.0F));
 
-		PartDefinition cube_r5 = body.addOrReplaceChild("cube_r5", CubeListBuilder.create().texOffs(0, 45).addBox(0.0F, -7.0F, -1.0F, 0.0F, 14.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-8.0F, 0.0F, 0.0F, 1.5708F, 0.7854F, 1.5708F));
+		ModelPartData cube_r5 = body.addChild("cube_r5", ModelPartBuilder.create().uv(0, 45).cuboid(0.0F, -7.0F, -1.0F, 0.0F, 14.0F, 3.0F, new Dilation(0.0F)), ModelTransform.of(-8.0F, 0.0F, 0.0F, 1.5708F, 0.7854F, 1.5708F));
 
-		PartDefinition cube_r6 = body.addOrReplaceChild("cube_r6", CubeListBuilder.create().texOffs(34, 41).addBox(0.0F, -7.0F, -1.0F, 0.0F, 14.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-8.0F, 0.0F, 0.0F, 1.5708F, -0.7854F, 1.5708F));
+		ModelPartData cube_r6 = body.addChild("cube_r6", ModelPartBuilder.create().uv(34, 41).cuboid(0.0F, -7.0F, -1.0F, 0.0F, 14.0F, 3.0F, new Dilation(0.0F)), ModelTransform.of(-8.0F, 0.0F, 0.0F, 1.5708F, -0.7854F, 1.5708F));
 
-		PartDefinition cube_r7 = body.addOrReplaceChild("cube_r7", CubeListBuilder.create().texOffs(6, 45).addBox(0.0F, -7.0F, 0.0F, 0.0F, 14.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 6.0F, 0.0F, 0.0F, -0.7854F));
+		ModelPartData cube_r7 = body.addChild("cube_r7", ModelPartBuilder.create().uv(6, 45).cuboid(0.0F, -7.0F, 0.0F, 0.0F, 14.0F, 3.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 6.0F, 0.0F, 0.0F, -0.7854F));
 
-		PartDefinition cube_r8 = body.addOrReplaceChild("cube_r8", CubeListBuilder.create().texOffs(46, 33).addBox(0.0F, -7.0F, 0.0F, 0.0F, 14.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 6.0F, 0.0F, 0.0F, 0.7854F));
+		ModelPartData cube_r8 = body.addChild("cube_r8", ModelPartBuilder.create().uv(46, 33).cuboid(0.0F, -7.0F, 0.0F, 0.0F, 14.0F, 3.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 6.0F, 0.0F, 0.0F, 0.7854F));
 
-		return LayerDefinition.create(meshdefinition, 64, 64);
+		return TexturedModelData.of(meshdefinition, 64, 64);
 	}
 
 	@Override
-	public void setupAnim(Crystid entity, float pLimbSwing, float pLimbSwingAmount, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
-		this.root().getAllParts().forEach(ModelPart::resetPose);
-		this.head.yRot = pNetHeadYaw * 0.017453292F;
-		this.head.xRot = pHeadPitch * 0.017453292F;
+	public void setAngles(Crystid entity, float pLimbSwing, float pLimbSwingAmount, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
+		this.getPart().traverse().forEach(ModelPart::resetTransform);
+		this.head.yaw = pNetHeadYaw * 0.017453292F;
+		this.head.pitch = pHeadPitch * 0.017453292F;
 
-		this.animateWalk(ModAnimationDefinitions.CRYSTID_WALK, pLimbSwing, pLimbSwingAmount, 2f, 2.5f);
-		this.animate(entity.attackAnimationState, ModAnimationDefinitions.CRYSTID_ATTACK, pAgeInTicks, 1f);
+		this.animateMovement(ModAnimationDefinitions.CRYSTID_WALK, pLimbSwing, pLimbSwingAmount, 2f, 2.5f);
+		this.updateAnimation(entity.attackAnimationState, ModAnimationDefinitions.CRYSTID_ATTACK, pAgeInTicks, 1f);
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		crystid_body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void render(MatrixStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+		crystid_body.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override
-	public ModelPart root() {
+	public ModelPart getPart() {
 		return crystid_body;
 	}
 

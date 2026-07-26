@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_fishing_rod": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:fishing_rod"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_salted_carrot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "saltcraft:salted_carrot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "saltcraft:salted_carrot_on_a_stick"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_fishing_rod",
+      "has_salted_carrot"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "saltcraft:salted_carrot_on_a_stick"
+    ]
+  }
+}

@@ -1,167 +1,151 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package net.proctoredgames.saltcraft.worldgen.feature;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.BlockPos;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.LakeFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
-import net.minecraft.world.level.material.WaterFluid;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.StructureWorldAccess;
+import net.minecraft.world.gen.feature.DefaultFeatureConfig;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.util.FeatureContext;
 import net.proctoredgames.saltcraft.block.ModBlocks;
 import net.proctoredgames.saltcraft.entity.ModEntities;
-import net.proctoredgames.saltcraft.entity.custom.Crystid;
 import net.proctoredgames.saltcraft.entity.custom.Flamingo;
-import net.proctoredgames.saltcraft.entity.custom.SaltMage;
-import net.proctoredgames.saltcraft.worldgen.biome.ModBiomes;
-import net.proctoredgames.saltcraft.worldgen.biome.surface.ModSurfaceRules;
 
 @Deprecated
-public class SaltLakeFeature extends Feature<NoneFeatureConfiguration> {
-    private static final BlockState AIR;
+public class SaltLakeFeature extends Feature<DefaultFeatureConfig> {
+    private static final BlockState AIR = Blocks.CAVE_AIR.getDefaultState();
 
-    public SaltLakeFeature(Codec<NoneFeatureConfiguration> p_159834_) {
-        super(p_159834_);
+    public SaltLakeFeature(Codec<DefaultFeatureConfig> codec) {
+        super(codec);
     }
 
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> pContext) {
-        BlockPos $$1 = pContext.origin();
-        WorldGenLevel $$2 = pContext.level();
-        RandomSource $$3 = pContext.random();
-        if ($$1.getY() <= $$2.getMinBuildHeight() + 2) {
+    @Override
+    public boolean generate(FeatureContext<DefaultFeatureConfig> context) {
+        BlockPos origin = context.getOrigin();
+        StructureWorldAccess world = context.getWorld();
+        Random random = context.getRandom();
+        if (origin.getY() <= world.getBottomY() + 2) {
             return false;
-        } else {
-            // Features may only place blocks in the decorated chunk and its direct neighbors.
-            // The 32x32 area must be anchored to the chunk rather than the random origin,
-            // or its far edge lands outside that range where setBlock silently fails and
-            // the lake gets cut off along chunk borders.
-            ChunkPos chunkPos = new ChunkPos($$1);
-            $$1 = new BlockPos(chunkPos.getMinBlockX() - 8, $$1.getY(), chunkPos.getMinBlockZ() - 8).below(2);
-            boolean[] $$5 = new boolean[8192];
-            int $$6 = $$3.nextInt(8) + 8;
-
-            for(int $$7 = 0; $$7 < $$6; ++$$7) {
-                double $$8 = $$3.nextDouble() * 12.0 + 6.0;
-                double $$9 = $$3.nextDouble() * 8.0 + 4.0;
-                double $$10 = $$3.nextDouble() * 12.0 + 6.0;
-                double $$11 = $$3.nextDouble() * (32.0 - $$8 - 4.0) + 2.0 + $$8 / 2.0;
-                double $$12 = $$3.nextDouble() * (16.0 - $$9 - 8.0) + 4.0 + $$9 / 2.0;
-                double $$13 = $$3.nextDouble() * (32.0 - $$10 - 4.0) + 2.0 + $$10 / 2.0;
-
-                for(int $$14 = 1; $$14 < 31; ++$$14) {
-                    for(int $$15 = 1; $$15 < 31; ++$$15) {
-                        for(int $$16 = 1; $$16 < 7; ++$$16) {
-                            double $$17 = ((double)$$14 - $$11) / ($$8 / 2.0);
-                            double $$18 = ((double)$$16 - $$12) / ($$9 / 2.0);
-                            double $$19 = ((double)$$15 - $$13) / ($$10 / 2.0);
-                            double $$20 = $$17 * $$17 + $$18 * $$18 + $$19 * $$19;
-                            if ($$20 < 3.0) {
-                                $$5[($$14 * 32 + $$15) * 8 + $$16] = true;
-                            }
-                        }
-                    }
-                }
-            }
-
-            BlockState $$21 = ModBlocks.ROCK_SALT_SLAB.get().defaultBlockState().setValue(BlockStateProperties.WATERLOGGED,true);
-
-            int $$33;
-            boolean $$41;
-            int $$22;
-            int $$34;
-            //make sure we have room to place the structure
-            for($$22 = 0; $$22 < 32; ++$$22) {
-                for($$33 = 0; $$33 < 32; ++$$33) {
-                    for($$34 = 0; $$34 < 8; ++$$34) {
-                        $$41 = !$$5[($$22 * 32 + $$33) * 8 + $$34] && ($$22 < 31 && $$5[(($$22 + 1) * 32 + $$33) * 8 + $$34] || $$22 > 0 && $$5[(($$22 - 1) * 32 + $$33) * 8 + $$34] || $$33 < 31 && $$5[($$22 * 32 + $$33 + 1) * 8 + $$34] || $$33 > 0 && $$5[($$22 * 32 + ($$33 - 1)) * 8 + $$34] || $$34 < 7 && $$5[($$22 * 32 + $$33) * 8 + $$34 + 1] || $$34 > 0 && $$5[($$22 * 32 + $$33) * 8 + ($$34 - 1)]);
-                        if ($$41) {
-                            BlockState $$26 = $$2.getBlockState($$1.offset($$22, $$34, $$33));
-                            if ($$34 >= 2 && $$26.liquid()) {
-                                return false;
-                            }
-
-                            if ($$34 < 2 && !$$26.isSolid() && $$2.getBlockState($$1.offset($$22, $$34, $$33)) != $$21) {
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-
-            boolean $$36;
-            //places filler blocks
-            for($$22 = 0; $$22 < 32; ++$$22) {
-                for($$33 = 0; $$33 < 32; ++$$33) {
-                    for($$34 = 0; $$34 < 8; ++$$34) {
-                        if ($$5[($$22 * 32 + $$33) * 8 + $$34]) {
-                            BlockPos $$30 = $$1.offset($$22, $$34, $$33);
-                            if (this.canReplaceBlock($$2.getBlockState($$30))) {
-                                $$36 = $$34 >= 2;
-                                $$2.setBlock($$30, $$36 ? AIR : $$21, 2);
-                                if ($$36) {
-                                    $$2.scheduleTick($$30, AIR.getBlock(), 0);
-                                    this.markAboveForPostProcessing($$2, $$30);
-                                }
-                                if(!($$36) && $$34==1 && $$3.nextInt(50)==0){
-                                    Flamingo flamingo = new Flamingo(ModEntities.FLAMINGO.get(), $$2.getLevel());
-                                    flamingo.setPos($$1.offset($$22, $$34+1, $$33).getCenter());
-                                    $$2.addFreshEntity(flamingo);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            BlockState $$32 = ModBlocks.ROCK_SALT_BLOCK.get().defaultBlockState();
-            //places border blocks
-            if (!$$32.isAir()) {
-                for($$33 = 0; $$33 < 32; ++$$33) {
-                    for($$34 = 0; $$34 < 32; ++$$34) {
-                        for(int $$35 = 0; $$35 < 8; ++$$35) {
-                            $$36 = !$$5[($$33 * 32 + $$34) * 8 + $$35] && ($$33 < 31 && $$5[(($$33 + 1) * 32 + $$34) * 8 + $$35] || $$33 > 0 && $$5[(($$33 - 1) * 32 + $$34) * 8 + $$35] || $$34 < 31 && $$5[($$33 * 32 + $$34 + 1) * 8 + $$35] || $$34 > 0 && $$5[($$33 * 32 + ($$34 - 1)) * 8 + $$35] || $$35 < 7 && $$5[($$33 * 32 + $$34) * 8 + $$35 + 1] || $$35 > 0 && $$5[($$33 * 32 + $$34) * 8 + ($$35 - 1)]);
-                            if ($$36 && ($$35 < 2 || $$3.nextInt(2) != 0)) {
-                                BlockState $$37 = $$2.getBlockState($$1.offset($$33, $$35, $$34));
-                                if ($$37.isSolid() && !$$37.is(BlockTags.LAVA_POOL_STONE_CANNOT_REPLACE)) {
-                                    BlockPos $$38 = $$1.offset($$33, $$35, $$34);
-                                    $$2.setBlock($$38, $$32, 2);
-                                    this.markAboveForPostProcessing($$2, $$38);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return true;
         }
+
+        // Features may only place blocks in the decorated chunk and its direct neighbors.
+        // The 32x32 area must be anchored to the chunk rather than the random origin,
+        // or its far edge lands outside that range where setBlockState silently fails and
+        // the lake gets cut off along chunk borders.
+        ChunkPos chunkPos = new ChunkPos(origin);
+        origin = new BlockPos(chunkPos.getStartX() - 8, origin.getY(), chunkPos.getStartZ() - 8).down(2);
+        boolean[] shape = new boolean[8192];
+        int blobs = random.nextInt(8) + 8;
+
+        for (int blob = 0; blob < blobs; ++blob) {
+            double sizeX = random.nextDouble() * 12.0 + 6.0;
+            double sizeY = random.nextDouble() * 8.0 + 4.0;
+            double sizeZ = random.nextDouble() * 12.0 + 6.0;
+            double offX = random.nextDouble() * (32.0 - sizeX - 4.0) + 2.0 + sizeX / 2.0;
+            double offY = random.nextDouble() * (16.0 - sizeY - 8.0) + 4.0 + sizeY / 2.0;
+            double offZ = random.nextDouble() * (32.0 - sizeZ - 4.0) + 2.0 + sizeZ / 2.0;
+
+            for (int x = 1; x < 31; ++x) {
+                for (int z = 1; z < 31; ++z) {
+                    for (int y = 1; y < 7; ++y) {
+                        double dx = ((double) x - offX) / (sizeX / 2.0);
+                        double dy = ((double) y - offY) / (sizeY / 2.0);
+                        double dz = ((double) z - offZ) / (sizeZ / 2.0);
+                        double d = dx * dx + dy * dy + dz * dz;
+                        if (d < 3.0) {
+                            shape[(x * 32 + z) * 8 + y] = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        BlockState waterloggedSlab = ModBlocks.ROCK_SALT_SLAB.getDefaultState().with(Properties.WATERLOGGED, true);
+
+        // make sure we have room to place the structure
+        for (int x = 0; x < 32; ++x) {
+            for (int z = 0; z < 32; ++z) {
+                for (int y = 0; y < 8; ++y) {
+                    boolean isBorder = !shape[(x * 32 + z) * 8 + y]
+                            && (x < 31 && shape[((x + 1) * 32 + z) * 8 + y]
+                            || x > 0 && shape[((x - 1) * 32 + z) * 8 + y]
+                            || z < 31 && shape[(x * 32 + z + 1) * 8 + y]
+                            || z > 0 && shape[(x * 32 + (z - 1)) * 8 + y]
+                            || y < 7 && shape[(x * 32 + z) * 8 + y + 1]
+                            || y > 0 && shape[(x * 32 + z) * 8 + (y - 1)]);
+                    if (isBorder) {
+                        BlockState state = world.getBlockState(origin.add(x, y, z));
+                        if (y >= 2 && state.isLiquid()) {
+                            return false;
+                        }
+
+                        if (y < 2 && !state.isSolid() && world.getBlockState(origin.add(x, y, z)) != waterloggedSlab) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        // places filler blocks
+        for (int x = 0; x < 32; ++x) {
+            for (int z = 0; z < 32; ++z) {
+                for (int y = 0; y < 8; ++y) {
+                    if (shape[(x * 32 + z) * 8 + y]) {
+                        BlockPos pos = origin.add(x, y, z);
+                        if (this.canReplaceBlock(world.getBlockState(pos))) {
+                            boolean isTop = y >= 2;
+                            world.setBlockState(pos, isTop ? AIR : waterloggedSlab, 2);
+                            if (isTop) {
+                                world.scheduleBlockTick(pos, AIR.getBlock(), 0);
+                                this.markBlocksAboveForPostProcessing(world, pos);
+                            }
+                            if (!isTop && y == 1 && random.nextInt(50) == 0) {
+                                Flamingo flamingo = new Flamingo(ModEntities.FLAMINGO, world.toServerWorld());
+                                flamingo.setPosition(origin.add(x, y + 1, z).toCenterPos());
+                                world.spawnEntity(flamingo);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        BlockState border = ModBlocks.ROCK_SALT_BLOCK.getDefaultState();
+        // places border blocks
+        if (!border.isAir()) {
+            for (int x = 0; x < 32; ++x) {
+                for (int z = 0; z < 32; ++z) {
+                    for (int y = 0; y < 8; ++y) {
+                        boolean isBorder = !shape[(x * 32 + z) * 8 + y]
+                                && (x < 31 && shape[((x + 1) * 32 + z) * 8 + y]
+                                || x > 0 && shape[((x - 1) * 32 + z) * 8 + y]
+                                || z < 31 && shape[(x * 32 + z + 1) * 8 + y]
+                                || z > 0 && shape[(x * 32 + (z - 1)) * 8 + y]
+                                || y < 7 && shape[(x * 32 + z) * 8 + y + 1]
+                                || y > 0 && shape[(x * 32 + z) * 8 + (y - 1)]);
+                        if (isBorder && (y < 2 || random.nextInt(2) != 0)) {
+                            BlockState state = world.getBlockState(origin.add(x, y, z));
+                            if (state.isSolid() && !state.isIn(BlockTags.LAVA_POOL_STONE_CANNOT_REPLACE)) {
+                                BlockPos pos = origin.add(x, y, z);
+                                world.setBlockState(pos, border, 2);
+                                this.markBlocksAboveForPostProcessing(world, pos);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
-    private boolean canReplaceBlock(BlockState pState) {
-        return !pState.is(BlockTags.FEATURES_CANNOT_REPLACE);
-    }
-
-    static {
-        AIR = Blocks.CAVE_AIR.defaultBlockState();
+    private boolean canReplaceBlock(BlockState state) {
+        return !state.isIn(BlockTags.FEATURES_CANNOT_REPLACE);
     }
 }

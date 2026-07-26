@@ -1,113 +1,88 @@
 package net.proctoredgames.saltcraft.item.custom;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.stats.Stats;
-import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.effect.AttackDamageMobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.ThrownTrident;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
-import net.minecraft.world.item.Vanishable;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.EnchantmentInstance;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
-import net.proctoredgames.saltcraft.entity.custom.Mirage;
+import net.minecraft.block.BlockState;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.AttributeModifierSlot;
+import net.minecraft.component.type.AttributeModifiersComponent;
+import net.minecraft.component.type.NbtComponent;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.UseAction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.proctoredgames.saltcraft.item.ModItems;
 import net.proctoredgames.saltcraft.util.SandTeleport;
 import org.jetbrains.annotations.Nullable;
-import org.joml.RayAabIntersection;
 
-import java.awt.*;
+import java.util.List;
 
-
-public class StaffOfTheDesertItem extends Item implements Vanishable {
+public class StaffOfTheDesertItem extends Item {
 
     // Items are singletons shared by every player on both sides, so the current target
-    // is stored per-stack (as a network entity id) rather than in a field
+    // is stored per-stack (in custom data) rather than in a field
     private static final String TARGET_ID_TAG = "SaltcraftStaffTargetId";
 
-    private final Multimap<Attribute, AttributeModifier> defaultModifiers;
-
-    public StaffOfTheDesertItem(Properties pProperties) {
-        super(pProperties);
-        ImmutableMultimap.Builder<Attribute, AttributeModifier> $$1 = ImmutableMultimap.builder();
-        $$1.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", 2.0, AttributeModifier.Operation.ADDITION));
-        this.defaultModifiers = $$1.build();
+    public StaffOfTheDesertItem(Settings settings) {
+        super(settings);
     }
 
-    public boolean canAttackBlock(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer) {
-        return !pPlayer.isCreative();
+    public static AttributeModifiersComponent createAttributeModifiers() {
+        return AttributeModifiersComponent.builder()
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE,
+                        new EntityAttributeModifier(BASE_ATTACK_DAMAGE_MODIFIER_ID, 2.0, EntityAttributeModifier.Operation.ADD_VALUE),
+                        AttributeModifierSlot.MAINHAND)
+                .build();
     }
 
-    public UseAnim getUseAnimation(ItemStack pStack) {
-        return UseAnim.BOW;
+    @Override
+    public boolean canMine(BlockState state, World world, BlockPos pos, PlayerEntity miner) {
+        return !miner.isCreative();
     }
 
-    public int getUseDuration(ItemStack pStack) {
+    @Override
+    public UseAction getUseAction(ItemStack stack) {
+        return UseAction.BOW;
+    }
+
+    @Override
+    public int getMaxUseTime(ItemStack stack, LivingEntity user) {
         return 60;
     }
 
-    public void releaseUsing(ItemStack pStack, Level pLevel, LivingEntity pEntityLiving, int pTimeLeft) {
-        Entity targetEntity = getTargetEntity(pLevel, pStack);
-        pStack.removeTagKey(TARGET_ID_TAG);
-        if (pEntityLiving instanceof Player && targetEntity != null) {
-            int $$5 = this.getUseDuration(pStack) - pTimeLeft;
-            if ($$5 >=20) {
-                if(targetEntity instanceof LivingEntity){
-                    ((LivingEntity) targetEntity).removeEffect(MobEffects.GLOWING);
+    @Override
+    public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
+        Entity targetEntity = getTargetEntity(world, stack);
+        removeTargetId(stack);
+        if (user instanceof PlayerEntity && targetEntity != null) {
+            int usedTicks = this.getMaxUseTime(stack, user) - remainingUseTicks;
+            if (usedTicks >= 20) {
+                if (targetEntity instanceof LivingEntity livingTarget) {
+                    livingTarget.removeStatusEffect(StatusEffects.GLOWING);
                 }
-                SandTeleport.teleportTo(targetEntity, pEntityLiving);
+                SandTeleport.teleportTo(targetEntity, user);
             }
         }
-        if (pStack.hurt(1, pEntityLiving.getRandom(), pEntityLiving instanceof ServerPlayer ? (ServerPlayer) pEntityLiving : null)) {
-            replaceWithUncharged(pEntityLiving, pStack);
-        }
+        damageAndMaybeReplace(stack, user);
     }
 
-    public Entity runThroughFindMob(Player pPlayer){
+    public Entity runThroughFindMob(PlayerEntity player) {
+        double range = 50.0;
 
-        double range = 50.0; // Adjust this value for your desired range
+        List<Entity> entitiesInRange = player.getWorld().getEntitiesByClass(Entity.class, player.getBoundingBox().expand(range), entity ->
+                entity != null && entity.isAlive() && entity != player);
 
-        // Get all entities within the range of the player
-        java.util.List<Entity> entitiesInRange = pPlayer.level().getEntitiesOfClass(Entity.class, pPlayer.getBoundingBox().inflate(range), entity -> {
-            return entity != null && entity.isAlive() && entity != pPlayer;
-        });
-
-        // Loop through all entities within the range
         for (Entity entity : entitiesInRange) {
-            if (SandTeleport.isEntityValidTarget(pPlayer, entity)) {
+            if (SandTeleport.isEntityValidTarget(player, entity)) {
                 return entity;
             }
         }
@@ -115,62 +90,87 @@ public class StaffOfTheDesertItem extends Item implements Vanishable {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pHand) {
-        ItemStack $$3 = pPlayer.getItemInHand(pHand);
-        Entity targetEntity = runThroughFindMob(pPlayer);
-        if(targetEntity != null){
-            $$3.getOrCreateTag().putInt(TARGET_ID_TAG, targetEntity.getId());
-            pPlayer.startUsingItem(pHand);
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack stack = player.getStackInHand(hand);
+        Entity targetEntity = runThroughFindMob(player);
+        if (targetEntity != null) {
+            setTargetId(stack, targetEntity.getId());
+            player.setCurrentHand(hand);
         }
-        return InteractionResultHolder.sidedSuccess($$3, pLevel.isClientSide());
+        return TypedActionResult.success(stack, world.isClient);
     }
 
     @Override
-    public void onUseTick(Level pLevel, LivingEntity pLivingEntity, ItemStack pStack, int pRemainingUseDuration) {
-        Entity targetEntity = getTargetEntity(pLevel, pStack);
-        if(targetEntity instanceof LivingEntity){
-            ((LivingEntity) targetEntity).addEffect(new MobEffectInstance(MobEffects.GLOWING, 5, 0, false, false));
+    public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
+        Entity targetEntity = getTargetEntity(world, stack);
+        if (targetEntity instanceof LivingEntity livingTarget) {
+            livingTarget.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 5, 0, false, false));
         }
-        if(pLivingEntity instanceof Player){
-            if(runThroughFindMob((Player) pLivingEntity) == null){
-                pStack.removeTagKey(TARGET_ID_TAG);
-                pLivingEntity.stopUsingItem();
+        if (user instanceof PlayerEntity player) {
+            if (runThroughFindMob(player) == null) {
+                removeTargetId(stack);
+                user.stopUsingItem();
             }
         }
     }
 
     @Nullable
-    private Entity getTargetEntity(Level pLevel, ItemStack pStack) {
-        CompoundTag tag = pStack.getTag();
-        if (tag == null || !tag.contains(TARGET_ID_TAG)) {
+    private Entity getTargetEntity(World world, ItemStack stack) {
+        NbtComponent nbtComponent = stack.get(DataComponentTypes.CUSTOM_DATA);
+        if (nbtComponent == null || !nbtComponent.getNbt().contains(TARGET_ID_TAG)) {
             return null;
         }
-        Entity entity = pLevel.getEntity(tag.getInt(TARGET_ID_TAG));
+        Entity entity = world.getEntityById(nbtComponent.getNbt().getInt(TARGET_ID_TAG));
         return entity != null && entity.isAlive() ? entity : null;
     }
 
-    public boolean hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
-        if (pStack.hurt(1, pAttacker.getRandom(), pAttacker instanceof ServerPlayer ? (ServerPlayer) pAttacker : null)) {
-            replaceWithUncharged(pAttacker, pStack);
+    private void setTargetId(ItemStack stack, int entityId) {
+        NbtComponent nbtComponent = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT);
+        NbtCompound nbt = nbtComponent.copyNbt();
+        nbt.putInt(TARGET_ID_TAG, entityId);
+        stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+    }
+
+    private void removeTargetId(ItemStack stack) {
+        NbtComponent nbtComponent = stack.get(DataComponentTypes.CUSTOM_DATA);
+        if (nbtComponent == null) {
+            return;
         }
+        NbtCompound nbt = nbtComponent.copyNbt();
+        nbt.remove(TARGET_ID_TAG);
+        stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+    }
+
+    @Override
+    public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         return true;
     }
 
-    private void replaceWithUncharged(LivingEntity entity, ItemStack stack) {
-        if (entity instanceof Player player) {
-            InteractionHand hand = player.getItemInHand(InteractionHand.OFF_HAND) == stack
-                    ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
-            ItemStack newItem = new ItemStack(ModItems.UNCHARGED_STAFF_OF_THE_DESERT.get());
-            newItem.setTag(stack.getTag()); // Preserve NBT data if needed
-            player.setItemInHand(hand, newItem);
+    @Override
+    public void postDamageEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        damageAndMaybeReplace(stack, attacker);
+    }
+
+    private void damageAndMaybeReplace(ItemStack stack, LivingEntity entity) {
+        int newDamage = stack.getDamage() + 1;
+        if (newDamage >= stack.getMaxDamage()) {
+            replaceWithUncharged(entity, stack);
+        } else {
+            stack.setDamage(newDamage);
         }
     }
 
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pEquipmentSlot) {
-        return pEquipmentSlot == EquipmentSlot.MAINHAND ? this.defaultModifiers : super.getDefaultAttributeModifiers(pEquipmentSlot);
+    private void replaceWithUncharged(LivingEntity entity, ItemStack stack) {
+        if (entity instanceof PlayerEntity player) {
+            Hand hand = player.getOffHandStack() == stack ? Hand.OFF_HAND : Hand.MAIN_HAND;
+            ItemStack newItem = new ItemStack(ModItems.UNCHARGED_STAFF_OF_THE_DESERT);
+            newItem.applyComponentsFrom(stack.getComponents());
+            player.setStackInHand(hand, newItem);
+        }
     }
 
-    public int getEnchantmentValue() {
+    @Override
+    public int getEnchantability() {
         return 1;
     }
 }

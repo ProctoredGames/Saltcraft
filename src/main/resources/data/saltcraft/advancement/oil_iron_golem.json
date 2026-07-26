@@ -1,0 +1,37 @@
+{
+  "parent": "saltcraft:obtain_oil_can",
+  "criteria": {
+    "use_oil_can_on_iron_golem": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": "saltcraft:filled_oil_can"
+        },
+        "entity": {
+          "type": "minecraft:iron_golem"
+        }
+      }
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.oil_iron_golem.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "id": "minecraft:poppy"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.oil_iron_golem.title"
+    }
+  },
+  "requirements": [
+    [
+      "use_oil_can_on_iron_golem"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

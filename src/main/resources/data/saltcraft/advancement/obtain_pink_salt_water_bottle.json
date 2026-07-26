@@ -1,0 +1,48 @@
+{
+  "parent": "saltcraft:obtain_pink_salt",
+  "criteria": {
+    "pink_salt_water_bottle": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:potion"
+            ],
+            "components": {
+              "minecraft:potion_contents": {
+                "potion": "saltcraft:pink_salt_water_bottle"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.obtain_pink_salt_water_bottle.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "id": "minecraft:potion",
+      "components": {
+        "minecraft:potion_contents": {
+          "potion": "saltcraft:pink_salt_water_bottle"
+        }
+      }
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.obtain_pink_salt_water_bottle.title"
+    }
+  },
+  "requirements": [
+    [
+      "pink_salt_water_bottle"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

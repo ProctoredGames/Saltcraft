@@ -1,0 +1,45 @@
+{
+  "parent": "saltcraft:root",
+  "criteria": {
+    "saltcraft:salt_flat": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "biomes": "saltcraft:salt_flat"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.enter_salt_flat.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "id": "saltcraft:clumped_salt_block"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.enter_salt_flat.title"
+    }
+  },
+  "requirements": [
+    [
+      "saltcraft:salt_flat"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  },
+  "sends_telemetry_event": true
+}

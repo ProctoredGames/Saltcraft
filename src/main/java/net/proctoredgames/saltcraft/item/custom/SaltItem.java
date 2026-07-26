@@ -1,24 +1,23 @@
 package net.proctoredgames.saltcraft.item.custom;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.Map;
 
 public class SaltItem extends Item {
-    public SaltItem(Properties pProperties) {
-        super(pProperties);
+    public SaltItem(Settings settings) {
+        super(settings);
     }
 
-    public static Map<Block, Block> getBlockTransformations(){
+    public static Map<Block, Block> getBlockTransformations() {
         return Map.ofEntries(
                 Map.entry(Blocks.WET_SPONGE, Blocks.SPONGE),
                 Map.entry(Blocks.SNOW, Blocks.AIR),
@@ -41,21 +40,20 @@ public class SaltItem extends Item {
     }
 
     @Override
-    public InteractionResult useOn(UseOnContext pContext) {
-        if (!pContext.getLevel().isClientSide()) {
-            ItemStack thisItemStack = pContext.getItemInHand();
-            Level level = pContext.getLevel();
-            BlockPos positionClicked = pContext.getClickedPos();
-            BlockState blockState = pContext.getLevel().getBlockState(positionClicked);
+    public ActionResult useOnBlock(ItemUsageContext context) {
+        if (!context.getWorld().isClient) {
+            ItemStack thisItemStack = context.getStack();
+            World world = context.getWorld();
+            BlockPos positionClicked = context.getBlockPos();
+            BlockState blockState = world.getBlockState(positionClicked);
 
-            // Check if the current block can be transformed
             Block replacementBlock = getBlockTransformations().get(blockState.getBlock());
             if (replacementBlock != null) {
-                level.setBlock(positionClicked, replacementBlock.defaultBlockState(), 3);
-                thisItemStack.shrink(1); // Reduce the item stack by 1
-                return InteractionResult.CONSUME; // Indicate the item was used
+                world.setBlockState(positionClicked, replacementBlock.getDefaultState(), 3);
+                thisItemStack.decrement(1);
+                return ActionResult.CONSUME;
             }
         }
-        return InteractionResult.SUCCESS; // Default result if no transformation occurred
+        return ActionResult.SUCCESS;
     }
 }

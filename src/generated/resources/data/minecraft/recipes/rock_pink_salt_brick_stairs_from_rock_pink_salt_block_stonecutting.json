@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "count": 1,
-  "ingredient": {
-    "item": "saltcraft:rock_pink_salt_block"
-  },
-  "result": "saltcraft:rock_pink_salt_brick_stairs"
-}

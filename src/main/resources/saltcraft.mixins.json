@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "net.proctoredgames.saltcraft.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"LivingEntityMixin",
+		"AnvilScreenHandlerMixin",
+		"MobEntityAccessor",
+		"TurtleEntityAttributesMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

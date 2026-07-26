@@ -1,11 +1,32 @@
 package net.proctoredgames.saltcraft.thirst;
 
-import net.minecraft.nbt.CompoundTag;
+import com.mojang.serialization.Codec;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.minecraft.util.Identifier;
+import net.proctoredgames.saltcraft.Saltcraft;
 
 public class PlayerThirst {
-    private final int MIN_THIRST = 0;
-    private final int MAX_THIRST = 20;
-    private int thirst = MAX_THIRST;
+    private static final int MIN_THIRST = 0;
+    private static final int MAX_THIRST = 20;
+
+    public static final Codec<PlayerThirst> CODEC = Codec.INT.xmap(PlayerThirst::new, PlayerThirst::getThirst);
+
+    public static final AttachmentType<PlayerThirst> THIRST = AttachmentRegistry.<PlayerThirst>builder()
+            .persistent(CODEC)
+            .copyOnDeath()
+            .initializer(PlayerThirst::new)
+            .buildAndRegister(Identifier.of(Saltcraft.MOD_ID, "thirst"));
+
+    private int thirst;
+
+    public PlayerThirst() {
+        this.thirst = MAX_THIRST;
+    }
+
+    public PlayerThirst(int thirst) {
+        this.thirst = thirst;
+    }
 
     public int getThirst() {
         return thirst;
@@ -17,17 +38,5 @@ public class PlayerThirst {
 
     public void subThirst(int sub) {
         this.thirst = Math.max(thirst - sub, MIN_THIRST);
-    }
-
-    public void copyFrom(PlayerThirst source) {
-        this.thirst = source.thirst;
-    }
-
-    public void saveNBTData(CompoundTag nbt) {
-        nbt.putInt("thirst", thirst);
-    }
-
-    public void loadNBTData(CompoundTag nbt) {
-        thirst = nbt.getInt("thirst");
     }
 }

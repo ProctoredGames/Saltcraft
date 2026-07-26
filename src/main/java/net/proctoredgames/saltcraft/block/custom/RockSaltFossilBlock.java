@@ -1,30 +1,34 @@
 package net.proctoredgames.saltcraft.block.custom;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DirectionalBlock;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.FacingBlock;
+import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.state.StateManager;
+import net.minecraft.util.math.Direction;
 
-public class RockSaltFossilBlock extends DirectionalBlock {
+public class RockSaltFossilBlock extends FacingBlock {
+    public static final MapCodec<RockSaltFossilBlock> CODEC = createCodec(RockSaltFossilBlock::new);
 
-    public RockSaltFossilBlock(Properties properties) {
-        super(properties);
-        // Set the default facing direction (e.g., north)
-        this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH));
+    public RockSaltFossilBlock(Settings settings) {
+        super(settings);
+        this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH));
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        // Set the block's facing direction based on the player's placement
-        return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite());
+    protected MapCodec<? extends FacingBlock> getCodec() {
+        return CODEC;
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        // Add the FACING property to the block's state definition
+    public BlockState getPlacementState(ItemPlacementContext ctx) {
+        return this.getDefaultState().with(FACING, ctx.getPlayerLookDirection().getOpposite());
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 }

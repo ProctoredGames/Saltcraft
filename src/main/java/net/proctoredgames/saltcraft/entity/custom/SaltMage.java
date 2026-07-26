@@ -1,419 +1,404 @@
-
 package net.proctoredgames.saltcraft.entity.custom;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerBossEvent;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.BossEvent;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
-import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.SpellcasterIllager;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.raid.Raider;
-import net.minecraft.world.level.ExplosionDamageCalculator;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraftforge.common.util.BlockSnapshot;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.TargetPredicate;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.FleeEntityGoal;
+import net.minecraft.entity.ai.goal.LookAtEntityGoal;
+import net.minecraft.entity.ai.goal.RevengeGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.ai.goal.WanderAroundGoal;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.boss.BossBar;
+import net.minecraft.entity.boss.ServerBossBar;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.SpellcastingIllagerEntity;
+import net.minecraft.entity.passive.IronGolemEntity;
+import net.minecraft.entity.passive.MerchantEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.raid.RaiderEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
+import net.minecraft.world.event.GameEvent;
 import net.proctoredgames.saltcraft.block.ModBlocks;
 import net.proctoredgames.saltcraft.block.custom.SpawningPlinthBlock;
 import net.proctoredgames.saltcraft.block.custom.SummoningPlinthBlock;
 import net.proctoredgames.saltcraft.entity.ModEntities;
+import org.jetbrains.annotations.Nullable;
 
-public class SaltMage extends SpellcasterIllager {
+public class SaltMage extends SpellcastingIllagerEntity {
+    private final ServerBossBar bossBar = (ServerBossBar) new ServerBossBar(this.getDisplayName(), BossBar.Color.WHITE, BossBar.Style.PROGRESS)
+            .setDarkenSky(true);
 
-    private BlockPos spawningPlinthPosition = null;
+    @Nullable
+    private BlockPos spawningPlinthPosition;
 
-    /* BOSS BAR */
-    private final ServerBossEvent bossEvent =
-             new ServerBossEvent(Component.literal("Salt Mage"), BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.NOTCHED_12);
-
-
-    public SaltMage(EntityType<? extends SaltMage> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
-        this.xpReward = 10;
-    }
-    public void SetSpawningPlinthPosition(BlockPos pSpawningPlinthPosition){
-        this.spawningPlinthPosition = pSpawningPlinthPosition;
+    public SaltMage(EntityType<? extends SaltMage> entityType, World world) {
+        super(entityType, world);
+        this.experiencePoints = 10;
     }
 
-    protected void registerGoals() {
-        super.registerGoals();
-        this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new SaltMageCastingSpellGoal());
-        this.goalSelector.addGoal(2, new AvoidEntityGoal(this, Player.class, 8.0F, 0.6, 1.0));
-        this.goalSelector.addGoal(4, new SaltMageSummonSpellGoal());
-        this.goalSelector.addGoal(5, new SaltMageWallSpellGoal());
-        this.goalSelector.addGoal(8, new RandomStrollGoal(this, 0.6));
-        this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
-        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
-        this.targetSelector.addGoal(1, (new HurtByTargetGoal(this, new Class[]{Raider.class})).setAlertOthers(new Class[0]));
-        this.targetSelector.addGoal(2, (new NearestAttackableTargetGoal(this, Player.class, true)).setUnseenMemoryTicks(300));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, Mirage.class, false));
-        this.targetSelector.addGoal(4, (new NearestAttackableTargetGoal(this, AbstractVillager.class, false)).setUnseenMemoryTicks(300));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal(this, IronGolem.class, false));
-
+    public static DefaultAttributeContainer.Builder createAttributes() {
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.5)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 12.0)
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 150.0);
     }
 
-    public static AttributeSupplier.Builder createAttributes() {
-        return Monster.createMonsterAttributes()
-                .add(Attributes.MOVEMENT_SPEED, 0.5)
-                .add(Attributes.FOLLOW_RANGE, 12.0)
-                .add(Attributes.MAX_HEALTH, 150.0);
+    public void setSpawningPlinthPosition(@Nullable BlockPos pos) {
+        this.spawningPlinthPosition = pos;
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
+    @Nullable
+    public BlockPos getSpawningPlinthPosition() {
+        return spawningPlinthPosition;
     }
 
-    public void readAdditionalSaveData(CompoundTag pCompound) {
-        super.readAdditionalSaveData(pCompound);
-        if (pCompound.contains("SpawningPlinthPos")) {
-            this.spawningPlinthPosition = NbtUtils.readBlockPos(pCompound.getCompound("SpawningPlinthPos"));
-        }
+    @Override
+    protected void initGoals() {
+        super.initGoals();
+        this.goalSelector.add(0, new SwimGoal(this));
+        this.goalSelector.add(1, new SaltMageCastingSpellGoal());
+        this.goalSelector.add(2, new FleeEntityGoal<>(this, PlayerEntity.class, 8.0F, 0.6, 1.0));
+        this.goalSelector.add(4, new SaltMageSummonSpellGoal());
+        this.goalSelector.add(5, new SaltMageWallSpellGoal());
+        this.goalSelector.add(8, new WanderAroundGoal(this, 0.6));
+        this.goalSelector.add(9, new LookAtEntityGoal(this, PlayerEntity.class, 3.0F, 1.0F));
+        this.goalSelector.add(10, new LookAtEntityGoal(this, MobEntity.class, 8.0F));
+        this.targetSelector.add(1, new RevengeGoal(this, RaiderEntity.class).setGroupRevenge());
+        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true).setMaxTimeWithoutVisibility(300));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, Mirage.class, false));
+        this.targetSelector.add(4, new ActiveTargetGoal<>(this, MerchantEntity.class, false).setMaxTimeWithoutVisibility(300));
+        this.targetSelector.add(4, new ActiveTargetGoal<>(this, IronGolemEntity.class, false));
     }
 
-    public SoundEvent getCelebrateSound() {
-        return SoundEvents.EVOKER_CELEBRATE;
-    }
-
-    public void addAdditionalSaveData(CompoundTag pCompound) {
-        super.addAdditionalSaveData(pCompound);
+    @Override
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
         if (this.spawningPlinthPosition != null) {
-            pCompound.put("SpawningPlinthPos", NbtUtils.writeBlockPos(this.spawningPlinthPosition));
+            nbt.put("SpawningPlinthPos", net.minecraft.nbt.NbtHelper.fromBlockPos(spawningPlinthPosition));
         }
     }
 
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        if (nbt.contains("SpawningPlinthPos")) {
+            this.spawningPlinthPosition = net.minecraft.nbt.NbtHelper.toBlockPos(nbt, "SpawningPlinthPos").orElse(null);
+        }
     }
 
-    public boolean isAlliedTo(Entity pEntity) {
-        if (pEntity == this) {
+    @Override
+    public boolean isTeammate(Entity other) {
+        if (other == this) {
             return true;
-        } else if (super.isAlliedTo(pEntity)) {
+        } else if (super.isTeammate(other)) {
             return true;
-        } else if (pEntity instanceof Crystid) {
-            return this.isAlliedTo(((Crystid)pEntity).getOwner());
-        } else if (pEntity instanceof LivingEntity && ((LivingEntity)pEntity).getMobType() == MobType.ILLAGER) {
-            return this.getTeam() == null && pEntity.getTeam() == null;
+        } else if (other instanceof Crystid crystid) {
+            return crystid.getOwner() != null && this.isTeammate(crystid.getOwner());
         } else {
-            return false;
+            return other instanceof net.minecraft.entity.mob.IllagerEntity && this.getScoreboardTeam() == null && other.getScoreboardTeam() == null;
         }
     }
 
+    @Override
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.EVOKER_AMBIENT;
+        return SoundEvents.ENTITY_EVOKER_AMBIENT;
     }
 
+    @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.EVOKER_DEATH;
-    }
-
-    protected SoundEvent getHurtSound(DamageSource pDamageSource) {
-        return SoundEvents.EVOKER_HURT;
-    }
-
-    protected SoundEvent getCastingSoundEvent() {
-        return SoundEvents.EVOKER_CAST_SPELL;
-    }
-
-    public void applyRaidBuffs(int pWave, boolean pUnusedFalse) {
+        return SoundEvents.ENTITY_EVOKER_DEATH;
     }
 
     @Override
-    public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return SoundEvents.ENTITY_EVOKER_HURT;
+    }
+
+    @Override
+    protected SoundEvent getCastSpellSound() {
+        return SoundEvents.ENTITY_EVOKER_CAST_SPELL;
+    }
+
+    @Override
+    public void addBonusForWave(ServerWorld world, int wave, boolean unused) {
+    }
+
+    @Override
+    public SoundEvent getCelebratingSound() {
+        return SoundEvents.ENTITY_EVOKER_CELEBRATE;
+    }
+
+    @Override
+    public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
         return false;
     }
 
     @Override
-    public boolean removeWhenFarAway(double pDistanceToClosestPlayer) {
-        return false;
+    public boolean cannotDespawn() {
+        return true;
     }
 
-    class SaltMageCastingSpellGoal extends SpellcasterIllager.SpellcasterCastingSpellGoal {
-        SaltMageCastingSpellGoal() {
-            super();
-        }
-
+    class SaltMageCastingSpellGoal extends SpellcastingIllagerEntity.LookAtTargetGoal {
+        @Override
         public void tick() {
             if (SaltMage.this.getTarget() != null) {
-                SaltMage.this.getLookControl().setLookAt(SaltMage.this.getTarget(), (float)SaltMage.this.getMaxHeadYRot(), (float)SaltMage.this.getMaxHeadXRot());
+                SaltMage.this.getLookControl().lookAt(SaltMage.this.getTarget(), (float) SaltMage.this.getMaxHeadRotation(), (float) SaltMage.this.getMaxLookPitchChange());
             }
-
         }
     }
 
-    class SaltMageSummonSpellGoal extends SpellcasterIllager.SpellcasterUseSpellGoal {
-        private final TargetingConditions crystidCountTargeting = TargetingConditions.forNonCombat().range(16.0).ignoreLineOfSight().ignoreInvisibilityTesting();
+    class SaltMageSummonSpellGoal extends SpellcastingIllagerEntity.CastSpellGoal {
+        private final TargetPredicate crystidCountTargeting = TargetPredicate.createNonAttackable().setBaseMaxDistance(16.0).ignoreVisibility().ignoreDistanceScalingFactor();
 
-        SaltMageSummonSpellGoal() {
-            super();
-        }
-
-        public boolean canUse() {
-            if (!super.canUse()) {
+        @Override
+        public boolean canStart() {
+            if (!super.canStart()) {
                 return false;
             } else {
-                int i = SaltMage.this.level().getNearbyEntities(Crystid.class, this.crystidCountTargeting, SaltMage.this, SaltMage.this.getBoundingBox().inflate(16.0)).size();
+                int i = SaltMage.this.getWorld().getTargets(Crystid.class, this.crystidCountTargeting, SaltMage.this, SaltMage.this.getBoundingBox().expand(16.0)).size();
                 return SaltMage.this.random.nextInt(8) + 1 > i;
             }
         }
 
-        protected int getCastingTime() {
+        @Override
+        protected int getInitialCooldown() {
             return 100;
         }
 
-        protected int getCastingInterval() {
+        @Override
+        protected int getSpellTicks() {
+            return 100;
+        }
+
+        @Override
+        protected int startTimeDelay() {
             return 340;
         }
 
-        protected void performSpellCasting() {
-            ServerLevel serverlevel = (ServerLevel)SaltMage.this.level();
-            SaltMage.this.addEffect(new MobEffectInstance(MobEffects.LEVITATION, getCastingTime(), 0));
+        @Override
+        protected void castSpell() {
+            ServerWorld serverWorld = (ServerWorld) SaltMage.this.getWorld();
+            SaltMage.this.addStatusEffect(new StatusEffectInstance(StatusEffects.LEVITATION, this.getSpellTicks(), 0));
 
-            for(int i = 0; i < 3; ++i) {
-                BlockPos blockpos = SaltMage.this.blockPosition().offset(-2 + SaltMage.this.random.nextInt(5), 1, -2 + SaltMage.this.random.nextInt(5));
-                Crystid crystid = (Crystid) ModEntities.CRYSTID.get().create(SaltMage.this.level());
+            for (int i = 0; i < 3; ++i) {
+                BlockPos pos = SaltMage.this.getBlockPos().add(-2 + SaltMage.this.random.nextInt(5), 1, -2 + SaltMage.this.random.nextInt(5));
+                Crystid crystid = ModEntities.CRYSTID.create(SaltMage.this.getWorld());
                 if (crystid != null) {
-                    crystid.moveTo(blockpos, 0.0F, 0.0F);
-                    crystid.finalizeSpawn(serverlevel, SaltMage.this.level().getCurrentDifficultyAt(blockpos), MobSpawnType.MOB_SUMMONED, (SpawnGroupData)null, (CompoundTag)null);
+                    crystid.refreshPositionAndAngles(pos, 0.0F, 0.0F);
+                    crystid.initialize(serverWorld, SaltMage.this.getWorld().getLocalDifficulty(pos), SpawnReason.MOB_SUMMONED, null);
                     crystid.setOwner(SaltMage.this);
                     crystid.setLimitedLife(20 * (30 + SaltMage.this.random.nextInt(90)));
-                    serverlevel.addFreshEntityWithPassengers(crystid);
+                    serverWorld.spawnEntityAndPassengers(crystid);
                 }
             }
-
         }
 
-        protected SoundEvent getSpellPrepareSound() {
-            return SoundEvents.EVOKER_PREPARE_SUMMON;
+        @Override
+        protected SoundEvent getSoundPrepare() {
+            return SoundEvents.ENTITY_EVOKER_PREPARE_SUMMON;
         }
 
-        protected SpellcasterIllager.IllagerSpell getSpell() {
-            return IllagerSpell.SUMMON_VEX;
+        @Override
+        protected SpellcastingIllagerEntity.Spell getSpell() {
+            return SpellcastingIllagerEntity.Spell.SUMMON_VEX;
         }
     }
 
-    class SaltMageWallSpellGoal extends SpellcasterIllager.SpellcasterUseSpellGoal {
-
-        public SaltMageWallSpellGoal() {
-            super();
-        }
-
-        public boolean canUse() {
-            if (!ForgeEventFactory.getMobGriefingEvent(SaltMage.this.level(), SaltMage.this) || !super.canUse()
-            || (SaltMage.this.getHealth()>(SaltMage.this.getMaxHealth()/2))) {
+    class SaltMageWallSpellGoal extends SpellcastingIllagerEntity.CastSpellGoal {
+        @Override
+        public boolean canStart() {
+            if (!SaltMage.this.getWorld().getGameRules().getBoolean(net.minecraft.world.GameRules.DO_MOB_GRIEFING) || !super.canStart()
+                    || SaltMage.this.getHealth() > SaltMage.this.getMaxHealth() / 2) {
                 return false;
             } else {
                 return SaltMage.this.getRandom().nextInt(30) == 1;
             }
         }
 
-        protected int getCastingTime() {
+        @Override
+        protected int getInitialCooldown() {
             return 40;
         }
 
-        protected int getCastingInterval() {
+        @Override
+        protected int getSpellTicks() {
+            return 40;
+        }
+
+        @Override
+        protected int startTimeDelay() {
             return 100;
         }
 
-        public void performSpellCasting() {
-            RandomSource randomsource = SaltMage.this.getRandom();
-            Level level = SaltMage.this.level();
-            int xRoot = Mth.floor(SaltMage.this.getX());
-            int yRoot = Mth.floor(SaltMage.this.getY());
-            int zRoot = Mth.floor(SaltMage.this.getZ());
-            BlockPos blockpos;
-            BlockState blockstate;
-            BlockPos blockpos1;
-            BlockState blockstate1;
-            BlockState blockstate2;
+        @Override
+        protected void castSpell() {
+            Random random = SaltMage.this.getRandom();
+            World world = SaltMage.this.getWorld();
+            int xRoot = MathHelper.floor(SaltMage.this.getX());
+            int yRoot = MathHelper.floor(SaltMage.this.getY());
+            int zRoot = MathHelper.floor(SaltMage.this.getZ());
 
-            int wallHeight=3;
-            int wallHalfLength=3;
+            int wallHeight = 3;
+            int wallHalfLength = 3;
 
             boolean doWallRotation;
             double wallSummonDistance;
 
-            LivingEntity livingentity = SaltMage.this.getTarget();
+            LivingEntity target = SaltMage.this.getTarget();
             // The target can die or be cleared during the cast warmup
-            if (livingentity == null) {
+            if (target == null) {
                 return;
             }
 
-            doWallRotation = Math.abs(SaltMage.this.getZ()-livingentity.getZ()) > Math.abs(SaltMage.this.getX()-livingentity.getX());
+            doWallRotation = Math.abs(SaltMage.this.getZ() - target.getZ()) > Math.abs(SaltMage.this.getX() - target.getX());
 
-            if((doWallRotation && Math.abs(SaltMage.this.getZ()-livingentity.getZ())<7) ||
-                    (!doWallRotation && Math.abs(SaltMage.this.getX()-livingentity.getX())<7)){
+            if ((doWallRotation && Math.abs(SaltMage.this.getZ() - target.getZ()) < 7) ||
+                    (!doWallRotation && Math.abs(SaltMage.this.getX() - target.getX()) < 7)) {
                 wallSummonDistance = 2.0;
-            } else{
-                if(doWallRotation){
-                    wallSummonDistance = Math.floor(Math.abs(SaltMage.this.getZ()-livingentity.getZ()))-
-                            (2.0+Math.round(randomsource.nextDouble()*2.0));
-                } else{
-                    wallSummonDistance = Math.floor(Math.abs(SaltMage.this.getX()-livingentity.getX()))-
-                            (2.0+Math.round(randomsource.nextDouble()*2.0));
+            } else {
+                if (doWallRotation) {
+                    wallSummonDistance = Math.floor(Math.abs(SaltMage.this.getZ() - target.getZ())) -
+                            (2.0 + Math.round(random.nextDouble() * 2.0));
+                } else {
+                    wallSummonDistance = Math.floor(Math.abs(SaltMage.this.getX() - target.getX())) -
+                            (2.0 + Math.round(random.nextDouble() * 2.0));
                 }
             }
 
-            if(doWallRotation){
-                if(SaltMage.this.getZ()-livingentity.getZ()>0){
-                    zRoot = Mth.floor(zRoot- (wallSummonDistance));
-                } else{
-                    zRoot = Mth.floor(zRoot+ (wallSummonDistance));
+            if (doWallRotation) {
+                if (SaltMage.this.getZ() - target.getZ() > 0) {
+                    zRoot = MathHelper.floor(zRoot - wallSummonDistance);
+                } else {
+                    zRoot = MathHelper.floor(zRoot + wallSummonDistance);
                 }
-            } else{
-                if(SaltMage.this.getX()-livingentity.getX()>0){
-                    xRoot = Mth.floor(xRoot- (wallSummonDistance));
-                } else{
-                    xRoot = Mth.floor(xRoot+ (wallSummonDistance));
+            } else {
+                if (SaltMage.this.getX() - target.getX() > 0) {
+                    xRoot = MathHelper.floor(xRoot - wallSummonDistance);
+                } else {
+                    xRoot = MathHelper.floor(xRoot + wallSummonDistance);
                 }
             }
 
-            for(int i = 0; i <= yRoot + 64; i++) {
-                BlockState blockState = level.getBlockState(new BlockPos(xRoot, yRoot, zRoot).below(i));
+            for (int i = 0; i <= yRoot + 64; i++) {
+                net.minecraft.block.BlockState blockState = world.getBlockState(new BlockPos(xRoot, yRoot, zRoot).down(i));
                 if (!blockState.isAir()) {
                     yRoot = yRoot - i;
                     break;
                 }
             }
 
-            if (!level.isClientSide) {
-                DamageSource $$2 = SaltMage.this.damageSources().explosion(SaltMage.this, livingentity);
-                level.explode(SaltMage.this, null, (ExplosionDamageCalculator)null, xRoot, yRoot, zRoot, 6.0F, false, Level.ExplosionInteraction.NONE);
-
+            if (!world.isClient) {
+                world.createExplosion(SaltMage.this, xRoot, yRoot, zRoot, 6.0F, World.ExplosionSourceType.NONE);
             }
 
-            SaltMage.this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, getCastingTime()*2, 3));
+            SaltMage.this.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, this.getSpellTicks() * 2, 3));
 
-            for(int length = -1*wallHalfLength; length<=wallHalfLength; length++) {
+            for (int length = -wallHalfLength; length <= wallHalfLength; length++) {
                 for (int height = 0; height <= wallHeight; height++) {
-                    if(doWallRotation){
-                        blockpos = new BlockPos(xRoot+length, yRoot + height, zRoot);
-                    } else{
-                        blockpos = new BlockPos(xRoot, yRoot + height, zRoot+length);
+                    BlockPos blockPos;
+                    if (doWallRotation) {
+                        blockPos = new BlockPos(xRoot + length, yRoot + height, zRoot);
+                    } else {
+                        blockPos = new BlockPos(xRoot, yRoot + height, zRoot + length);
                     }
-                    blockstate = level.getBlockState(blockpos);
-                    blockpos1 = blockpos.below();
-                    if(height!=wallHeight){
-                        blockstate2 = ModBlocks.ROCK_SALT_BRICKS.get().defaultBlockState();
-                    } else{
-                        blockstate2 = ModBlocks.CHISELED_ROCK_SALT_BRICKS.get().defaultBlockState();
-                    }
-                    blockstate2 = Block.updateFromNeighbourShapes(blockstate2, SaltMage.this.level(), blockpos);
-                    if (this.canPlaceBlock(blockstate) && !ForgeEventFactory.onBlockPlace(SaltMage.this, BlockSnapshot.create(level.dimension(), level, blockpos1), Direction.UP)) {
-                        level.setBlock(blockpos, blockstate2, 3);
-                        level.gameEvent(GameEvent.BLOCK_PLACE, blockpos, GameEvent.Context.of(SaltMage.this, blockstate2));
+                    net.minecraft.block.BlockState blockState = world.getBlockState(blockPos);
+                    net.minecraft.block.BlockState newState = height != wallHeight
+                            ? ModBlocks.ROCK_SALT_BRICKS.getDefaultState()
+                            : ModBlocks.CHISELED_ROCK_SALT_BRICKS.getDefaultState();
+                    newState = Block.postProcessState(newState, world, blockPos);
+                    if (this.canPlaceBlock(blockState)) {
+                        world.setBlockState(blockPos, newState, 3);
+                        world.emitGameEvent(SaltMage.this, GameEvent.BLOCK_PLACE, blockPos);
                     }
                 }
             }
         }
 
-        private boolean canPlaceBlock(BlockState pDestinationState) {
-            return pDestinationState.isAir();
+        private boolean canPlaceBlock(net.minecraft.block.BlockState destinationState) {
+            return destinationState.isAir();
         }
 
-        protected SoundEvent getSpellPrepareSound() {
-            return SoundEvents.EVOKER_PREPARE_WOLOLO;
+        @Override
+        protected SoundEvent getSoundPrepare() {
+            return SoundEvents.ENTITY_EVOKER_PREPARE_WOLOLO;
         }
 
-        protected SpellcasterIllager.IllagerSpell getSpell() {
-            return IllagerSpell.FANGS;
+        @Override
+        protected SpellcastingIllagerEntity.Spell getSpell() {
+            return SpellcastingIllagerEntity.Spell.FANGS;
         }
     }
 
     @Override
-    public void startSeenByPlayer(ServerPlayer pServerPlayer) {
-        super.startSeenByPlayer(pServerPlayer);
-        this.bossEvent.addPlayer(pServerPlayer);
+    public void onStartedTrackingBy(net.minecraft.server.network.ServerPlayerEntity player) {
+        super.onStartedTrackingBy(player);
+        this.bossBar.addPlayer(player);
     }
 
     @Override
-    public void stopSeenByPlayer(ServerPlayer pServerPlayer) {
-        super.stopSeenByPlayer(pServerPlayer);
-        this.bossEvent.removePlayer(pServerPlayer);
+    public void onStoppedTrackingBy(net.minecraft.server.network.ServerPlayerEntity player) {
+        super.onStoppedTrackingBy(player);
+        this.bossBar.removePlayer(player);
     }
 
     @Override
-    public void aiStep() {
-        super.aiStep();
-        this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
+    public void tick() {
+        super.tick();
+        this.bossBar.setPercent(this.getHealth() / this.getMaxHealth());
     }
 
     @Override
-    public void die(DamageSource pCause) {
-        if(spawningPlinthPosition != null){
+    public void onDeath(DamageSource damageSource) {
+        if (spawningPlinthPosition != null) {
             // The plinth may have been broken or replaced since the boss spawned
-            BlockState plinthState = this.level().getBlockState(spawningPlinthPosition);
-            if (plinthState.is(ModBlocks.SPAWNING_PLINTH.get())) {
-                this.level().setBlock(spawningPlinthPosition, plinthState.setValue(SpawningPlinthBlock.LIT, false), 3);
+            net.minecraft.block.BlockState plinthState = this.getWorld().getBlockState(spawningPlinthPosition);
+            if (plinthState.isOf(ModBlocks.SPAWNING_PLINTH)) {
+                this.getWorld().setBlockState(spawningPlinthPosition, plinthState.with(SpawningPlinthBlock.LIT, false), 3);
             }
-            if (!this.level().isClientSide) {
-                this.level().explode(null, null, (ExplosionDamageCalculator)null, spawningPlinthPosition.getX(),
-                        spawningPlinthPosition.getY(), spawningPlinthPosition.getZ(), 3.0F, false, Level.ExplosionInteraction.NONE);
+            if (!this.getWorld().isClient) {
+                this.getWorld().createExplosion(null, spawningPlinthPosition.getX(),
+                        spawningPlinthPosition.getY(), spawningPlinthPosition.getZ(), 3.0F, World.ExplosionSourceType.NONE);
             }
-            unlightSummoningPlinths(this.level(),spawningPlinthPosition);
+            unlightSummoningPlinths(this.getWorld(), spawningPlinthPosition);
         }
-        super.die(pCause);
+        super.onDeath(damageSource);
     }
 
-    @Override
-    protected ResourceLocation getDefaultLootTable() {
-        return new ResourceLocation("saltcraft", "entities/salt_mage");
-    }
-
-    public void unlightSummoningPlinths(Level level, BlockPos position){
-        BlockState blockState;
+    public void unlightSummoningPlinths(World world, BlockPos position) {
+        net.minecraft.block.BlockState blockState;
         BlockPos blockPos;
         int relativeYLayer = 0;
         boolean checkingLayers = true;
         int radius = SpawningPlinthBlock.PLINTH_SEARCH_RADIUS;
-        while(checkingLayers) {
+        while (checkingLayers) {
             for (int z = -radius; z <= radius; z++) {
                 for (int x = -radius; x <= radius; x++) {
-                    blockPos = new BlockPos((int) position.getX() + x, (int) position.getY()+relativeYLayer, (int) position.getZ() + z);
-                    if (!level.hasChunkAt(blockPos)) {
+                    blockPos = new BlockPos(position.getX() + x, position.getY() + relativeYLayer, position.getZ() + z);
+                    if (!world.isChunkLoaded(blockPos)) {
                         continue;
                     }
-                    blockState = level.getBlockState(blockPos);
-                    if (blockState.is(ModBlocks.SUMMONING_PLINTH.get())) {
-                        level.setBlock(blockPos, blockState.setValue(SummoningPlinthBlock.CRACKED, true).setValue(SummoningPlinthBlock.LIT, false), 3);
-                        if (!level.isClientSide) {
-                            level.explode(null, null, (ExplosionDamageCalculator)null, position.getX(),
-                                    position.getY(), position.getZ(), 2.0F, false, Level.ExplosionInteraction.NONE);
+                    blockState = world.getBlockState(blockPos);
+                    if (blockState.isOf(ModBlocks.SUMMONING_PLINTH)) {
+                        world.setBlockState(blockPos, blockState.with(SummoningPlinthBlock.CRACKED, true).with(SummoningPlinthBlock.LIT, false), 3);
+                        if (!world.isClient) {
+                            world.createExplosion(null, position.getX(), position.getY(), position.getZ(), 2.0F, World.ExplosionSourceType.NONE);
                         }
                     }
                 }
@@ -424,7 +409,7 @@ public class SaltMage extends SpellcasterIllager {
                 relativeYLayer = 10;
             } else if (relativeYLayer == 10) {
                 relativeYLayer = 12;
-            } else{
+            } else {
                 checkingLayers = false;
             }
         }

@@ -1,0 +1,42 @@
+{
+	"schemaVersion": 1,
+	"id": "saltcraft",
+	"version": "${version}",
+	"name": "Saltcraft",
+	"description": "A mod that adds salt blocks, biomes, structures, and new mobs to Minecraft",
+	"authors": [
+		"ProctoredGames"
+	],
+	"contact": {
+		"sources": "https://github.com/ProctoredGames/Saltcraft"
+	},
+	"license": "MIT",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.proctoredgames.saltcraft.Saltcraft"
+		],
+		"client": [
+			"net.proctoredgames.saltcraft.SaltcraftClient"
+		],
+		"terrablender": [
+			"net.proctoredgames.saltcraft.worldgen.biome.ModTerrablenderAPI"
+		],
+		"fabric-datagen": [
+			"net.proctoredgames.saltcraft.SaltcraftDataGenerator"
+		],
+		"jei_mod_plugin": [
+			"net.proctoredgames.saltcraft.compat.JEISaltcraftPlugin"
+		]
+	},
+	"mixins": [
+		"saltcraft.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.17.2",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*",
+		"terrablender": "*"
+	}
+}

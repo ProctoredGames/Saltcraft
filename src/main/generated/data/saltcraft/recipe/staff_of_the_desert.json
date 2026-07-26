@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "saltcraft:eye_of_the_desert"
+    },
+    "S": {
+      "item": "saltcraft:ancient_staff_fragment"
+    }
+  },
+  "pattern": [
+    " # ",
+    " S ",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "saltcraft:staff_of_the_desert"
+  }
+}

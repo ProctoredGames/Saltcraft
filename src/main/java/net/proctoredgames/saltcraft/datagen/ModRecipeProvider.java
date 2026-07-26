@@ -1,492 +1,425 @@
 package net.proctoredgames.saltcraft.datagen;
 
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.StonecutterRecipe;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.proctoredgames.saltcraft.Saltcraft;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.minecraft.data.server.recipe.CookingRecipeJsonBuilder;
+import net.minecraft.data.server.recipe.RecipeExporter;
+import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
+import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
+import net.minecraft.item.Items;
+import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.book.RecipeCategory;
+import net.minecraft.registry.RegistryWrapper;
 import net.proctoredgames.saltcraft.block.ModBlocks;
 import net.proctoredgames.saltcraft.item.ModItems;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.*;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 import net.proctoredgames.saltcraft.util.ModTags;
 
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
-public class ModRecipeProvider extends RecipeProvider implements IConditionBuilder {
-    private static final List<ItemLike> SALT_ORE_SMELTABLES = List.of(
-            ModBlocks.SALT_ORE.get());
-    private static final List<ItemLike> PINK_SALT_ORE_SMELTABLES = List.of(
-            ModBlocks.PINK_SALT_ORE.get());
-
-    public ModRecipeProvider(PackOutput pOutput) {
-        super(pOutput);
+public class ModRecipeProvider extends FabricRecipeProvider {
+    public ModRecipeProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+        super(output, registriesFuture);
     }
 
     @Override
-    protected void buildRecipes(Consumer<FinishedRecipe> pWriter) {
-        oreSmelting(pWriter, SALT_ORE_SMELTABLES, RecipeCategory.MISC, ModItems.SALT.get(), 0.25f, 200, "salt");
-        oreSmelting(pWriter, PINK_SALT_ORE_SMELTABLES, RecipeCategory.MISC, ModItems.PINK_SALT.get(), 0.25f, 200, "pink_salt");
-        oreBlasting(pWriter, SALT_ORE_SMELTABLES, RecipeCategory.MISC, ModItems.SALT.get(), 0.25f, 200, "salt");
-        oreBlasting(pWriter, PINK_SALT_ORE_SMELTABLES, RecipeCategory.MISC, ModItems.PINK_SALT.get(), 0.25f, 200, "pink_salt");
+    public void generate(RecipeExporter exporter) {
+        offerSmelting(exporter, List.of(ModBlocks.SALT_ORE), RecipeCategory.MISC, ModItems.SALT, 0.25f, 200, "salt");
+        offerSmelting(exporter, List.of(ModBlocks.PINK_SALT_ORE), RecipeCategory.MISC, ModItems.PINK_SALT, 0.25f, 200, "pink_salt");
+        offerBlasting(exporter, List.of(ModBlocks.SALT_ORE), RecipeCategory.MISC, ModItems.SALT, 0.25f, 200, "salt");
+        offerBlasting(exporter, List.of(ModBlocks.PINK_SALT_ORE), RecipeCategory.MISC, ModItems.PINK_SALT, 0.25f, 200, "pink_salt");
 
-        addSmeltingPair(
-                ModItems.SALTED_POTATO.get(), ModItems.SALTED_BAKED_POTATO.get(),
-                ModItems.PINK_SALTED_POTATO.get(), ModItems.PINK_SALTED_BAKED_POTATO.get(),
-                pWriter
-        );
+        addSmeltingPair(exporter, ModItems.SALTED_POTATO, ModItems.SALTED_BAKED_POTATO, ModItems.PINK_SALTED_POTATO, ModItems.PINK_SALTED_BAKED_POTATO);
 
-// Meat & Fish Smelting Pairs
-        addSmeltingPair(
-                ModItems.SALTED_BEEF.get(), ModItems.SALTED_COOKED_BEEF.get(),
-                ModItems.PINK_SALTED_BEEF.get(), ModItems.PINK_SALTED_COOKED_BEEF.get(),
-                pWriter
-        );
-        addSmeltingPair(
-                ModItems.SALTED_CHICKEN.get(), ModItems.SALTED_COOKED_CHICKEN.get(),
-                ModItems.PINK_SALTED_CHICKEN.get(), ModItems.PINK_SALTED_COOKED_CHICKEN.get(),
-                pWriter
-        );
-        addSmeltingPair(
-                ModItems.SALTED_COD.get(), ModItems.SALTED_COOKED_COD.get(),
-                ModItems.PINK_SALTED_COD.get(), ModItems.PINK_SALTED_COOKED_COD.get(),
-                pWriter
-        );
-        addSmeltingPair(
-                ModItems.SALTED_MUTTON.get(), ModItems.SALTED_COOKED_MUTTON.get(),
-                ModItems.PINK_SALTED_MUTTON.get(), ModItems.PINK_SALTED_COOKED_MUTTON.get(),
-                pWriter
-        );
-        addSmeltingPair(
-                ModItems.SALTED_PORKCHOP.get(), ModItems.SALTED_COOKED_PORKCHOP.get(),
-                ModItems.PINK_SALTED_PORKCHOP.get(), ModItems.PINK_SALTED_COOKED_PORKCHOP.get(),
-                pWriter
-        );
-        addSmeltingPair(
-                ModItems.SALTED_RABBIT.get(), ModItems.SALTED_COOKED_RABBIT.get(),
-                ModItems.PINK_SALTED_RABBIT.get(), ModItems.PINK_SALTED_COOKED_RABBIT.get(),
-                pWriter
-        );
-        addSmeltingPair(
-                ModItems.SALTED_SALMON.get(), ModItems.SALTED_COOKED_SALMON.get(),
-                ModItems.PINK_SALTED_SALMON.get(), ModItems.PINK_SALTED_COOKED_SALMON.get(),
-                pWriter
-        );
-        addSmeltingPair(
-                ModItems.SALTED_KELP.get(), ModItems.SALTED_DRIED_KELP.get(),
-                ModItems.PINK_SALTED_KELP.get(), ModItems.PINK_SALTED_DRIED_KELP.get(),
-                pWriter
-        );
+        addSmeltingPair(exporter, ModItems.SALTED_BEEF, ModItems.SALTED_COOKED_BEEF, ModItems.PINK_SALTED_BEEF, ModItems.PINK_SALTED_COOKED_BEEF);
+        addSmeltingPair(exporter, ModItems.SALTED_CHICKEN, ModItems.SALTED_COOKED_CHICKEN, ModItems.PINK_SALTED_CHICKEN, ModItems.PINK_SALTED_COOKED_CHICKEN);
+        addSmeltingPair(exporter, ModItems.SALTED_COD, ModItems.SALTED_COOKED_COD, ModItems.PINK_SALTED_COD, ModItems.PINK_SALTED_COOKED_COD);
+        addSmeltingPair(exporter, ModItems.SALTED_MUTTON, ModItems.SALTED_COOKED_MUTTON, ModItems.PINK_SALTED_MUTTON, ModItems.PINK_SALTED_COOKED_MUTTON);
+        addSmeltingPair(exporter, ModItems.SALTED_PORKCHOP, ModItems.SALTED_COOKED_PORKCHOP, ModItems.PINK_SALTED_PORKCHOP, ModItems.PINK_SALTED_COOKED_PORKCHOP);
+        addSmeltingPair(exporter, ModItems.SALTED_RABBIT, ModItems.SALTED_COOKED_RABBIT, ModItems.PINK_SALTED_RABBIT, ModItems.PINK_SALTED_COOKED_RABBIT);
+        addSmeltingPair(exporter, ModItems.SALTED_SALMON, ModItems.SALTED_COOKED_SALMON, ModItems.PINK_SALTED_SALMON, ModItems.PINK_SALTED_COOKED_SALMON);
+        addSmeltingPair(exporter, ModItems.SALTED_KELP, ModItems.SALTED_DRIED_KELP, ModItems.PINK_SALTED_KELP, ModItems.PINK_SALTED_DRIED_KELP);
 
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.CLUMPED_SALT_SLAB.get(), ModBlocks.CLUMPED_SALT_BLOCK.get(), 2);
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.CLUMPED_SALT_STAIRS.get(), ModBlocks.CLUMPED_SALT_BLOCK.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.DECORATIONS, ModBlocks.CLUMPED_SALT_WALL.get(), ModBlocks.CLUMPED_SALT_BLOCK.get());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.CLUMPED_SALT_SLAB, ModBlocks.CLUMPED_SALT_BLOCK, 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.CLUMPED_SALT_STAIRS, ModBlocks.CLUMPED_SALT_BLOCK);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, ModBlocks.CLUMPED_SALT_WALL, ModBlocks.CLUMPED_SALT_BLOCK);
 
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.CLUMPED_PINK_SALT_SLAB.get(), ModBlocks.CLUMPED_PINK_SALT_BLOCK.get(), 2);
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.CLUMPED_PINK_SALT_STAIRS.get(), ModBlocks.CLUMPED_PINK_SALT_BLOCK.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.DECORATIONS, ModBlocks.CLUMPED_PINK_SALT_WALL.get(), ModBlocks.CLUMPED_PINK_SALT_BLOCK.get());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.CLUMPED_PINK_SALT_SLAB, ModBlocks.CLUMPED_PINK_SALT_BLOCK, 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.CLUMPED_PINK_SALT_STAIRS, ModBlocks.CLUMPED_PINK_SALT_BLOCK);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, ModBlocks.CLUMPED_PINK_SALT_WALL, ModBlocks.CLUMPED_PINK_SALT_BLOCK);
 
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_SLAB.get(), ModBlocks.ROCK_SALT_BLOCK.get(), 2);
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_STAIRS.get(), ModBlocks.ROCK_SALT_BLOCK.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_PILLAR.get(), ModBlocks.ROCK_SALT_BLOCK.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.DECORATIONS, ModBlocks.ROCK_SALT_WALL.get(), ModBlocks.ROCK_SALT_BLOCK.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_BRICKS.get(), ModBlocks.ROCK_SALT_BLOCK.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_BRICK_SLAB.get(), ModBlocks.ROCK_SALT_BLOCK.get(), 2);
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_BRICK_STAIRS.get(), ModBlocks.ROCK_SALT_BLOCK.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.DECORATIONS, ModBlocks.ROCK_SALT_BRICK_WALL.get(), ModBlocks.ROCK_SALT_BLOCK.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.DECORATIONS, ModBlocks.CHISELED_ROCK_SALT_BRICKS.get(), ModBlocks.ROCK_SALT_BLOCK.get());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_SLAB, ModBlocks.ROCK_SALT_BLOCK, 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_STAIRS, ModBlocks.ROCK_SALT_BLOCK);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_PILLAR, ModBlocks.ROCK_SALT_BLOCK);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, ModBlocks.ROCK_SALT_WALL, ModBlocks.ROCK_SALT_BLOCK);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_BRICKS, ModBlocks.ROCK_SALT_BLOCK);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_BRICK_SLAB, ModBlocks.ROCK_SALT_BLOCK, 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_BRICK_STAIRS, ModBlocks.ROCK_SALT_BLOCK);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, ModBlocks.ROCK_SALT_BRICK_WALL, ModBlocks.ROCK_SALT_BLOCK);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, ModBlocks.CHISELED_ROCK_SALT_BRICKS, ModBlocks.ROCK_SALT_BLOCK);
 
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_SLAB.get(), ModBlocks.ROCK_PINK_SALT_BLOCK.get(), 2);
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_STAIRS.get(), ModBlocks.ROCK_PINK_SALT_BLOCK.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_PILLAR.get(), ModBlocks.ROCK_PINK_SALT_BLOCK.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.DECORATIONS, ModBlocks.ROCK_PINK_SALT_WALL.get(), ModBlocks.ROCK_PINK_SALT_BLOCK.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_BRICKS.get(), ModBlocks.ROCK_PINK_SALT_BLOCK.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_BRICK_SLAB.get(), ModBlocks.ROCK_PINK_SALT_BLOCK.get(), 2);
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_BRICK_STAIRS.get(), ModBlocks.ROCK_PINK_SALT_BLOCK.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.DECORATIONS, ModBlocks.ROCK_PINK_SALT_BRICK_WALL.get(), ModBlocks.ROCK_PINK_SALT_BLOCK.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.DECORATIONS, ModBlocks.CHISELED_ROCK_PINK_SALT_BRICKS.get(), ModBlocks.ROCK_PINK_SALT_BLOCK.get());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_SLAB, ModBlocks.ROCK_PINK_SALT_BLOCK, 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_STAIRS, ModBlocks.ROCK_PINK_SALT_BLOCK);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_PILLAR, ModBlocks.ROCK_PINK_SALT_BLOCK);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, ModBlocks.ROCK_PINK_SALT_WALL, ModBlocks.ROCK_PINK_SALT_BLOCK);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_BRICKS, ModBlocks.ROCK_PINK_SALT_BLOCK);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_BRICK_SLAB, ModBlocks.ROCK_PINK_SALT_BLOCK, 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_BRICK_STAIRS, ModBlocks.ROCK_PINK_SALT_BLOCK);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, ModBlocks.ROCK_PINK_SALT_BRICK_WALL, ModBlocks.ROCK_PINK_SALT_BLOCK);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, ModBlocks.CHISELED_ROCK_PINK_SALT_BRICKS, ModBlocks.ROCK_PINK_SALT_BLOCK);
 
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_BRICK_SLAB.get(), ModBlocks.ROCK_SALT_BRICKS.get(), 2);
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_BRICK_STAIRS.get(), ModBlocks.ROCK_SALT_BRICKS.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.DECORATIONS, ModBlocks.ROCK_SALT_BRICK_WALL.get(), ModBlocks.ROCK_SALT_BRICKS.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.DECORATIONS, ModBlocks.CHISELED_ROCK_SALT_BRICKS.get(), ModBlocks.ROCK_SALT_BRICKS.get());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_BRICK_SLAB, ModBlocks.ROCK_SALT_BRICKS, 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_BRICK_STAIRS, ModBlocks.ROCK_SALT_BRICKS);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, ModBlocks.ROCK_SALT_BRICK_WALL, ModBlocks.ROCK_SALT_BRICKS);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, ModBlocks.CHISELED_ROCK_SALT_BRICKS, ModBlocks.ROCK_SALT_BRICKS);
 
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_BRICK_SLAB.get(), ModBlocks.ROCK_PINK_SALT_BRICKS.get(), 2);
-        stonecutterResultFromBase(pWriter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_BRICK_STAIRS.get(), ModBlocks.ROCK_PINK_SALT_BRICKS.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.DECORATIONS, ModBlocks.ROCK_PINK_SALT_BRICK_WALL.get(), ModBlocks.ROCK_PINK_SALT_BRICKS.get());
-        stonecutterResultFromBase(pWriter, RecipeCategory.DECORATIONS, ModBlocks.CHISELED_ROCK_PINK_SALT_BRICKS.get(), ModBlocks.ROCK_PINK_SALT_BRICKS.get());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_BRICK_SLAB, ModBlocks.ROCK_PINK_SALT_BRICKS, 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_BRICK_STAIRS, ModBlocks.ROCK_PINK_SALT_BRICKS);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, ModBlocks.ROCK_PINK_SALT_BRICK_WALL, ModBlocks.ROCK_PINK_SALT_BRICKS);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, ModBlocks.CHISELED_ROCK_PINK_SALT_BRICKS, ModBlocks.ROCK_PINK_SALT_BRICKS);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SALT_BLOCK.get())
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.SALT_BLOCK)
                 .pattern("SSS")
                 .pattern("SSS")
                 .pattern("SSS")
-                .define('S', ModItems.SALT.get())
-                .unlockedBy(getHasName(ModItems.SALT.get()), has(ModItems.SALT.get()))
-                .save(pWriter);
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SALT.get(), 9)
-                .requires(ModBlocks.SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.SALT_BLOCK.get()), has(ModBlocks.SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CLUMPED_SALT_STAIRS.get(), 4)
+                .input('S', ModItems.SALT)
+                .criterion(hasItem(ModItems.SALT), conditionsFromItem(ModItems.SALT))
+                .offerTo(exporter);
+        ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.SALT, 9)
+                .input(ModBlocks.SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.SALT_BLOCK), conditionsFromItem(ModBlocks.SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.CLUMPED_SALT_STAIRS, 4)
                 .pattern("S  ")
                 .pattern("SS ")
                 .pattern("SSS")
-                .define('S', ModBlocks.CLUMPED_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.CLUMPED_SALT_BLOCK.get()), has(ModBlocks.CLUMPED_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CLUMPED_SALT_SLAB.get(), 6)
+                .input('S', ModBlocks.CLUMPED_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.CLUMPED_SALT_BLOCK), conditionsFromItem(ModBlocks.CLUMPED_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.CLUMPED_SALT_SLAB, 6)
                 .pattern("SSS")
-                .define('S', ModBlocks.CLUMPED_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.CLUMPED_SALT_BLOCK.get()), has(ModBlocks.CLUMPED_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CLUMPED_SALT_WALL.get(), 6)
+                .input('S', ModBlocks.CLUMPED_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.CLUMPED_SALT_BLOCK), conditionsFromItem(ModBlocks.CLUMPED_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.CLUMPED_SALT_WALL, 6)
                 .pattern("SSS")
                 .pattern("SSS")
-                .define('S', ModBlocks.CLUMPED_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.CLUMPED_SALT_BLOCK.get()), has(ModBlocks.CLUMPED_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ROCK_SALT_STAIRS.get(), 4)
+                .input('S', ModBlocks.CLUMPED_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.CLUMPED_SALT_BLOCK), conditionsFromItem(ModBlocks.CLUMPED_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.ROCK_SALT_STAIRS, 4)
                 .pattern("S  ")
                 .pattern("SS ")
                 .pattern("SSS")
-                .define('S', ModBlocks.ROCK_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_SALT_BLOCK.get()), has(ModBlocks.ROCK_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ROCK_SALT_SLAB.get(), 6)
+                .input('S', ModBlocks.ROCK_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.ROCK_SALT_BLOCK), conditionsFromItem(ModBlocks.ROCK_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.ROCK_SALT_SLAB, 6)
                 .pattern("SSS")
-                .define('S', ModBlocks.ROCK_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_SALT_BLOCK.get()), has(ModBlocks.ROCK_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ROCK_SALT_WALL.get(), 6)
+                .input('S', ModBlocks.ROCK_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.ROCK_SALT_BLOCK), conditionsFromItem(ModBlocks.ROCK_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.ROCK_SALT_WALL, 6)
                 .pattern("SSS")
                 .pattern("SSS")
-                .define('S', ModBlocks.ROCK_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_SALT_BLOCK.get()), has(ModBlocks.ROCK_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ROCK_SALT_BRICK_STAIRS.get(), 4)
+                .input('S', ModBlocks.ROCK_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.ROCK_SALT_BLOCK), conditionsFromItem(ModBlocks.ROCK_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.ROCK_SALT_BRICK_STAIRS, 4)
                 .pattern("S  ")
                 .pattern("SS ")
                 .pattern("SSS")
-                .define('S', ModBlocks.ROCK_SALT_BRICKS.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_SALT_BRICKS.get()), has(ModBlocks.ROCK_SALT_BRICKS.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ROCK_SALT_BRICK_SLAB.get(), 6)
+                .input('S', ModBlocks.ROCK_SALT_BRICKS)
+                .criterion(hasItem(ModBlocks.ROCK_SALT_BRICKS), conditionsFromItem(ModBlocks.ROCK_SALT_BRICKS))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.ROCK_SALT_BRICK_SLAB, 6)
                 .pattern("SSS")
-                .define('S', ModBlocks.ROCK_SALT_BRICKS.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_SALT_BRICKS.get()), has(ModBlocks.ROCK_SALT_BRICKS.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ROCK_SALT_BRICK_WALL.get(), 6)
+                .input('S', ModBlocks.ROCK_SALT_BRICKS)
+                .criterion(hasItem(ModBlocks.ROCK_SALT_BRICKS), conditionsFromItem(ModBlocks.ROCK_SALT_BRICKS))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.ROCK_SALT_BRICK_WALL, 6)
                 .pattern("SSS")
                 .pattern("SSS")
-                .define('S', ModBlocks.ROCK_SALT_BRICKS.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_SALT_BRICKS.get()), has(ModBlocks.ROCK_SALT_BRICKS.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CRACKED_ROCK_SALT_BRICK_STAIRS.get(), 4)
+                .input('S', ModBlocks.ROCK_SALT_BRICKS)
+                .criterion(hasItem(ModBlocks.ROCK_SALT_BRICKS), conditionsFromItem(ModBlocks.ROCK_SALT_BRICKS))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.CRACKED_ROCK_SALT_BRICK_STAIRS, 4)
                 .pattern("S  ")
                 .pattern("SS ")
                 .pattern("SSS")
-                .define('S', ModBlocks.CRACKED_ROCK_SALT_BRICKS.get())
-                .unlockedBy(getHasName(ModBlocks.CRACKED_ROCK_SALT_BRICKS.get()), has(ModBlocks.CRACKED_ROCK_SALT_BRICKS.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CRACKED_ROCK_SALT_BRICK_SLAB.get(), 6)
+                .input('S', ModBlocks.CRACKED_ROCK_SALT_BRICKS)
+                .criterion(hasItem(ModBlocks.CRACKED_ROCK_SALT_BRICKS), conditionsFromItem(ModBlocks.CRACKED_ROCK_SALT_BRICKS))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.CRACKED_ROCK_SALT_BRICK_SLAB, 6)
                 .pattern("SSS")
-                .define('S', ModBlocks.CRACKED_ROCK_SALT_BRICKS.get())
-                .unlockedBy(getHasName(ModBlocks.CRACKED_ROCK_SALT_BRICKS.get()), has(ModBlocks.CRACKED_ROCK_SALT_BRICKS.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CRACKED_ROCK_SALT_BRICK_WALL.get(), 6)
+                .input('S', ModBlocks.CRACKED_ROCK_SALT_BRICKS)
+                .criterion(hasItem(ModBlocks.CRACKED_ROCK_SALT_BRICKS), conditionsFromItem(ModBlocks.CRACKED_ROCK_SALT_BRICKS))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.CRACKED_ROCK_SALT_BRICK_WALL, 6)
                 .pattern("SSS")
                 .pattern("SSS")
-                .define('S', ModBlocks.CRACKED_ROCK_SALT_BRICKS.get())
-                .unlockedBy(getHasName(ModBlocks.CRACKED_ROCK_SALT_BRICKS.get()), has(ModBlocks.CRACKED_ROCK_SALT_BRICKS.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CLUMPED_SALT_BLOCK.get())
+                .input('S', ModBlocks.CRACKED_ROCK_SALT_BRICKS)
+                .criterion(hasItem(ModBlocks.CRACKED_ROCK_SALT_BRICKS), conditionsFromItem(ModBlocks.CRACKED_ROCK_SALT_BRICKS))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.CLUMPED_SALT_BLOCK)
                 .pattern("SS")
                 .pattern("SS")
-                .define('S', ModBlocks.SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.SALT_BLOCK.get()), has(ModBlocks.SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ROCK_SALT_BLOCK.get(), 4)
+                .input('S', ModBlocks.SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.SALT_BLOCK), conditionsFromItem(ModBlocks.SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.ROCK_SALT_BLOCK, 4)
                 .pattern("SS")
                 .pattern("SS")
-                .define('S', ModBlocks.CLUMPED_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.CLUMPED_SALT_BLOCK.get()), has(ModBlocks.CLUMPED_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ROCK_SALT_BRICKS.get(), 4)
+                .input('S', ModBlocks.CLUMPED_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.CLUMPED_SALT_BLOCK), conditionsFromItem(ModBlocks.CLUMPED_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.ROCK_SALT_BRICKS, 4)
                 .pattern("SS")
                 .pattern("SS")
-                .define('S', ModBlocks.ROCK_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_SALT_BLOCK.get()), has(ModBlocks.ROCK_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CHISELED_ROCK_SALT_BRICKS.get())
+                .input('S', ModBlocks.ROCK_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.ROCK_SALT_BLOCK), conditionsFromItem(ModBlocks.ROCK_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.CHISELED_ROCK_SALT_BRICKS)
                 .pattern("S")
                 .pattern("S")
-                .define('S', ModBlocks.ROCK_SALT_BRICK_SLAB.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_SALT_BRICK_SLAB.get()), has(ModBlocks.ROCK_SALT_BRICK_SLAB.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_PILLAR.get(), 2)
+                .input('S', ModBlocks.ROCK_SALT_BRICK_SLAB)
+                .criterion(hasItem(ModBlocks.ROCK_SALT_BRICK_SLAB), conditionsFromItem(ModBlocks.ROCK_SALT_BRICK_SLAB))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_SALT_PILLAR, 2)
                 .pattern("S")
                 .pattern("S")
-                .define('S', ModBlocks.ROCK_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_SALT_BLOCK.get()), has(ModBlocks.ROCK_SALT_BLOCK.get()))
-                .save(pWriter);
+                .input('S', ModBlocks.ROCK_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.ROCK_SALT_BLOCK), conditionsFromItem(ModBlocks.ROCK_SALT_BLOCK))
+                .offerTo(exporter);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.PINK_SALT_BLOCK.get())
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.PINK_SALT_BLOCK)
                 .pattern("SSS")
                 .pattern("SSS")
                 .pattern("SSS")
-                .define('S', ModItems.PINK_SALT.get())
-                .unlockedBy(getHasName(ModItems.PINK_SALT.get()), has(ModItems.PINK_SALT.get()))
-                .save(pWriter);
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.PINK_SALT.get(), 9)
-                .requires(ModBlocks.PINK_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.PINK_SALT_BLOCK.get()), has(ModBlocks.PINK_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CLUMPED_PINK_SALT_STAIRS.get(), 4)
+                .input('S', ModItems.PINK_SALT)
+                .criterion(hasItem(ModItems.PINK_SALT), conditionsFromItem(ModItems.PINK_SALT))
+                .offerTo(exporter);
+        ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.PINK_SALT, 9)
+                .input(ModBlocks.PINK_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.PINK_SALT_BLOCK), conditionsFromItem(ModBlocks.PINK_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.CLUMPED_PINK_SALT_STAIRS, 4)
                 .pattern("S  ")
                 .pattern("SS ")
                 .pattern("SSS")
-                .define('S', ModBlocks.CLUMPED_PINK_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.CLUMPED_PINK_SALT_BLOCK.get()), has(ModBlocks.CLUMPED_PINK_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CLUMPED_PINK_SALT_SLAB.get(), 6)
+                .input('S', ModBlocks.CLUMPED_PINK_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.CLUMPED_PINK_SALT_BLOCK), conditionsFromItem(ModBlocks.CLUMPED_PINK_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.CLUMPED_PINK_SALT_SLAB, 6)
                 .pattern("SSS")
-                .define('S', ModBlocks.CLUMPED_PINK_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.CLUMPED_PINK_SALT_BLOCK.get()), has(ModBlocks.CLUMPED_PINK_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CLUMPED_PINK_SALT_WALL.get(), 6)
+                .input('S', ModBlocks.CLUMPED_PINK_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.CLUMPED_PINK_SALT_BLOCK), conditionsFromItem(ModBlocks.CLUMPED_PINK_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.CLUMPED_PINK_SALT_WALL, 6)
                 .pattern("SSS")
                 .pattern("SSS")
-                .define('S', ModBlocks.CLUMPED_PINK_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.CLUMPED_PINK_SALT_BLOCK.get()), has(ModBlocks.CLUMPED_PINK_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ROCK_PINK_SALT_STAIRS.get(), 4)
+                .input('S', ModBlocks.CLUMPED_PINK_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.CLUMPED_PINK_SALT_BLOCK), conditionsFromItem(ModBlocks.CLUMPED_PINK_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.ROCK_PINK_SALT_STAIRS, 4)
                 .pattern("S  ")
                 .pattern("SS ")
                 .pattern("SSS")
-                .define('S', ModBlocks.ROCK_PINK_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_PINK_SALT_BLOCK.get()), has(ModBlocks.ROCK_PINK_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ROCK_PINK_SALT_SLAB.get(), 6)
+                .input('S', ModBlocks.ROCK_PINK_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.ROCK_PINK_SALT_BLOCK), conditionsFromItem(ModBlocks.ROCK_PINK_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.ROCK_PINK_SALT_SLAB, 6)
                 .pattern("SSS")
-                .define('S', ModBlocks.ROCK_PINK_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_PINK_SALT_BLOCK.get()), has(ModBlocks.ROCK_PINK_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ROCK_PINK_SALT_WALL.get(), 6)
+                .input('S', ModBlocks.ROCK_PINK_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.ROCK_PINK_SALT_BLOCK), conditionsFromItem(ModBlocks.ROCK_PINK_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.ROCK_PINK_SALT_WALL, 6)
                 .pattern("SSS")
                 .pattern("SSS")
-                .define('S', ModBlocks.ROCK_PINK_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_PINK_SALT_BLOCK.get()), has(ModBlocks.ROCK_PINK_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ROCK_PINK_SALT_BRICK_STAIRS.get(), 4)
+                .input('S', ModBlocks.ROCK_PINK_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.ROCK_PINK_SALT_BLOCK), conditionsFromItem(ModBlocks.ROCK_PINK_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.ROCK_PINK_SALT_BRICK_STAIRS, 4)
                 .pattern("S  ")
                 .pattern("SS ")
                 .pattern("SSS")
-                .define('S', ModBlocks.ROCK_PINK_SALT_BRICKS.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_PINK_SALT_BRICKS.get()), has(ModBlocks.ROCK_PINK_SALT_BRICKS.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ROCK_PINK_SALT_BRICK_SLAB.get(), 6)
+                .input('S', ModBlocks.ROCK_PINK_SALT_BRICKS)
+                .criterion(hasItem(ModBlocks.ROCK_PINK_SALT_BRICKS), conditionsFromItem(ModBlocks.ROCK_PINK_SALT_BRICKS))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.ROCK_PINK_SALT_BRICK_SLAB, 6)
                 .pattern("SSS")
-                .define('S', ModBlocks.ROCK_PINK_SALT_BRICKS.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_PINK_SALT_BRICKS.get()), has(ModBlocks.ROCK_PINK_SALT_BRICKS.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ROCK_PINK_SALT_BRICK_WALL.get(), 6)
+                .input('S', ModBlocks.ROCK_PINK_SALT_BRICKS)
+                .criterion(hasItem(ModBlocks.ROCK_PINK_SALT_BRICKS), conditionsFromItem(ModBlocks.ROCK_PINK_SALT_BRICKS))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.ROCK_PINK_SALT_BRICK_WALL, 6)
                 .pattern("SSS")
                 .pattern("SSS")
-                .define('S', ModBlocks.ROCK_PINK_SALT_BRICKS.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_PINK_SALT_BRICKS.get()), has(ModBlocks.ROCK_PINK_SALT_BRICKS.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CRACKED_ROCK_PINK_SALT_BRICK_STAIRS.get(), 4)
+                .input('S', ModBlocks.ROCK_PINK_SALT_BRICKS)
+                .criterion(hasItem(ModBlocks.ROCK_PINK_SALT_BRICKS), conditionsFromItem(ModBlocks.ROCK_PINK_SALT_BRICKS))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.CRACKED_ROCK_PINK_SALT_BRICK_STAIRS, 4)
                 .pattern("S  ")
                 .pattern("SS ")
                 .pattern("SSS")
-                .define('S', ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS.get())
-                .unlockedBy(getHasName(ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS.get()), has(ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CRACKED_ROCK_PINK_SALT_BRICK_SLAB.get(), 6)
+                .input('S', ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS)
+                .criterion(hasItem(ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS), conditionsFromItem(ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.CRACKED_ROCK_PINK_SALT_BRICK_SLAB, 6)
                 .pattern("SSS")
-                .define('S', ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS.get())
-                .unlockedBy(getHasName(ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS.get()), has(ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CRACKED_ROCK_PINK_SALT_BRICK_WALL.get(), 6)
+                .input('S', ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS)
+                .criterion(hasItem(ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS), conditionsFromItem(ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.CRACKED_ROCK_PINK_SALT_BRICK_WALL, 6)
                 .pattern("SSS")
                 .pattern("SSS")
-                .define('S', ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS.get())
-                .unlockedBy(getHasName(ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS.get()), has(ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CLUMPED_PINK_SALT_BLOCK.get())
+                .input('S', ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS)
+                .criterion(hasItem(ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS), conditionsFromItem(ModBlocks.CRACKED_ROCK_PINK_SALT_BRICKS))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.CLUMPED_PINK_SALT_BLOCK)
                 .pattern("SS")
                 .pattern("SS")
-                .define('S', ModBlocks.PINK_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.PINK_SALT_BLOCK.get()), has(ModBlocks.PINK_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ROCK_PINK_SALT_BLOCK.get())
+                .input('S', ModBlocks.PINK_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.PINK_SALT_BLOCK), conditionsFromItem(ModBlocks.PINK_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.ROCK_PINK_SALT_BLOCK)
                 .pattern("SS")
                 .pattern("SS")
-                .define('S', ModBlocks.CLUMPED_PINK_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.CLUMPED_PINK_SALT_BLOCK.get()), has(ModBlocks.CLUMPED_PINK_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ROCK_PINK_SALT_BRICKS.get(), 4)
+                .input('S', ModBlocks.CLUMPED_PINK_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.CLUMPED_PINK_SALT_BLOCK), conditionsFromItem(ModBlocks.CLUMPED_PINK_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.ROCK_PINK_SALT_BRICKS, 4)
                 .pattern("SS")
                 .pattern("SS")
-                .define('S', ModBlocks.ROCK_PINK_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_PINK_SALT_BLOCK.get()), has(ModBlocks.ROCK_PINK_SALT_BLOCK.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CHISELED_ROCK_PINK_SALT_BRICKS.get())
+                .input('S', ModBlocks.ROCK_PINK_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.ROCK_PINK_SALT_BLOCK), conditionsFromItem(ModBlocks.ROCK_PINK_SALT_BLOCK))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.CHISELED_ROCK_PINK_SALT_BRICKS)
                 .pattern("S")
                 .pattern("S")
-                .define('S', ModBlocks.ROCK_PINK_SALT_BRICK_SLAB.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_PINK_SALT_BRICK_SLAB.get()), has(ModBlocks.ROCK_PINK_SALT_BRICK_SLAB.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_PILLAR.get(), 2)
+                .input('S', ModBlocks.ROCK_PINK_SALT_BRICK_SLAB)
+                .criterion(hasItem(ModBlocks.ROCK_PINK_SALT_BRICK_SLAB), conditionsFromItem(ModBlocks.ROCK_PINK_SALT_BRICK_SLAB))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, ModBlocks.ROCK_PINK_SALT_PILLAR, 2)
                 .pattern("S")
                 .pattern("S")
-                .define('S', ModBlocks.ROCK_PINK_SALT_BLOCK.get())
-                .unlockedBy(getHasName(ModBlocks.ROCK_PINK_SALT_BLOCK.get()), has(ModBlocks.ROCK_PINK_SALT_BLOCK.get()))
-                .save(pWriter);
+                .input('S', ModBlocks.ROCK_PINK_SALT_BLOCK)
+                .criterion(hasItem(ModBlocks.ROCK_PINK_SALT_BLOCK), conditionsFromItem(ModBlocks.ROCK_PINK_SALT_BLOCK))
+                .offerTo(exporter);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.POTATO)
-                .requires(ModTags.Items.SALT_OR_PINK_SALT)
-                .requires(Items.POISONOUS_POTATO)
-                .unlockedBy(getHasName(ModItems.SALT.get()), has(ModItems.SALT.get()))
-                .unlockedBy(getHasName(Items.POISONOUS_POTATO), has(Items.POISONOUS_POTATO))
-                .save(pWriter);
+        ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.POTATO)
+                .input(ModTags.Items.SALT_OR_PINK_SALT)
+                .input(Items.POISONOUS_POTATO)
+                .criterion(hasItem(ModItems.SALT), conditionsFromItem(ModItems.SALT))
+                .criterion(hasItem(Items.POISONOUS_POTATO), conditionsFromItem(Items.POISONOUS_POTATO))
+                .offerTo(exporter);
 
-// Vegetables
-        addRecipePair(Items.POTATO, ModItems.SALTED_POTATO.get(), ModItems.PINK_SALTED_POTATO.get(), pWriter);
-        addRecipePair(Items.BAKED_POTATO, ModItems.SALTED_BAKED_POTATO.get(), ModItems.PINK_SALTED_BAKED_POTATO.get(), pWriter);
-        addRecipePair(Items.BEETROOT, ModItems.SALTED_BEETROOT.get(), ModItems.PINK_SALTED_BEETROOT.get(), pWriter);
-        addRecipePair(Items.CARROT, ModItems.SALTED_CARROT.get(), ModItems.PINK_SALTED_CARROT.get(), pWriter);
+        // Vegetables
+        addRecipePair(exporter, Items.POTATO, ModItems.SALTED_POTATO, ModItems.PINK_SALTED_POTATO);
+        addRecipePair(exporter, Items.BAKED_POTATO, ModItems.SALTED_BAKED_POTATO, ModItems.PINK_SALTED_BAKED_POTATO);
+        addRecipePair(exporter, Items.BEETROOT, ModItems.SALTED_BEETROOT, ModItems.PINK_SALTED_BEETROOT);
+        addRecipePair(exporter, Items.CARROT, ModItems.SALTED_CARROT, ModItems.PINK_SALTED_CARROT);
 
-// Raw Meats & Fish
-        addRecipePair(Items.BEEF, ModItems.SALTED_BEEF.get(), ModItems.PINK_SALTED_BEEF.get(), pWriter);
-        addRecipePair(Items.CHICKEN, ModItems.SALTED_CHICKEN.get(), ModItems.PINK_SALTED_CHICKEN.get(), pWriter);
-        addRecipePair(Items.COD, ModItems.SALTED_COD.get(), ModItems.PINK_SALTED_COD.get(), pWriter);
-        addRecipePair(Items.MUTTON, ModItems.SALTED_MUTTON.get(), ModItems.PINK_SALTED_MUTTON.get(), pWriter);
-        addRecipePair(Items.PORKCHOP, ModItems.SALTED_PORKCHOP.get(), ModItems.PINK_SALTED_PORKCHOP.get(), pWriter);
-        addRecipePair(Items.RABBIT, ModItems.SALTED_RABBIT.get(), ModItems.PINK_SALTED_RABBIT.get(), pWriter);
-        addRecipePair(Items.SALMON, ModItems.SALTED_SALMON.get(), ModItems.PINK_SALTED_SALMON.get(), pWriter);
-        addRecipePair(Items.PUFFERFISH, ModItems.SALTED_PUFFERFISH.get(), ModItems.PINK_SALTED_PUFFERFISH.get(), pWriter);
-        addRecipePair(Items.TROPICAL_FISH, ModItems.SALTED_TROPICAL_FISH.get(), ModItems.PINK_SALTED_TROPICAL_FISH.get(), pWriter);
+        // Raw Meats & Fish
+        addRecipePair(exporter, Items.BEEF, ModItems.SALTED_BEEF, ModItems.PINK_SALTED_BEEF);
+        addRecipePair(exporter, Items.CHICKEN, ModItems.SALTED_CHICKEN, ModItems.PINK_SALTED_CHICKEN);
+        addRecipePair(exporter, Items.COD, ModItems.SALTED_COD, ModItems.PINK_SALTED_COD);
+        addRecipePair(exporter, Items.MUTTON, ModItems.SALTED_MUTTON, ModItems.PINK_SALTED_MUTTON);
+        addRecipePair(exporter, Items.PORKCHOP, ModItems.SALTED_PORKCHOP, ModItems.PINK_SALTED_PORKCHOP);
+        addRecipePair(exporter, Items.RABBIT, ModItems.SALTED_RABBIT, ModItems.PINK_SALTED_RABBIT);
+        addRecipePair(exporter, Items.SALMON, ModItems.SALTED_SALMON, ModItems.PINK_SALTED_SALMON);
+        addRecipePair(exporter, Items.PUFFERFISH, ModItems.SALTED_PUFFERFISH, ModItems.PINK_SALTED_PUFFERFISH);
+        addRecipePair(exporter, Items.TROPICAL_FISH, ModItems.SALTED_TROPICAL_FISH, ModItems.PINK_SALTED_TROPICAL_FISH);
 
-// Cooked Meats & Fish
-        addRecipePair(Items.COOKED_BEEF, ModItems.SALTED_COOKED_BEEF.get(), ModItems.PINK_SALTED_COOKED_BEEF.get(), pWriter);
-        addRecipePair(Items.COOKED_CHICKEN, ModItems.SALTED_COOKED_CHICKEN.get(), ModItems.PINK_SALTED_COOKED_CHICKEN.get(), pWriter);
-        addRecipePair(Items.COOKED_COD, ModItems.SALTED_COOKED_COD.get(), ModItems.PINK_SALTED_COOKED_COD.get(), pWriter);
-        addRecipePair(Items.COOKED_MUTTON, ModItems.SALTED_COOKED_MUTTON.get(), ModItems.PINK_SALTED_COOKED_MUTTON.get(), pWriter);
-        addRecipePair(Items.COOKED_PORKCHOP, ModItems.SALTED_COOKED_PORKCHOP.get(), ModItems.PINK_SALTED_COOKED_PORKCHOP.get(), pWriter);
-        addRecipePair(Items.COOKED_RABBIT, ModItems.SALTED_COOKED_RABBIT.get(), ModItems.PINK_SALTED_COOKED_RABBIT.get(), pWriter);
-        addRecipePair(Items.COOKED_SALMON, ModItems.SALTED_COOKED_SALMON.get(), ModItems.PINK_SALTED_COOKED_SALMON.get(), pWriter);
+        // Cooked Meats & Fish
+        addRecipePair(exporter, Items.COOKED_BEEF, ModItems.SALTED_COOKED_BEEF, ModItems.PINK_SALTED_COOKED_BEEF);
+        addRecipePair(exporter, Items.COOKED_CHICKEN, ModItems.SALTED_COOKED_CHICKEN, ModItems.PINK_SALTED_COOKED_CHICKEN);
+        addRecipePair(exporter, Items.COOKED_COD, ModItems.SALTED_COOKED_COD, ModItems.PINK_SALTED_COOKED_COD);
+        addRecipePair(exporter, Items.COOKED_MUTTON, ModItems.SALTED_COOKED_MUTTON, ModItems.PINK_SALTED_COOKED_MUTTON);
+        addRecipePair(exporter, Items.COOKED_PORKCHOP, ModItems.SALTED_COOKED_PORKCHOP, ModItems.PINK_SALTED_COOKED_PORKCHOP);
+        addRecipePair(exporter, Items.COOKED_RABBIT, ModItems.SALTED_COOKED_RABBIT, ModItems.PINK_SALTED_COOKED_RABBIT);
+        addRecipePair(exporter, Items.COOKED_SALMON, ModItems.SALTED_COOKED_SALMON, ModItems.PINK_SALTED_COOKED_SALMON);
 
-        addRecipePair(Items.KELP, ModItems.SALTED_KELP.get(), ModItems.PINK_SALTED_KELP.get(), pWriter);
-        addRecipePair(Items.DRIED_KELP, ModItems.SALTED_DRIED_KELP.get(), ModItems.PINK_SALTED_DRIED_KELP.get(), pWriter);
+        addRecipePair(exporter, Items.KELP, ModItems.SALTED_KELP, ModItems.PINK_SALTED_KELP);
+        addRecipePair(exporter, Items.DRIED_KELP, ModItems.SALTED_DRIED_KELP, ModItems.PINK_SALTED_DRIED_KELP);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.PINK_DYE,2)
-                .requires(ModItems.FLAMINGO_FEATHER.get())
-                .unlockedBy(getHasName(ModItems.FLAMINGO_FEATHER.get()), has(ModItems.FLAMINGO_FEATHER.get()))
-                .save(pWriter);
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.WHITE_DYE,2)
-                .requires(ModItems.WHITE_FLAMINGO_FEATHER.get())
-                .unlockedBy(getHasName(ModItems.WHITE_FLAMINGO_FEATHER.get()), has(ModItems.WHITE_FLAMINGO_FEATHER.get()))
-                .save(pWriter);
+        ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.PINK_DYE, 2)
+                .input(ModItems.FLAMINGO_FEATHER)
+                .criterion(hasItem(ModItems.FLAMINGO_FEATHER), conditionsFromItem(ModItems.FLAMINGO_FEATHER))
+                .offerTo(exporter);
+        ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.WHITE_DYE, 2)
+                .input(ModItems.WHITE_FLAMINGO_FEATHER)
+                .criterion(hasItem(ModItems.WHITE_FLAMINGO_FEATHER), conditionsFromItem(ModItems.WHITE_FLAMINGO_FEATHER))
+                .offerTo(exporter);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.OIL_CAN.get())
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.OIL_CAN)
                 .pattern("   ")
                 .pattern("##S")
                 .pattern("  S")
-                .define('S', Items.IRON_INGOT)
-                .define('#', Items.IRON_NUGGET)
-                .unlockedBy(getHasName(Items.IRON_INGOT), has(Items.IRON_INGOT))
-                .unlockedBy(getHasName(Items.IRON_NUGGET), has(Items.IRON_NUGGET))
-                .save(pWriter);
+                .input('S', Items.IRON_INGOT)
+                .input('#', Items.IRON_NUGGET)
+                .criterion(hasItem(Items.IRON_INGOT), conditionsFromItem(Items.IRON_INGOT))
+                .criterion(hasItem(Items.IRON_NUGGET), conditionsFromItem(Items.IRON_NUGGET))
+                .offerTo(exporter);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STAFF_OF_THE_DESERT.get())
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.STAFF_OF_THE_DESERT)
                 .pattern(" # ")
                 .pattern(" S ")
                 .pattern(" S ")
-                .define('S', ModItems.ANCIENT_STAFF_FRAGMENT.get())
-                .define('#', ModItems.EYE_OF_THE_DESERT.get())
-                .unlockedBy(getHasName(ModItems.ANCIENT_STAFF_FRAGMENT.get()), has(ModItems.ANCIENT_STAFF_FRAGMENT.get()))
-                .unlockedBy(getHasName(ModItems.EYE_OF_THE_DESERT.get()), has(ModItems.EYE_OF_THE_DESERT.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.UNCHARGED_STAFF_OF_THE_DESERT.get())
+                .input('S', ModItems.ANCIENT_STAFF_FRAGMENT)
+                .input('#', ModItems.EYE_OF_THE_DESERT)
+                .criterion(hasItem(ModItems.ANCIENT_STAFF_FRAGMENT), conditionsFromItem(ModItems.ANCIENT_STAFF_FRAGMENT))
+                .criterion(hasItem(ModItems.EYE_OF_THE_DESERT), conditionsFromItem(ModItems.EYE_OF_THE_DESERT))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.UNCHARGED_STAFF_OF_THE_DESERT)
                 .pattern("   ")
                 .pattern(" S ")
                 .pattern(" S ")
-                .define('S', ModItems.ANCIENT_STAFF_FRAGMENT.get())
-                .unlockedBy(getHasName(ModItems.ANCIENT_STAFF_FRAGMENT.get()), has(ModItems.ANCIENT_STAFF_FRAGMENT.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SALTED_CARROT_ON_A_STICK.get())
+                .input('S', ModItems.ANCIENT_STAFF_FRAGMENT)
+                .criterion(hasItem(ModItems.ANCIENT_STAFF_FRAGMENT), conditionsFromItem(ModItems.ANCIENT_STAFF_FRAGMENT))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.SALTED_CARROT_ON_A_STICK)
                 .pattern("# ")
                 .pattern(" X")
-                .define('#', Items.FISHING_ROD)
-                .define('X', ModItems.SALTED_CARROT.get())
-                .unlockedBy(getHasName(Items.FISHING_ROD), has(Items.FISHING_ROD))
-                .unlockedBy(getHasName(ModItems.SALTED_CARROT.get()), has(ModItems.SALTED_CARROT.get()))
-                .save(pWriter);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.PINK_SALTED_CARROT_ON_A_STICK.get())
+                .input('#', Items.FISHING_ROD)
+                .input('X', ModItems.SALTED_CARROT)
+                .criterion(hasItem(Items.FISHING_ROD), conditionsFromItem(Items.FISHING_ROD))
+                .criterion(hasItem(ModItems.SALTED_CARROT), conditionsFromItem(ModItems.SALTED_CARROT))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.PINK_SALTED_CARROT_ON_A_STICK)
                 .pattern("# ")
                 .pattern(" X")
-                .define('#', Items.FISHING_ROD)
-                .define('X', ModItems.PINK_SALTED_CARROT.get())
-                .unlockedBy(getHasName(Items.FISHING_ROD), has(Items.FISHING_ROD))
-                .unlockedBy(getHasName(ModItems.PINK_SALTED_CARROT.get()), has(ModItems.PINK_SALTED_CARROT.get()))
-                .save(pWriter);
-
+                .input('#', Items.FISHING_ROD)
+                .input('X', ModItems.PINK_SALTED_CARROT)
+                .criterion(hasItem(Items.FISHING_ROD), conditionsFromItem(Items.FISHING_ROD))
+                .criterion(hasItem(ModItems.PINK_SALTED_CARROT), conditionsFromItem(ModItems.PINK_SALTED_CARROT))
+                .offerTo(exporter);
     }
 
-    protected static void oreSmelting(Consumer<FinishedRecipe> pFinishedRecipeConsumer, List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult, float pExperience, int pCookingTIme, String pGroup) {
-        oreCooking(pFinishedRecipeConsumer, RecipeSerializer.SMELTING_RECIPE, pIngredients, pCategory, pResult, pExperience, pCookingTIme, pGroup, "_from_smelting");
+    private void addRecipePair(RecipeExporter exporter, ItemConvertible baseItem, Item saltedResult, Item pinkSaltedResult) {
+        ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, saltedResult)
+                .input(ModItems.SALT)
+                .input(baseItem)
+                .criterion(hasItem(ModItems.SALT), conditionsFromItem(ModItems.SALT))
+                .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
+                .offerTo(exporter);
+
+        ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, pinkSaltedResult)
+                .input(ModItems.PINK_SALT)
+                .input(baseItem)
+                .criterion(hasItem(ModItems.PINK_SALT), conditionsFromItem(ModItems.PINK_SALT))
+                .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
+                .offerTo(exporter);
     }
 
-    protected static void oreBlasting(Consumer<FinishedRecipe> pFinishedRecipeConsumer, List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult, float pExperience, int pCookingTime, String pGroup) {
-        oreCooking(pFinishedRecipeConsumer, RecipeSerializer.BLASTING_RECIPE, pIngredients, pCategory, pResult, pExperience, pCookingTime, pGroup, "_from_blasting");
-    }
+    private void addSmeltingPair(RecipeExporter exporter, Item saltedRaw, Item saltedCooked, Item pinkSaltedRaw, Item pinkSaltedCooked) {
+        CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(saltedRaw), RecipeCategory.FOOD, saltedCooked, 0.35F, 200)
+                .criterion(hasItem(saltedRaw), conditionsFromItem(saltedRaw))
+                .offerTo(exporter, getItemPath(saltedCooked) + "_from_smelting_" + getItemPath(saltedRaw));
 
-    private void addRecipePair(ItemLike baseItem, Item saltedResult, Item pinkSaltedResult,Consumer<FinishedRecipe> pWriter) {
-        // Regular salt recipe
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, saltedResult)
-                .requires(ModItems.SALT.get())
-                .requires(baseItem)
-                .unlockedBy(getHasName(ModItems.SALT.get()), has(ModItems.SALT.get()))
-                .unlockedBy(getHasName(baseItem), has(baseItem))
-                .save(pWriter);
-
-        // Pink salt recipe
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, pinkSaltedResult)
-                .requires(ModItems.PINK_SALT.get())
-                .requires(baseItem)
-                .unlockedBy(getHasName(ModItems.PINK_SALT.get()), has(ModItems.PINK_SALT.get()))
-                .unlockedBy(getHasName(baseItem), has(baseItem))
-                .save(pWriter);
-    }
-
-    // Helper methods
-    private String name(Item item) {
-        return ForgeRegistries.ITEMS.getKey(item).getPath();
-    }
-
-    private String getItemName(Item item) {
-        return "has_" + ForgeRegistries.ITEMS.getKey(item).getPath();
-    }
-
-    private void addSmeltingPair(Item saltedRaw, Item saltedCooked, Item pinkSaltedRaw, Item pinkSaltedCooked,Consumer<FinishedRecipe> pWriter) {
-        // Regular salt smelting
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(saltedRaw), RecipeCategory.FOOD, saltedCooked, 0.35F, 200)
-                .unlockedBy("has_" + getItemName(saltedRaw), has(saltedRaw))
-                .save(pWriter, name(saltedCooked) + "_from_smelting_" + name(saltedRaw));
-
-        // Pink salt smelting
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(pinkSaltedRaw), RecipeCategory.FOOD, pinkSaltedCooked, 0.35F, 200)
-                .unlockedBy("has_" + getItemName(pinkSaltedRaw), has(pinkSaltedRaw))
-                .save(pWriter, name(pinkSaltedCooked) + "_from_smelting_" + name(pinkSaltedRaw));
+        CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(pinkSaltedRaw), RecipeCategory.FOOD, pinkSaltedCooked, 0.35F, 200)
+                .criterion(hasItem(pinkSaltedRaw), conditionsFromItem(pinkSaltedRaw))
+                .offerTo(exporter, getItemPath(pinkSaltedCooked) + "_from_smelting_" + getItemPath(pinkSaltedRaw));
     }
 }
