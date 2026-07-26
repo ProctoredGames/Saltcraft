@@ -42,8 +42,7 @@ import net.proctoredgames.saltcraft.entity.ModEntities;
 import org.jetbrains.annotations.Nullable;
 
 public class SaltMage extends SpellcastingIllagerEntity {
-    private final ServerBossBar bossBar = (ServerBossBar) new ServerBossBar(this.getDisplayName(), BossBar.Color.WHITE, BossBar.Style.PROGRESS)
-            .setDarkenSky(true);
+    private final ServerBossBar bossBar = new ServerBossBar(this.getDisplayName(), BossBar.Color.WHITE, BossBar.Style.NOTCHED_12);
 
     @Nullable
     private BlockPos spawningPlinthPosition;
