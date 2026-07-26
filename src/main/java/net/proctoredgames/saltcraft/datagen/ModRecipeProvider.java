@@ -1,5 +1,6 @@
 package net.proctoredgames.saltcraft.datagen;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -358,7 +359,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .requires(Items.POISONOUS_POTATO)
                 .unlockedBy(getHasName(ModItems.SALT.get()), has(ModItems.SALT.get()))
                 .unlockedBy(getHasName(Items.POISONOUS_POTATO), has(Items.POISONOUS_POTATO))
-                .save(pWriter);
+                .save(pWriter, new ResourceLocation(Saltcraft.MOD_ID, "potato_from_purifying_poisonous_potato"));
 
 // Vegetables
         addRecipePair(Items.POTATO, ModItems.SALTED_POTATO.get(), ModItems.PINK_SALTED_POTATO.get(), pWriter);
@@ -392,11 +393,11 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.PINK_DYE,2)
                 .requires(ModItems.FLAMINGO_FEATHER.get())
                 .unlockedBy(getHasName(ModItems.FLAMINGO_FEATHER.get()), has(ModItems.FLAMINGO_FEATHER.get()))
-                .save(pWriter);
+                .save(pWriter, new ResourceLocation(Saltcraft.MOD_ID, "pink_dye_from_flamingo_feather"));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.WHITE_DYE,2)
                 .requires(ModItems.WHITE_FLAMINGO_FEATHER.get())
                 .unlockedBy(getHasName(ModItems.WHITE_FLAMINGO_FEATHER.get()), has(ModItems.WHITE_FLAMINGO_FEATHER.get()))
-                .save(pWriter);
+                .save(pWriter, new ResourceLocation(Saltcraft.MOD_ID, "white_dye_from_flamingo_feather"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.OIL_CAN.get())
                 .pattern("   ")
@@ -451,6 +452,22 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         oreCooking(pFinishedRecipeConsumer, RecipeSerializer.BLASTING_RECIPE, pIngredients, pCategory, pResult, pExperience, pCookingTime, pGroup, "_from_blasting");
     }
 
+    /**
+     * Shadows {@link RecipeProvider#oreCooking}, which saves under a bare (namespace-less)
+     * name that vanilla's {@code ResourceLocation} parsing silently resolves to
+     * {@code minecraft:}. This keeps ore smelting/blasting recipes under {@code saltcraft:}.
+     */
+    protected static void oreCooking(Consumer<FinishedRecipe> pFinishedRecipeConsumer, RecipeSerializer<? extends AbstractCookingRecipe> pCookingSerializer,
+                                      List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult, float pExperience, int pCookingTime, String pGroup, String pRecipeName) {
+        for (ItemLike itemlike : pIngredients) {
+            SimpleCookingRecipeBuilder.generic(Ingredient.of(itemlike), pCategory, pResult, pExperience, pCookingTime, pCookingSerializer)
+                    .group(pGroup)
+                    .unlockedBy(getHasName(itemlike), has(itemlike))
+                    .save(pFinishedRecipeConsumer, new ResourceLocation(Saltcraft.MOD_ID,
+                            ForgeRegistries.ITEMS.getKey(pResult.asItem()).getPath() + pRecipeName + "_" + ForgeRegistries.ITEMS.getKey(itemlike.asItem()).getPath()));
+        }
+    }
+
     private void addRecipePair(ItemLike baseItem, Item saltedResult, Item pinkSaltedResult,Consumer<FinishedRecipe> pWriter) {
         // Regular salt recipe
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, saltedResult)
@@ -482,11 +499,27 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         // Regular salt smelting
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(saltedRaw), RecipeCategory.FOOD, saltedCooked, 0.35F, 200)
                 .unlockedBy("has_" + getItemName(saltedRaw), has(saltedRaw))
-                .save(pWriter, name(saltedCooked) + "_from_smelting_" + name(saltedRaw));
+                .save(pWriter, new ResourceLocation(Saltcraft.MOD_ID, name(saltedCooked) + "_from_smelting_" + name(saltedRaw)));
 
         // Pink salt smelting
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(pinkSaltedRaw), RecipeCategory.FOOD, pinkSaltedCooked, 0.35F, 200)
                 .unlockedBy("has_" + getItemName(pinkSaltedRaw), has(pinkSaltedRaw))
-                .save(pWriter, name(pinkSaltedCooked) + "_from_smelting_" + name(pinkSaltedRaw));
+                .save(pWriter, new ResourceLocation(Saltcraft.MOD_ID, name(pinkSaltedCooked) + "_from_smelting_" + name(pinkSaltedRaw)));
+    }
+
+    /**
+     * Shadows {@link RecipeProvider#stonecutterResultFromBase}, which saves under a bare
+     * (namespace-less) name that vanilla's {@code ResourceLocation} parsing silently resolves
+     * to {@code minecraft:}. This keeps stonecutting recipes under {@code saltcraft:}.
+     */
+    protected static void stonecutterResultFromBase(Consumer<FinishedRecipe> consumer, RecipeCategory category, ItemLike result, ItemLike base) {
+        stonecutterResultFromBase(consumer, category, result, base, 1);
+    }
+
+    protected static void stonecutterResultFromBase(Consumer<FinishedRecipe> consumer, RecipeCategory category, ItemLike result, ItemLike base, int count) {
+        String path = ForgeRegistries.ITEMS.getKey(result.asItem()).getPath() + "_from_" + ForgeRegistries.ITEMS.getKey(base.asItem()).getPath() + "_stonecutting";
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(base), category, result, count)
+                .unlockedBy(getHasName(base), has(base))
+                .save(consumer, new ResourceLocation(Saltcraft.MOD_ID, path));
     }
 }
