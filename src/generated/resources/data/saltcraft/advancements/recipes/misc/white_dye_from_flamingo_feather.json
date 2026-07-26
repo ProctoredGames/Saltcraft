@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "saltcraft:white_dye_from_flamingo_feather"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_white_flamingo_feather": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "saltcraft:white_flamingo_feather"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_white_flamingo_feather",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "saltcraft:white_dye_from_flamingo_feather"
+    ]
+  },
+  "sends_telemetry_event": false
+}

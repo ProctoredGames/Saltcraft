@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 1,
+  "ingredient": {
+    "item": "saltcraft:clumped_salt_block"
+  },
+  "result": "saltcraft:clumped_salt_stairs"
+}

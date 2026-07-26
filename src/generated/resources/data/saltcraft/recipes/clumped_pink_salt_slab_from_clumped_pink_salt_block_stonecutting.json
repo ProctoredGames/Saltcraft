@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 2,
+  "ingredient": {
+    "item": "saltcraft:clumped_pink_salt_block"
+  },
+  "result": "saltcraft:clumped_pink_salt_slab"
+}
