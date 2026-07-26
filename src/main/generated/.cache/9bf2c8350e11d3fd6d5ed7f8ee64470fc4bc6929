@@ -1,10 +1,10 @@
-// 1.21.1	2026-07-25T23:27:21.8785771	Saltcraft/Tags for minecraft:block
+// 1.21.1	2026-07-26T01:52:45.896779	Saltcraft/Tags for minecraft:block
 69c64fbc9644b79c3c70b9fd3fd1d8493c8127a9 data\minecraft\tags\block\mineable\pickaxe.json
-864e3f48fa9d5f986ee7ca3b2436d594ebb7dcf6 data\minecraft\tags\block\needs_stone_tool.json
 73378f86fd5ab26bb990c52868d736a7f9245ff0 data\saltcraft\tags\block\summoning_plinth_tag.json
+864e3f48fa9d5f986ee7ca3b2436d594ebb7dcf6 data\minecraft\tags\block\needs_stone_tool.json
 4c20aee8c69e7d4b30881127e22f2865a01e2753 data\minecraft\tags\block\mineable\shovel.json
 5e55621cb01d2928d662054643b9a31f758a07c1 data\saltcraft\tags\block\salt_materials.json
 5db5caaf07abac8fd4b44460198f1bbe42953a3b data\saltcraft\tags\block\all_salt_materials.json
 aa7e54ce71b8380661ac7f5d103c0e4ebbc0c1a3 data\minecraft\tags\block\walls.json
-d4357aaf5badf659c6c660b7f91d4cc2d0977a2c data\saltcraft\tags\block\all_ores.json
 f72eb40e6d23ae8bf752c65d4e213d4eec2e0794 data\saltcraft\tags\block\pink_salt_materials.json
+d4357aaf5badf659c6c660b7f91d4cc2d0977a2c data\saltcraft\tags\block\all_ores.json
