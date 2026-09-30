@@ -7,8 +7,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.*;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -18,10 +20,8 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.Foods;
 import net.minecraft.world.inventory.AnvilMenu;
-import net.minecraft.world.item.EnchantedBookItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -39,6 +39,7 @@ import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -193,16 +194,17 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
-        if(event.isWasDeath()) {
-            // The dead player's capabilities are invalidated by the time this fires
-            event.getOriginal().reviveCaps();
-            event.getOriginal().getCapability(PlayerThirstProvider.PLAYER_THIRST).ifPresent(oldStore -> {
-                event.getEntity().getCapability(PlayerThirstProvider.PLAYER_THIRST).ifPresent(newStore -> {
-                    newStore.copyFrom(oldStore);
-                });
-            });
-            event.getOriginal().invalidateCaps();
+        if (event.isWasDeath()) {
+            event.getEntity().getCapability(PlayerThirstProvider.PLAYER_THIRST).ifPresent(thirst ->
+                    thirst.addThirst(20 - thirst.getThirst()));
+            return;
         }
+
+        event.getOriginal().reviveCaps();
+        event.getOriginal().getCapability(PlayerThirstProvider.PLAYER_THIRST).ifPresent(oldStore ->
+                event.getEntity().getCapability(PlayerThirstProvider.PLAYER_THIRST).ifPresent(newStore ->
+                        newStore.copyFrom(oldStore)));
+        event.getOriginal().invalidateCaps();
     }
 
     @SubscribeEvent
@@ -222,24 +224,55 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void onItemUseFinish(LivingEntityUseItemEvent.Finish event) {
-        // Check if the user is a player
-        if (event.getEntity() instanceof Player player) {
-            ItemStack usedItem = event.getItem();
+        if (event.getEntity().level().isClientSide()) return;
 
-            // Determine thirst points based on tags
-            int thirstPointValue = usedItem.is(ModTags.Items.QUENCHES_THIRST_3_POINTS) ? 3
-                    : (usedItem.is(ModTags.Items.QUENCHES_THIRST_5_POINTS) ? 5 : 0);
+        ItemStack usedItem = event.getItem();
 
-            if (usedItem.isEdible() && thirstPointValue > 0) {
-                // Add thirst points to the player's thirst capability
-                player.getCapability(PlayerThirstProvider.PLAYER_THIRST).ifPresent(thirst -> {
-                    thirst.addThirst(thirstPointValue);
-                    if (player instanceof ServerPlayer serverPlayer) {
-                        ModMessages.sendToPlayer(new ThirstDataSyncS2CPacket(thirst.getThirst()), serverPlayer);
-                    }
-                });
+        if (usedItem.getItem() instanceof PotionItem) {
+            Potion potion = PotionUtils.getPotion(usedItem);
+            if (potion == ModPotions.SALT_WATER_BOTTLE.get()
+                    || potion == ModPotions.PINK_SALT_WATER_BOTTLE.get()) {
+                return;
             }
         }
+
+        int thirstPointValue = usedItem.is(ModTags.Items.QUENCHES_THIRST_3_POINTS) ? 3
+                : (usedItem.is(ModTags.Items.QUENCHES_THIRST_5_POINTS) ? 5 : 0);
+
+        if (thirstPointValue > 0) {
+            event.getEntity().getCapability(PlayerThirstProvider.PLAYER_THIRST).ifPresent(thirst -> {
+                thirst.addThirst(thirstPointValue);
+                if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+                    ModMessages.sendToPlayer(new ThirstDataSyncS2CPacket(thirst.getThirst()), serverPlayer);
+                }
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEffectExpired(MobEffectEvent.Expired event) {
+        MobEffectInstance instance = event.getEffectInstance();
+        if (instance != null && instance.getEffect() == ModEffects.THIRST.get()) {
+            refillThirst(event.getEntity());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEffectRemoved(MobEffectEvent.Remove event) {
+        if (event.getEffect() == ModEffects.THIRST.get()) {
+            refillThirst(event.getEntity());
+        }
+    }
+
+    private static void refillThirst(LivingEntity entity) {
+        if (entity.level().isClientSide()) return;
+
+        entity.getCapability(PlayerThirstProvider.PLAYER_THIRST).ifPresent(thirst -> {
+            thirst.addThirst(20 - thirst.getThirst());
+            if (entity instanceof ServerPlayer player) {
+                ModMessages.sendToPlayer(new ThirstDataSyncS2CPacket(thirst.getThirst()), player);
+            }
+        });
     }
 
     @SubscribeEvent

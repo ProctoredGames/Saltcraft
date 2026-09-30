@@ -25,7 +25,7 @@ public class ThirstDataSyncS2CPacket {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() -> {
             // HERE WE ARE ON THE CLIENT!
-            ClientThirstData.set(thirst);
+            ClientThirstData.setThirst(thirst);
         });
         context.setPacketHandled(true);
         return true;

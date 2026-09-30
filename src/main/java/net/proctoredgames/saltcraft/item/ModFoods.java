@@ -9,10 +9,10 @@ import net.proctoredgames.saltcraft.effect.ModEffects;
 
 public class ModFoods {
     public static final FoodProperties SALT = new FoodProperties.Builder().nutrition(0)
-            .saturationMod(0f).effect(() -> new MobEffectInstance(ModEffects.THIRST.get(),100, 0),1.0f).build();
+            .saturationMod(0f).effect(() -> new MobEffectInstance(ModEffects.THIRST.get(),200, 0),1.0f).build();
     public static final FoodProperties PINK_SALT = new FoodProperties.Builder().nutrition(0)
-            .saturationMod(0f).effect(() -> new MobEffectInstance(ModEffects.THIRST.get(),100, 0),1.0f)
-                .effect(() -> new MobEffectInstance(MobEffects.REGENERATION,100),1.0f).build();
+            .saturationMod(0f).effect(() -> new MobEffectInstance(ModEffects.THIRST.get(),200, 0),1.0f)
+                .effect(() -> new MobEffectInstance(MobEffects.REGENERATION,200),1.0f).build();
 
     // Vegetables
     public static final FoodProperties SALTED_BAKED_POTATO = new FoodProperties.Builder().nutrition(6).saturationMod(0.6F).build();
