@@ -35,11 +35,10 @@ public class ThirstHudOverlay {
         if(satisfiesRenderingConditions){
             lastSatisfiedGuiTick = gui.getGuiTicks();
         }
-        // Keep the bar on screen for a moment after it refills; gui ticks rather than
-        // frames so the fade time does not depend on the framerate
+
         boolean hasExtraRenderingTime = gui.getGuiTicks() - lastSatisfiedGuiTick < EXTRA_RENDER_TICKS;
 
-        if((satisfiesRenderingConditions || hasExtraRenderingTime) && !(player.isSpectator() || player.isCreative())){
+        if((satisfiesRenderingConditions || hasExtraRenderingTime) && !(player.isSpectator() || player.isCreative()) ){
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderTexture(0, EMPTY_THIRST);
